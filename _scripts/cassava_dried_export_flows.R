@@ -296,6 +296,7 @@ lapply(1:length(periodList), function(i){
 # -------------------------------------------------------------------------- #
 # Interactive d3/R chord diagram
 # -------------------------------------------------------------------------- #
+# Source: http://data-steve.github.io/d3-r-chord-diagram-of-white-house-petitions-data/
 # if (!require("pacman")) install.packages("pacman")
 pacman::p_load_current_gh("mattflor/chorddiag")
 pacman::p_load(dplyr, magrittr, ggplot2, tidyr, curl)
@@ -323,6 +324,8 @@ lapply(1:length(periodList), function(i){
   subReal[is.na(subReal)] <- 0
   subReal <- subReal[order(rownames(subReal)),]
   subReal <- subReal[,order(colnames(subReal))]
+  cList <- union(x = names(which(rowSums(subReal) != 0)), y = names(which(colSums(subReal) != 0))) # Filtering by values
+  subReal <- subReal[cList, cList] # Filtering by values
   ord <- order(rowSums(subReal), decreasing = T)
   subReal <- as.matrix(subReal)
   
@@ -337,8 +340,9 @@ lapply(1:length(periodList), function(i){
                                , groupnamePadding = 5
                                , groupThickness = .05
                                , chordedgeColor = "gray" # getPalette(colorCount)
-                               , groupColors = getPalette(colorCount))
-  saveNetwork(chrd, paste("D:/ToBackup/Modelling/global-futures-and-strategic-foresight/_graphics/_interactive_chord/chord_", gsub(pattern = "-", replacement = "_", periodList[i]), ".html", sep = ""), selfcontained = T)
+                               , groupColors = getPalette(colorCount)
+                               , showTooltips = FALSE) # Does not show tool box with info
+  saveNetwork(chrd, paste("D:/ToBackup/Modelling/global-futures-and-strategic-foresight/_graphics/_interactive_chord_cassava_dried/version_2/chord_", gsub(pattern = "-", replacement = "_", periodList[i]), ".html", sep = ""), selfcontained = T)
   return(cat('Chord diagram done! for:', periodList[i],'\n'))
   
 })
