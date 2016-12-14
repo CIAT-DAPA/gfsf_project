@@ -156,3 +156,46 @@ rbindMat <- lapply(1:nrow(inList$combinations), function(i){
   
 })
 rbindMat <- do.call(bind_rows, rbindMat)
+
+# Just only to be run on Windows servers
+# rbindMat <- lapply(1:nrow(inList$combinations), function(i){
+#   
+#   rbindMat <- lapply(1:length(inList$commodities), function(j){
+#     
+#     rbindMat <- lapply(1:length(inList$years), function(k){
+#       
+#       tryCatch(expr={
+#         s <- get.Comtrade(r = inList$combinations$Reporter_code[i],
+#                           p = inList$combinations$Partner_code[i],
+#                           cc = paste(inList$commodities[j]),
+#                           ps = paste(inList$years[k]),
+#                           px = "HS", rg = 2, fmt = "csv")
+#       },
+#       error=function(e){
+#         cat(paste0("Downloading failed in combination, Reporter:", inList$combinations$Reporter[i],
+#                    ", Partner:", inList$combinations$Partner[i], ", Commodity:", inList$commodities[j],
+#                    " and Year:", inList$years[k], "\n"))
+#         return("Done\n")
+#       })
+#       
+#       if(exists('s')){
+#         s <- as.data.frame(do.call(rbind.fill, s))
+#         s$rr <- inList$combinations$Reporter[i]
+#         s$pp <- inList$combinations$Partner[i]
+#         s$cc <- inList$commodities[j]
+#         s$yy <- inList$years[k]
+#         return(s)
+#       }
+#       
+#     })
+#     
+#     rbindMat <- do.call(rbind.fill, rbindMat)
+#     return(rbindMat)
+#     
+#   })
+#   
+#   rbindMat <- do.call(rbind.fill, rbindMat)
+#   return(rbindMat)
+#   
+# })
+# rbindMat <- do.call(rbind.fill, rbindMat)
