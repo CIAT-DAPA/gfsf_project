@@ -14,6 +14,7 @@ library(dplyr)
 library(tidyr)
 library(lattice)
 library(latticeExtra)
+library(RColorBrewer)
 #Limitar numero de decimales-----
 options(digits=3) 
 options(scipen = 999)
@@ -186,7 +187,7 @@ mdwide<-mdwide[!mdwide$region=="MEN",]
 mdwide<-mdwide[!mdwide$region=="SSA",]
 
 
-# Eliminar datos que no adoptaron tecnología 
+#liminar datos que no adoptaron tecnología 
 mdwide<-mdwide[!mdwide$region=="LAC-Cuba",]
 mdwide<-mdwide[!mdwide$region=="LAC-Jamaica",]
 mdwide<-mdwide[!mdwide$region=="MEN-Egypt",]
@@ -299,7 +300,24 @@ mdwide_t <- mdwide_t %>% gather( Intervencion, Value, CC_NoTec:impacto)# para ha
 
 mdwideBean_t<-mdwide_t
 
-# copya data
+
+# # subset Solo cambio climatico 
+# rendicc<-subset(mdwide, categoria!="NoCC_NoTec" & categoria!="NoCC_Tec")
+# 
+# # Creando  las variables con tecnologia y sin tecnologia--------
+# rendicc_tech$adoption<-as.character(rendicc_tech$variable)
+# rendicc$productiontype <- NULL
+# rendicc$commodity<- NULL
+
+# dh<- ggplot(rendicc[which(rendicc$impactparameter=="Yield"),], aes(x=Cambio.Porcentual, colour=categoria)) + geom_density(alpha=.3)
+# dh<- dh + scale_colour_discrete(name="Scenarios\nPercent Change")
+# dh<- dh + xlab("% Change") 
+# dh<- dh + ggtitle("Yield, with Technology\n& without Technology by GCMs") 
+# dh<- dh + theme(plot.title = element_text(lineheight=.8, face="bold")) 
+# dh
+# ggsave(file="C:/Users/CEGONZALEZ/Documents/GFSF/datos brutos/datos procesados/HistograTechnYieldCC.png", dh, width=10, height=10.5, units='in')                                                                                       
+
+
 
 ##########################################################################################################
 #Graficos verdes------------------
@@ -499,9 +517,9 @@ dev.off()
 pca_data <- as.data.frame(mdwidet_melt)
 rownames(pca_data) <- pca_data$region
 pca_data$commodity <- pca_data$region <- pca_data$Intervencion <- NULL
-
-saveRDS(pca_data, '//dapadfs/workspace_cluster_6/Socioeconomia/GF_and_SF/bean_pca_data.rds')
-saveRDS(pca_data,paste(copy, "bean_pca_data.rds", sep = ""))
+pca_data$Cluster<- NULL
+saveRDS(pca_data, '//dapadfs/workspace_cluster_6/Socioeconomia/GF_and_SF/BeansData/Data&Graphs/bean_pca_data.rds')
+#saveRDS(pca_data,paste(copy, "bean_pca_data.rds", sep = ""))
 
 
 mdwidet_melt$Cluster <- NA
@@ -722,7 +740,6 @@ mdwideFood<-mdwideFood[!mdwideFood$region=="LAC",]
 mdwideFood<-mdwideFood[!mdwideFood$region=="MEN",]
 mdwideFood<-mdwideFood[!mdwideFood$region=="SSA",]
 
-
 # Eliminar datos que no adoptaron tecnología 
 mdwideFood<-mdwideFood[!mdwideFood$region=="LAC-Cuba",]
 mdwideFood<-mdwideFood[!mdwideFood$region=="LAC-Jamaica",]
@@ -838,35 +855,381 @@ mdwide_f <- mdwide_f %>% gather( Intervencion, Value, CC_NoTec:impacto)# para ha
 mdwideBean_f<-mdwide_f
 
 
-mdwidet_melt <- mdwideBean_f[mdwideBean_f$Intervencion=='impacto',] %>% spread(impactparameter, Value)
-mdwidet_melt$trend <- NULL
-mdwidet_melt$commodity<- NULL
-mdwidet_melt$zona<- NULL
+mdwidet_meltf <- mdwideBean_f[mdwideBean_f$Intervencion=='impacto',] %>% spread(impactparameter, Value)
+mdwidet_meltf$trend <- NULL
+mdwidet_meltf$commodity<- NULL
+mdwidet_meltf$zona<- NULL
 
 
 mean2 <- function(x){mean(x, na.rm = T)}
-mdwidet_melt <- mdwidet_melt %>% group_by( region, Intervencion) %>% summarise_each(funs(mean2))
+mdwidet_meltf <- mdwidet_meltf %>% group_by( region, Intervencion) %>% summarise_each(funs(mean2))
 # mdwidet_melt <- mdwidet_melt[complete.cases(mdwidet_melt),]
 
 # PCA + clustering analysis
-pca_data_food <- as.data.frame(mdwidet_melt)
+pca_data_food <- as.data.frame(mdwidet_meltf)
 rownames(pca_data_food) <- pca_data_food$region
 pca_data_food$commodity <- pca_data_food$region <- pca_data_food$Intervencion <- NULL
 
-saveRDS(pca_data_food, '//dapadfs/workspace_cluster_6/Socioeconomia/GF_and_SF/bean_pca_data_food.rds')
-saveRDS(pca_data_food,paste(copy, "bean_pca_data_food.rds", sep = ""))
+saveRDS(pca_data_food, '//dapadfs/workspace_cluster_6/Socioeconomia/GF_and_SF/BeansData/Data&Graphs/bean_pca_data_food.rds')
+#saveRDS(pca_data_food,paste(copy, "bean_pca_data_food.rds", sep = ""))
+
+
+##########################################################################################################
+#=============================================PCA========================================================#
+
+# Analisis de Cluster usando CPA
+#librerias-----------------
+options(warn=-1); options(scipen=999)
+
+if(!require(corrplot)){install.packages('corrplot'); library(corrplot)} else {library(corrplot)}
+if(!require(FactoMineR)){install.packages("FactorMiner"); library (FactoMineR)} else {FactoMineR}
+if(!require(factoextra)){install.packages("factoextra"); library (factoextra)} else {factoextra}
+if(!require(dplyr)){install.packages("dplyr"); library (dplyr)} else {dplyr}
+if(!require(missMDA)){install.packages("missMDA"); library (missMDA)} else {missMDA}
+if(!require(ggdendro)){install.packages("ggdendro"); library (ggdendro)} else {ggdendro}
+
+#Directorios de graficos 
+grp<- "//dapadfs/workspace_cluster_6/Socioeconomia/GF_and_SF/BeansData/Data&Graphs/"
+#Cargar Datos-----
+pca_Food<- readRDS( "//dapadfs/workspace_cluster_6/Socioeconomia/GF_and_SF/BeansData/Data&Graphs/bean_pca_data_food.rds")
+pca_AYP<- readRDS ("//dapadfs/workspace_cluster_6/Socioeconomia/GF_and_SF/BeansData/Data&Graphs/bean_pca_data.rds")
+
+cor(pca_AYP, use = "complete.obs")
+# pca_data_food[complete.cases(pca_data_food),]
+#Datos Yield production Area----
+res.pca <- PCA(pca_AYP, graph = T, scale.unit = T)
+CLU.rest <- FactoMineR::HCPC(res.pca, nb.clust = -1)
+datosCLustAreaYied<-as.data.frame(CLU.rest$data.clust)
+write.csv(datosCLustAreaYied, paste(grp, "datosClusterPCAAreYield.csv", sep = ""))
+
+#Eigen values
+gr <- fviz_eig(res.pca, addlabels=TRUE, hjust = -0.3 ) + theme_classic()
+gr <- gr + ggtitle("PCA: Yield, Production and Area")
+gr <- gr + theme(plot.title=element_text(size=15, face = 'bold'))
+tiff(filename=paste(grp,"eigenvalues_variancesYieldProduction.tiff", sep = ""), 
+     width = 10, height = 10, units = 'in', res = 100)
+gr
+dev.off()
+
+
+#Only variables are labelled
+br<- fviz_pca_biplot(res.pca, label="var", habillage=CLU.rest$data.clust$clust,
+                    addEllipses=TRUE, ellipse.level=0.95) 
+br<- br + theme_bw() + ggtitle("PCA: Yield, Production and Area" )
+br<- br + theme(plot.title=element_text(size=15, face = 'bold'))
+tiff(filename=paste(grp,"AreaYieldProductionPCA.tiff", sep = ""), 
+     width = 10, height = 10, units = 'in', res = 100)
+br
+dev.off()
+
+#Extraer Datos
+datosCLustAYP<-as.data.frame(res.pca$var$cor)
+write.csv(datosCLustAYP, paste(grp, "datosClusterPCAAYP.csv", sep = ""))
+#Datos Food Security----
+
+##Calcular porcentaje de datos faltantes por variable
+miss <- apply(X=pca_Food, MARGIN = 2, FUN = function(x){ y <- sum(is.na(x))/nrow(pca_Food); return(y*100) })
+pca_Food <- pca_Food[,names(which(miss <= 33))]
+
+##Desarrollo analisis CPA
+res.comp <- imputePCA(pca_Food, ncp=7)
+PCA_resFood <- FactoMineR::PCA(X=res.comp$completeObs, scale.unit = T)
+CLU_rest1 <- FactoMineR::HCPC(PCA_resFood, nb.clust = -1)
+
+datosCLustFood<-as.data.frame(CLU_rest1$data.clust)
+write.csv(datosCLustFood, paste(grp, "datosClusterPCAFood.csv", sep = ""))
+
+
+##Graficas Eigen values
+g <- fviz_eig(PCA_resFood, addlabels=TRUE, hjust = -0.3 )  + theme_classic()
+g <- g + ggtitle("PCA: Food Securiy and Yield, Production and Area")
+g <- g + theme(plot.title=element_text(size=15, face = 'bold'))
+tiff(filename=paste(grp,"eigenvalues_variancesFoop.tiff", sep = ""), 
+     width = 10, height = 10, units = 'in', res = 100)
+g
+dev.off()
 
 
 
+##Quality of representation of each variable
+pdf('rQuality.pdf', height=7, width=8)
+par(mfrow=c(1,3))
+corrplot(PCA_resFood$var$cos2[,1:2], is.corr=FALSE) # Representation quality of each variable
+corrplot(PCA_resFood$var$contrib[,1:2], is.corr=FALSE) # Contribution of each variable to dimension
+corrplot(PCA_resFood$var$cor[,1:2], method="ellipse", is.corr=TRUE) # Correlation of each variable to dimension
+dev.off()
+
+##Quality of representation of each variable
+pdf('rQuality_ind.pdf', height=7, width=8)
+par(mfrow=c(1,3))
+corrplot(PCA_resFood$ind$cos2[,1:2], is.corr=FALSE) # Representation quality of each variable
+corrplot(PCA_resFood$ind$contrib[,1:2], is.corr=FALSE) # Contribution of each variable to dimension
+dev.off()
+
+##Variable factor map
+h<- fviz_pca_var(PCA_resFood, col.var = "steelblue") + theme_bw()
+h 
+
+##Control variable colors using their contributions
+fviz_pca_var(PCA_resFood, col.var="contrib")+
+  scale_color_gradient2(low="white", mid="blue", 
+                        high="red", midpoint = 96) +
+  theme_bw()
+
+# Graph of individuals
+# 1. Use repel = TRUE to avoid overplotting
+# 2. Control automatically the color of individuals using the cos2
+# cos2 = the quality of the individuals on the factor map
+# Use points only
+# 3. Use gradient color
+fviz_pca_ind(PCA_resFood, repel = TRUE, col.ind = "cos2")+
+  scale_color_gradient2(low="blue", mid="white",
+                        high="red", midpoint=0.6)+
+  theme_bw()
+
+# Color by groups: habillage=iris$Species
+# Show points only: geom = "point"
+p <- fviz_pca_ind(PCA_resFood, geom = "point",
+                  habillage=CLU_rest1$data.clust$clust, addEllipses=TRUE,
+                  ellipse.level= 0.95, invisible = 'none')+ theme_bw()
+print(p)
+
+# Biplot of individuals and variables
+# ++++++++++++++++++++++++++
+# Only variables are labelled
+fviz_pca_biplot(PCA_resFood,  label="var", habillage=CLU_rest1$data.clust$clust,
+                addEllipses=TRUE, ellipse.level=0.95) +
+  theme_bw()
+
+b<- fviz_pca_biplot(PCA_resFood,  label="var", habillage=CLU_rest1$data.clust$clust,
+                    addEllipses=TRUE, ellipse.level=0.95) 
+b<- b +theme_bw() + ggtitle("PCA: Food Securiy and Yield, Production and Area" )
+b<- b + theme(plot.title=element_text(size=15, face = 'bold'))
+tiff(filename=paste(grp,"foodsecurityPCA.tiff", sep = ""), 
+     width = 10, height = 10, units = 'in', res = 100)
+b
+dev.off()
 
 
+datosCLustFood<-as.data.frame(PCA_resFood$var$cor)
+write.csv(datosCLustFood, paste(grp, "datosClusterPCAFood.csv", sep = ""))
 
 
+# Clustering
+dhc <- as.dendrogram(CLU_rest1$call$t$tree, k=3)
+# Rectangular lines
+ddata <- dendro_data(dhc, type="rectangle")
+
+p <- ggdendrogram(ddata, rotate = TRUE,size=3, theme_dendro = FALSE, segments = F)+ xlab('Countries')+ ylab('Hierarchical Classification')
+p <- p +ggtitle("Hierarchical Clustering")+ theme(plot.title=element_text(size=15, face = 'bold'))
+p 
 
 
+# p <- ggplot(segment(ddata)) + 
+#   geom_segment(aes(x = x, y = y, xend = xend, yend = yend)) + 
+#   coord_flip() + xlab('Countries') + ylab('Distance')
+#   scale_y_reverse(expand = c(0.2, 0))
+# p
+# 
 
 
+###########################################################################################################
+#=============================================GRAPHS FOOD SECURITY========================================#
+# Procesamiento de datos --------------
+#using data1
+dataFS<- data1
+# 
+# mdwide<-dataFS %>%
+#   spread("year", "Val")
+# 
+# # calculo tasas de crecimiento  y  eliminacion de columnas innecesarias 2030 y 2050--------------
+# mdwide50<- data.frame(mdwide,"Cambio.Porcentual"=( (mdwide$`2050`-mdwide$`2030`)/mdwide$`2030`)*100)
+# mdwide30<- data.frame(mdwide,"Cambio.Porcentual"=( (mdwide$`2030`-mdwide$`2020`)/mdwide$`2020`)*100)
+# 
+# mdwide50<- data.frame(mdwide50[,1:7],"Cambio Porcentual"=mdwide50[,14]) 
+# mdwide30<- data.frame(mdwide30[,1:7],"Cambio Porcentual"=mdwide30[,14]) 
+# 
+# mdwide50<- mdwide50[,c("impactparameter", "scenario", "commodity", "region", "productiontype", "zona","categoria",              
+#                        "Cambio.Porcentual")]
+# mdwide30<- mdwide30[,c("impactparameter", "scenario", "commodity", "region", "productiontype", "zona","categoria",              
+#                        "Cambio.Porcentual")]
+# 
+# 
+# # reshape de las tasas de crecimiento 
+# mdwide_t50<-mdwide50 %>%
+#   spread("scenario","Cambio.Porcentual")
+# 
+# mdwide_t30<-mdwide30 %>%
+#   spread("scenario","Cambio.Porcentual")
+# 
+# testfoodAva50<- mdwide_t50
+# testfoodAva30<- mdwide_t30
+# 
+# 
+# 
+# # calculode la media 
+# testfoodAva50$CC_mean <- rowMeans(x=testfoodAva50[,7:ncol(testfoodAva50)], na.rm=TRUE)
+# testfoodAva30$CC_mean <- rowMeans(x=testfoodAva30[,7:ncol(testfoodAva30)], na.rm=TRUE)
+# 
+# # eliminamos no cambio climatico
+# testfoodAva50 <- testfoodAva50[-which(testfoodAva50$categoria=='NoCC_NoTec' |
+#                                         testfoodAva50$categoria=='NoCC_Tec'),] 
+# testfoodAva30 <- testfoodAva30[-which(testfoodAva30$categoria=='NoCC_NoTec' |
+#                                         testfoodAva30$categoria=='NoCC_Tec'),] 
+# 
+# # organizamos y eliminamos las columnas innncesarias
+# testfoodAva50 <- testfoodAva50[,c("impactparameter", "commodity", "region", "zona",  "categoria", "CC_mean")]
+# testfoodAva30 <- testfoodAva30[,c("impactparameter", "commodity", "region", "zona",  "categoria", "CC_mean")]
+# 
+# # reordenamos el orden de la numeracion
+# rownames(testfoodAva50) <- 1:nrow(testfoodAva50)
+# rownames(testfoodAva30) <- 1:nrow(testfoodAva30)
+# 
+# testfoodAva50$impactparameter<- as.character(testfoodAva50$impactparameter)
+# testfoodAva30$impactparameter<- as.character(testfoodAva30$impactparameter)
+# 
+# 
+# #reshape
+# testfoodAva50 <- testfoodAva50 %>% 
+#   spread(categoria, CC_mean)
+# 
+# testfoodAva30 <- testfoodAva30 %>% 
+#   spread(categoria, CC_mean)
+# 
+# 
+# # tipos de impactos
+# 
+# ## periodo 2050-------
+# nn <- which(testfoodAva50$CC_NoTec<0 & testfoodAva50$CC_Tec<0) 
+# pp <- which(testfoodAva50$CC_NoTec>0 & testfoodAva50$CC_Tec>0)
+# pn <- which(testfoodAva50$CC_NoTec>0 & testfoodAva50$CC_Tec<0)
+# np <- which(testfoodAva50$CC_NoTec<0 & testfoodAva50$CC_Tec>0)
+# 
+# #existencia de impactos
+# nn <- intersect(nn, which(testfoodAva50$CC_NoTec > testfoodAva50$CC_Tec)) # ambos negativos pero con tecnologia es menor
+# pp <- intersect(pp, which(testfoodAva50$CC_NoTec > testfoodAva50$CC_Tec))
+# np <- intersect(np, which(testfoodAva50$CC_NoTec > testfoodAva50$CC_Tec))
+# 
+# noimpact50 <- c(nn, pp, np)
+# 
+# testfoodAva50$impacto<-NA
+# 
+# #loops 
+# for(j in 1:nrow(testfoodAva50)){
+#   
+#   if(j %in% noimpact50){
+#     testfoodAva50$impacto[j] <- (testfoodAva50$CC_Tec[j] - testfoodAva50$CC_NoTec[j])/testfoodAva50$CC_NoTec[j]*100
+#   } else {
+#     testfoodAva50$impacto[j] <- abs(testfoodAva50$CC_Tec[j] - testfoodAva50$CC_NoTec[j])/unlist(lapply(1:nrow(testfoodAva50),
+#                                                                                                        function(i){z <- max(abs(testfoodAva50$CC_Tec[i]), abs(testfoodAva50$CC_NoTec[i]), na.rm=TRUE); return(z)})) * 100
+#     
+#   }
+#   
+# }
+# 
+# ## periodo 2030--------
+# nn <- which(testfoodAva30$CC_NoTec<0 & testfoodAva30$CC_Tec<0) 
+# pp <- which(testfoodAva30$CC_NoTec>0 & testfoodAva30$CC_Tec>0)
+# pn <- which(testfoodAva30$CC_NoTec>0 & testfoodAva30$CC_Tec<0)
+# np <- which(testfoodAva30$CC_NoTec<0 & testfoodAva30$CC_Tec>0)
+# 
+# 
+# nn <- intersect(nn, which(testfoodAva30$CC_NoTec > testfoodAva30$CC_Tec))
+# pp <- intersect(pp, which(testfoodAva30$CC_NoTec > testfoodAva30$CC_Tec))
+# np <- intersect(np, which(testfoodAva30$CC_NoTec > testfoodAva30$CC_Tec))
+# 
+# noimpact30 <- c(nn, pp, np)
+# 
+# testfoodAva30$impacto<-NA
+# 
+# #loops 
+# for(j in 1:nrow(testfoodAva30)){
+#   
+#   if(j %in% noimpact30){
+#     testfoodAva30$impacto[j] <- (testfoodAva30$CC_Tec[j] - testfoodAva30$CC_NoTec[j])/testfoodAva30$CC_NoTec[j]*100
+#   } else {
+#     testfoodAva30$impacto[j] <- abs(testfoodAva30$CC_Tec[j] - testfoodAva30$CC_NoTec[j])/unlist(lapply(1:nrow(testfoodAva30),
+#                                                                                                        function(i){z <- max(abs(testfoodAva30$CC_Tec[i]), abs(testfoodAva30$CC_NoTec[i]), na.rm=TRUE); return(z)})) * 100
+#     
+#   }
+#   
+# }
+# 
+# ##respaldo de los datos generados-----------
+# write.csv(testfoodAva50, paste(copy, "dataFoodAV50.csv", sep = ""), row.names=T)
+# write.csv(testfoodAva30, paste(copy, "dataFoodAV30.csv", sep = ""), row.names=T)
+# 
+# testfoodAva50<- read.csv(paste(copy, "dataFoodAV50.csv", sep = ""))
+# testfoodAva30<- read.csv(paste(copy, "dataFoodAV30.csv", sep = ""))
+# 
+# # Para futuros casos iniciar desde aquí
+# testfoodAva50$sce<-"2030-2050"
+# testfoodAva30$sce<-"2020-2030"
+# 
+# beansZonas <- rbind(testfoodAva50,testfoodAva30)
+# beansZonas <- beansZonas %>% gather( Intervencion, Value, CC_NoTec:impacto)
+# 
+# beansZonas$X<- NULL
+# rownames(beansZonas) <- 1:nrow(beansZonas)
+# 
+# # loops graficos--------------
+# ## Impacto total
+# py <- list()
+# 
+# for (i in 1:length(variables)) {
+#   
+#   #   tiff(filename=paste(grd,variables[i],"_analisys.tiff",sep=""), 
+#   #        width = 10, height = 7, units = 'in', res = 100)
+#   #   
+#   py[[i]]<- (ggplot(beansZonas[which(beansZonas$Intervencion=="impacto" 
+#                                      & beansZonas$impactparameter==variables[i]),], 
+#                     aes(x=Value, colour=zona))
+#              + geom_density(size = 0.3) + facet_grid(~sce) 
+#              + scale_colour_discrete(name="Regions\nPercent Change") 
+#              + theme(strip.text.x = element_text(size = 20, colour = "blue"))
+#              + xlab("% Change") + ggtitle(variables[i])
+#              + theme(plot.title=element_text(size=18, face = 'bold'))
+#              + theme(plot.title = element_text(lineheight=.8, face="bold", size=15)) 
+#              + theme(legend.title = element_text(size=14, face = 'bold'))
+#              + theme(axis.text.y=element_text(size=15))
+#              + theme(axis.text.x=element_text(size=15)) 
+#              + geom_vline(xintercept = 0, colour="darkblue", linetype = "longdash"))
+#   
+#   #   dev.off()
+#   #   print(i)
+# }
+# 
+# h<- arrangeGrob(py[[1]], py[[2]], py[[3]], nrow=4,top = textGrob("Impacts of technology\non food security",gp=gpar(fontsize=30,font=3)),
+#                 bottom = textGrob(" Bioeconomic modeling team",gp=gpar(fontsize=20,font=3)))
+# ggsave(file=paste(grd, "total.png", sep = ""), h,  width=12, height=15, units='in') 
+# 
+# #calculo del area bajo del curva.---------------------------------------
+# ##creando un subgrupo
+# xx<- beansZonas[which(beansZonas$Intervencion=="impacto" 
+#                       & beansZonas$impactparameter=="FoodAva"),]
+# yy<- beansZonas[which(beansZonas$Intervencion=="impacto" 
+#                       & beansZonas$impactparameter=="PerCapKCalCXAgg"),]
+# ##utilizando un paquete
+# library(sm)
+# attach(xy)
+# 
+# #adjust configura el smooth= suavizado  adjust=0.1 - 10
+# xx_foodava<- density(xx$Value, bw = "nrd", na.rm = TRUE)
+# plot(xx_foodava)
+# yy_perca<- density(yy$Value, bw = "nrd", na.rm = TRUE)
+# plot(yy_perca)
+# 
+# 
+# #integrate.xy(xy_foodava2$, xy_foodava2$y)
+# 
+# xy_foodavaAA<- sm.density.compare(xy$Value, zona, xlab="Impacts")
+# 
+# ##calcular las areas debajo de curvas
+# library(sfsmisc)
+# integrate.xy()
+# 
+# 
+# 
 
 
-
-
+####################################################################################################################

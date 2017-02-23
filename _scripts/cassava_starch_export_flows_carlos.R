@@ -16,7 +16,7 @@ suppressMessages(library(circlize))
 
 # Define directory and files to read
 setwd('C:/Users/CEGONZALEZ/Documents/cassava/copyData')
-db_dir <- './periods_median/' # Using median as summary measure
+db_dir <- './periods_medianStar/' # Using median as summary measure
 db_periods <- list.files(path = db_dir, pattern = '.csv$', full.names = T)
 periodList <- c('1986-1992', '1993-1999', '2000-2006', '2007-2013')
 
@@ -105,7 +105,7 @@ lapply(1:length(periodList), function(j){
   s <- sankeyNetwork(Links = sankeyList$links, Nodes = sankeyList$nodes, Source = "Reporter",
                      Target = "Partner", Value = "mean", NodeID = "name",
                      units = "Ton", LinkGroup = "gType", fontSize = 12, nodeWidth = 30)
-  saveNetwork(s, paste("C:/Users/CEGONZALEZ/Documents/cassava/copyData/sankey_", gsub(pattern = "-", replacement = "_", periodList[j]), ".html", sep = ""), selfcontained = T)
+  saveNetwork(s, paste("C:/Users/CEGONZALEZ/Documents/cassava/copyData/sankeyStarch_", gsub(pattern = "-", replacement = "_", periodList[j]), ".html", sep = ""), selfcontained = T)
   
 })
 
@@ -178,8 +178,8 @@ countryList <- sort(unique(c(as.character(real_exports$Reporter), as.character(r
 # Make a transformation over Median in order to show all posible links
 # y = ln(x + 10); to return to the original value make: exp(y) - 10
 #real_exports$mean <- log(real_exports$mean + 10, base=exp(1))
-saveRDS(object = real_exports, file = ('C:/Users/CEGONZALEZ/Documents/cassava/copyData/log_dried_cassava_exports.rds'))
-real_exports <- readRDS('C:/Users/CEGONZALEZ/Documents/cassava/copyData//log_dried_cassava_exports.rds')
+saveRDS(object = real_exports, file = ('C:/Users/CEGONZALEZ/Documents/cassava/copyData/Starch_log_Starch_cassava_exports.rds'))
+real_exports <- readRDS('C:/Users/CEGONZALEZ/Documents/cassava/copyData//Starch_log_Starch_cassava_exports.rds')
 
 # All posible flows
 flows2json <- lapply(1:length(periodList), function(i){
@@ -255,7 +255,7 @@ sink()
 # -------------------------------------------------------------------------- #
 # Load data
 #real_exports <- readRDS('./_data/_cassava_data/periods_median/log_dried_cassava_exports.rds')
-real_exports <- readRDS('C:/Users/CEGONZALEZ/Documents/cassava/copyData/log_dried_cassava_exports.rds')
+real_exports <- readRDS('C:/Users/CEGONZALEZ/Documents/cassava/copyData/Starch_log_Starch_cassava_exports.rds')
 
 # Making static plots
 lapply(1:length(periodList), function(i){
@@ -269,9 +269,9 @@ lapply(1:length(periodList), function(i){
   par(mar = rep(0, 4))
   
   # Save plot
-  png(paste('C:/Users/CEGONZALEZ/Documents/cassava/copyData/circos_', periodList[i],'.png', sep = ''), width = 10, height = 10, units = 'in', res = 300)
+  png(paste('C:/Users/CEGONZALEZ/Documents/cassava/copyData/Starchcircos_', periodList[i],'.png', sep = ''), width = 10, height = 10, units = 'in', res = 300)
   
-  chordDiagram(x = subReal[subReal$mean > 0.8, ], transparency = 0.25,
+  chordDiagram(x = subReal[subReal$mean > 0.7, ], transparency = 0.25,
                directional = 1,
                direction.type = c("arrows", "diffHeight"), diffHeight  = -0.04,
                annotationTrack = "grids",  preAllocateTracks = list(track.height = 0.1),
@@ -309,7 +309,7 @@ lapply(1:length(periodList), function(i){
   
   # Subseting by period and make a square matrix of flows
   subReal <- real_exports %>% dplyr::filter(Period == periodList[i]) %>% as.data.frame()
-  subReal <- subReal %>% tidyr::spread(Partner, mean)
+  subReal <- subReal %>% tidyr::spread(Partner, Median)
   subReal$Period <- NULL
   rownames(subReal) <- subReal$Reporter; subReal$Reporter <- NULL
   
