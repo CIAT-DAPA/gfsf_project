@@ -2,13 +2,13 @@
 # Carlos Eduardo Gonzalez III
 
 ##########################  Importa, filtra, organiza, agrega y calcula los rendimeintos ponderados.------------
-source("C:/Users/CEGONZALEZ/Documents/GitHub/gfsf_project/_scripts/EvaluaciónWheatBID.R")
+source("C:/Users/CEGONZALEZ/Documents/GitHub/gfsf_project/_scripts/EvaluaciónBeansBID.R")
 
 
 ########################## Procesamiento de datos trigo pasado y futuro IRRIGATED---------
 # file Future, load and processing -------------
 
-setwd("C:/Users/CEGONZALEZ/Documents/BIDCarlos/BIDsecundVersion/Wheat_IRR/Wheat_Future")
+setwd("C:/Users/CEGONZALEZ/Documents/BIDCarlos/BIDsecundVersion/Bean_IRR/Bean_Future")
 copy<- c("//dapadfs/workspace_cluster_6/Socioeconomia/GF_and_SF/BID_2/")
 
 wheat_files <- list.files()
@@ -48,19 +48,19 @@ g<-ggplot(data=data_all, aes(x=year,y=val))+
     theme(axis.text.x=element_text(size=7, angle=90))+
     guides(color=guide_legend("FPUs"))
 
-tiff(filename=paste(copy,"IRRI_WheatVarietiesGCMs.tiff",sep=""), 
+tiff(filename=paste(copy,"IRRI_Bean_VarietiesGCMs.tiff",sep=""), 
      width = 18, height = 12, units = 'in', res = 100)
 
 plot(g)
 
 dev.off()
-    
+
 
 # Using function
 by_fpu<- list()
 for(i in 1:length(fpu)){
-        by_fpu[[i]]<- data_all[which(data_all$FPU==fpu[[i]]),]
-    }
+    by_fpu[[i]]<- data_all[which(data_all$FPU==fpu[[i]]),]
+}
 
 pic<-list()
 grap<- function(x){
@@ -79,8 +79,9 @@ h<-do.call(grid.arrange,pic)
 
 
 g=gc; rm(list = ls())
+
 # file Historical, load and processing -------------
-setwd("C:/Users/CEGONZALEZ/Documents/BIDCarlos/BIDsecundVersion/Wheat_IRR/Wheat_Historical")
+setwd("C:/Users/CEGONZALEZ/Documents/BIDCarlos/BIDsecundVersion/Bean_IRR/Bean_Historical")
 copy<- c("//dapadfs/workspace_cluster_6/Socioeconomia/GF_and_SF/BID_2/")
 
 wheat_files <- list.files()
@@ -117,7 +118,7 @@ g1<-ggplot(data=data_all, aes(x=year,y=val))+
     theme(axis.text.x=element_text(size=7, angle=90))+
     guides(color=guide_legend("FPUs"))
 
-tiff(filename=paste(copy,"IRR_WheatVarietiesWFD.tiff",sep=""), 
+tiff(filename=paste(copy,"IRR_BeanVarietiesWFD.tiff",sep=""), 
      width = 18, height = 12, units = 'in', res = 100)
 
 plot(g1)
@@ -128,16 +129,12 @@ dev.off()
 g=gc; rm(list = ls())
 
 
-# wheat_files <- sapply(name_files, function(x){
-#   load(file =x,  )
-#   get(ls()[ls()!="wheat_files"])
-# })
 
 
 ########################## Procesamiento de datos trigo pasado y futuro RAINFED---------
 # file Future, load and processing -------------
 
-setwd("C:/Users/CEGONZALEZ/Documents/BIDCarlos/BIDsecundVersion/Wheat_RA/Wheat_Future")
+setwd("C:/Users/CEGONZALEZ/Documents/BIDCarlos/BIDsecundVersion/Bean_RA/Bean_Future")
 copy<- c("//dapadfs/workspace_cluster_6/Socioeconomia/GF_and_SF/BID_2/")
 
 wheat_files <- list.files()
@@ -177,7 +174,7 @@ g<-ggplot(data=data_all, aes(x=year,y=val))+
     theme(axis.text.x=element_text(size=7, angle=90))+
     guides(color=guide_legend("FPUs"))
 
-tiff(filename=paste(copy,"RA_WheatVarietiesGCMs.tiff",sep=""), 
+tiff(filename=paste(copy,"RA_BeanVarietiesGCMs.tiff",sep=""), 
      width = 18, height = 12, units = 'in', res = 100)
 
 plot(g)
@@ -210,7 +207,7 @@ h<-do.call(grid.arrange,pic)
 g=gc; rm(list = ls())
 # file Historical, load and processing -------------
 
-setwd("C:/Users/CEGONZALEZ/Documents/BIDCarlos/BIDsecundVersion/Wheat_RA/Wheat_Historical")
+setwd("C:/Users/CEGONZALEZ/Documents/BIDCarlos/BIDsecundVersion/Bean_RA/Bean_Historical")
 copy<- c("//dapadfs/workspace_cluster_6/Socioeconomia/GF_and_SF/BID_2/")
 
 wheat_files <- list.files()
@@ -247,7 +244,7 @@ g1<-ggplot(data=data_all, aes(x=year,y=val))+
     theme(axis.text.x=element_text(size=7, angle=90))+
     guides(color=guide_legend("FPUs"))
 
-tiff(filename=paste(copy,"RA_WheatVarietiesWFD.tiff",sep=""), 
+tiff(filename=paste(copy,"RA_BeanVarietiesWFD.tiff",sep=""), 
      width = 18, height = 12, units = 'in', res = 100)
 
 plot(g1)
