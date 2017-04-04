@@ -1,15 +1,12 @@
 # Exploracion de los resultados de BID  por variedades modeladas
 # Carlos Eduardo Gonzalez III
 
-##########################  Importa, filtra, organiza, agrega y calcula los rendimeintos ponderados.------------
-source("C:/Users/CEGONZALEZ/Documents/GitHub/gfsf_project/_scripts/EvaluaciónRiceBID.R")
-
 
 ########################## Procesamiento de datos trigo pasado y futuro IRRIGATED---------
 # file Future, load and processing -------------
 
-setwd("C:/Users/CEGONZALEZ/Documents/BIDCarlos/BIDsecundVersion/Rice_IRR/Rice_Future")
-copy<- c("//dapadfs/workspace_cluster_6/Socioeconomia/GF_and_SF/BID_2/")
+setwd("//dapadfs/workspace_cluster_6/Socioeconomia/GF_and_SF/BID_2/Rice_IRR/Rice_Future")
+copy<- c("//dapadfs/workspace_cluster_6/Socioeconomia/GF_and_SF/BID_2/graphs/")
 
 wheat_files <- list.files()
 wheat_files <- lapply(wheat_files, read.csv)
@@ -48,7 +45,7 @@ g<-ggplot(data=data_all, aes(x=year,y=val))+
     theme(axis.text.x=element_text(size=7, angle=90))+
     guides(color=guide_legend("FPUs"))
 
-tiff(filename=paste(copy,"IRRI_Rice_VarietiesGCMs.tiff",sep=""), 
+png(filename=paste(copy,"IRRI_Rice_VarietiesGCMs.png",sep=""), 
      width = 18, height = 12, units = 'in', res = 100)
 
 plot(g)

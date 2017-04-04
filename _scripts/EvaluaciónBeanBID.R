@@ -7,8 +7,8 @@ setwd("//dapadfs/workspace_cluster_3/bid-cc-agricultural-sector/19-BID-reanalysi
 gdr1<- c("//dapadfs/workspace_cluster_3/bid-cc-agricultural-sector/19-BID-reanalysis/Bean/future/final/BEAN_irrigation_")
 gdr2<- c("//dapadfs/workspace_cluster_3/bid-cc-agricultural-sector/19-BID-reanalysis/Bean/future/final/BEAN_rainfed_")
 grd3<- c("//dapadfs/workspace_cluster_3/bid-cc-agricultural-sector/08-Cells_toRun/matrices_cultivo/version2017/")
-copyfuture<- c("C:/Users/CEGONZALEZ/Documents/BIDCarlos/BIDsecundVersion/Bean_IRR/Bean_Future/")
-copyhistorical<- c("C:/Users/CEGONZALEZ/Documents/BIDCarlos/BIDsecundVersion/Bean_IRR/Bean_Historical/")
+copyfuture<- c("//dapadfs/workspace_cluster_6/Socioeconomia/GF_and_SF/BID_2/Bean_IRR/Bean_Future/")
+copyhistorical<- c("//dapadfs/workspace_cluster_6/Socioeconomia/GF_and_SF/BID_2/Bean_IRR/Bean_Historical/")
 
 
 ##Cargar información de latitud, longitud, area de spam, fpu, etc.-------------------
@@ -40,9 +40,9 @@ for (v in 1:length(variedades)){
         #descartar pixeles con demasiadas fallas
         rend[rend==-99] = 0  #convertir -99 a 0
         
-        #find areas where consistently failing and discard these from aggregation
-        zeros.wfd.r = apply(rend,1,function(x) sum(x==0,na.rm=T))
-        ind.falla = which(zeros.wfd.r>=14)
+#         #find areas where consistently failing and discard these from aggregation
+#         zeros.wfd.r = apply(rend,1,function(x) sum(x==0,na.rm=T))
+#         ind.falla = which(zeros.wfd.r>=14)
         
         #Convertir rend en un data.frame
         rend<-data.frame(rend)
@@ -61,14 +61,14 @@ for (v in 1:length(variedades)){
         #Eliminar las columnas de los rendimientos
         md<-md[,!names(md) %in% (paste0("Rend_20",22:49))]
         
-        # Descartar pixeles con más de 13 años con fallas en la linea base
-        if(sum(ind.falla) == 0)
-        {
-            md<-md
-        } else {
-            md<-md[-ind.falla,]
-        }
-        
+#         # Descartar pixeles con más de 13 años con fallas en la linea base
+#         if(sum(ind.falla) == 0)
+#         {
+#             md<-md
+#         } else {
+#             md<-md[-ind.falla,]
+#         }
+#         
         #Agregar producción y area a nivel de fpu
         md_fpu<-aggregate(md[,c("ones","Area", paste0("Prod_20",22:49))],by=list(md[,"FPU"]),
                           FUN= function(x) {sum(x, na.rm=TRUE)} )
@@ -105,7 +105,7 @@ for (v in 1:length(variedades)){
         
         #Computador personal
         write.csv(rend_fpu3,paste(copyfuture,"IRRI",'_',variedades[v],'_',gcm[g],'_FPU.csv',sep=''),row.names=T)
-    print(g)
+        cat(paste("Running BEAN", variedades[v], " of gcm ",gcm[g],"Done!!\n" ,sep = "" ))
         } 
 }  
 
@@ -122,7 +122,7 @@ variedades<- c("A193", "BAT881","BRSRadiante","Carioca", "ICTAOstua", "Manitou",
 #loop para cargar datos 
 for (v in 1:length(variedades)){
     
-    load(paste(gdr1,variedades[v],"_","WFD",".RDat",sep = ""))
+      try(load(paste(gdr1,variedades[v],"_","WFD",".RDat",sep = "")))
     
     #Crear matriz que contenga en sus filas los rendimientos de cada lugar (pixel) en cada año (columnas)
     rend<-matrix(nrow=length(Run), ncol=28)
@@ -132,10 +132,10 @@ for (v in 1:length(variedades)){
     #descartar pixeles con demasiadas fallas
     rend[rend==-99] = 0  #convertir -99 a 0
     
-    #find areas where consistently failing and discard these from aggregation
-    zeros.wfd.r = apply(rend,1,function(x) sum(x==0,na.rm=T))
-    ind.falla = which(zeros.wfd.r>=14)
-    
+#     #find areas where consistently failing and discard these from aggregation
+#     zeros.wfd.r = apply(rend,1,function(x) sum(x==0,na.rm=T))
+#     ind.falla = which(zeros.wfd.r>=14)
+#     
     #Convertir rend en un data.frame
     rend<-data.frame(rend)
     
@@ -152,13 +152,13 @@ for (v in 1:length(variedades)){
     #Eliminar las columnas de los rendimientos
     md<-md[,!names(md) %in% (paste0("Rend_20",22:49))]
     
-    # Descartar pixeles con más de 13 años con fallas en la linea base
-    if(sum(ind.falla) == 0)
-    {
-        md<-md
-    } else {
-        md<-md[-ind.falla,]
-    }
+#     # Descartar pixeles con más de 13 años con fallas en la linea base
+#     if(sum(ind.falla) == 0)
+#     {
+#         md<-md
+#     } else {
+#         md<-md[-ind.falla,]
+#     }
     
     #Agregar producción y area a nivel de fpu
     md_fpu<-aggregate(md[,c("ones","Area",paste0("Prod_20",22:49))],by=list(md[,"FPU"]),
@@ -196,6 +196,7 @@ for (v in 1:length(variedades)){
     
     #Computador personal
     write.csv(rend_fpu3,paste(copyhistorical,"IRRI",'_',variedades[v],'_',"WFD",'_FPU.csv',sep=''),row.names=T)
+    cat(paste("Running BEAN", variedades[v], " of gcm WFD","Done!!\n",sep = "" ))
     
 }  
 
@@ -211,8 +212,8 @@ g=gc;rm(list = ls())
 setwd("//dapadfs/workspace_cluster_3/bid-cc-agricultural-sector/19-BID-reanalysis/Bean/future/final/")
 gdr1<- c("//dapadfs/workspace_cluster_3/bid-cc-agricultural-sector/19-BID-reanalysis/Bean/future/final/BEAN_rainfed_")
 grd3<- c("//dapadfs/workspace_cluster_3/bid-cc-agricultural-sector/08-Cells_toRun/matrices_cultivo/version2017/")
-copyfuture<- c("C:/Users/CEGONZALEZ/Documents/BIDCarlos/BIDsecundVersion/Bean_RA/Bean_Future/")
-copyhistorical<- c("C:/Users/CEGONZALEZ/Documents/BIDCarlos/BIDsecundVersion/Bean_RA/Bean_Historical/")
+copyfuture<- c("//dapadfs/workspace_cluster_6/Socioeconomia/GF_and_SF/BID_2/Bean_RA/Bean_Future/")
+copyhistorical<- c("//dapadfs/workspace_cluster_6/Socioeconomia/GF_and_SF/BID_2/Bean_RA/Bean_Historical/")
 
 
 ###Future--------------------------------------------
@@ -241,10 +242,10 @@ for (v in 1:length(variedades)){
         #descartar pixeles con demasiadas fallas
         rend[rend==-99] = 0  #convertir -99 a 0
         
-        #find areas where consistently failing and discard these from aggregation
-        zeros.wfd.r = apply(rend,1,function(x) sum(x==0,na.rm=T))
-        ind.falla = which(zeros.wfd.r>=14)
-        
+#         #find areas where consistently failing and discard these from aggregation
+#         zeros.wfd.r = apply(rend,1,function(x) sum(x==0,na.rm=T))
+#         ind.falla = which(zeros.wfd.r>=14)
+#         
         #Convertir rend en un data.frame
         rend<-data.frame(rend)
         
@@ -262,13 +263,13 @@ for (v in 1:length(variedades)){
         #Eliminar las columnas de los rendimientos
         md<-md[,!names(md) %in% (paste0("Rend_20",22:49))]
         
-        # Descartar pixeles con más de 13 años con fallas en la linea base
-        if(sum(ind.falla) == 0)
-        {
-            md<-md
-        } else {
-            md<-md[-ind.falla,]
-        }
+#         # Descartar pixeles con más de 13 años con fallas en la linea base
+#         if(sum(ind.falla) == 0)
+#         {
+#             md<-md
+#         } else {
+#             md<-md[-ind.falla,]
+#         }
         
         #Agregar producción y area a nivel de fpu
         md_fpu<-aggregate(md[,c("ones","Area", paste0("Prod_20",22:49))],by=list(md[,"FPU"]),
@@ -306,8 +307,8 @@ for (v in 1:length(variedades)){
         
         #Computador personal
         write.csv(rend_fpu3,paste(copyfuture,"RA",'_',variedades[v],'_',gcm[g],'_FPU.csv',sep=''),row.names=T)
-    print(g)
-        } 
+        cat(paste("Running BEAN", variedades[v], " of gcm ",gcm[g],"Done!!\n", sep = "" ))
+    } 
 }  
 
 
@@ -324,7 +325,7 @@ variedades<- c("A193", "BAT881","BRSRadiante","Carioca", "ICTAOstua", "Manitou",
 #loop para cargar datos -------------
 for (v in 1:length(variedades)){
     
-    load(paste(gdr1,variedades[v],"_","WFD",".RDat",sep = ""))
+    try(load(paste(gdr1,variedades[v],"_","WFD",".RDat",sep = "")))
     
     #Crear matriz que contenga en sus filas los rendimientos de cada lugar (pixel) en cada año (columnas)
     rend<-matrix(nrow=length(Run), ncol=28)
@@ -334,10 +335,10 @@ for (v in 1:length(variedades)){
     #descartar pixeles con demasiadas fallas
     rend[rend==-99] = 0  #convertir -99 a 0
     
-    #find areas where consistently failing and discard these from aggregation
-    zeros.wfd.r = apply(rend,1,function(x) sum(x==0,na.rm=T))
-    ind.falla = which(zeros.wfd.r>=14)
-    
+#     #find areas where consistently failing and discard these from aggregation
+#     zeros.wfd.r = apply(rend,1,function(x) sum(x==0,na.rm=T))
+#     ind.falla = which(zeros.wfd.r>=14)
+#     
     #Convertir rend en un data.frame
     rend<-data.frame(rend)
     
@@ -354,13 +355,13 @@ for (v in 1:length(variedades)){
     #Eliminar las columnas de los rendimientos
     md<-md[,!names(md) %in% (paste0("Rend_20",22:49))]
     
-    # Descartar pixeles con más de 13 años con fallas en la linea base
-    if(sum(ind.falla) == 0)
-    {
-        md<-md
-    } else {
-        md<-md[-ind.falla,]
-    }
+#     # Descartar pixeles con más de 13 años con fallas en la linea base
+#     if(sum(ind.falla) == 0)
+#     {
+#         md<-md
+#     } else {
+#         md<-md[-ind.falla,]
+#     }
     
     #Agregar producción y area a nivel de fpu
     md_fpu<-aggregate(md[,c("ones","Area",paste0("Prod_20",22:49))],by=list(md[,"FPU"]),
@@ -398,10 +399,8 @@ for (v in 1:length(variedades)){
     
     #Computador personal
     write.csv(rend_fpu3,paste(copyhistorical,"RA",'_',variedades[v],'_',"WFD",'_FPU.csv',sep=''),row.names=T)
-    
+    cat(paste("Running BEAN", variedades[v], " of gcm WFD","Done!!\n", sep = "" ))
 }  
 
 
-#g=gc;rm(list = ls())
-# rm(crop_secano,md,md_fpu,rend,rend_fpu2,rend_fpu3, copyfuture,
-#    copyhistorical,Run,g,gdr1,ind.falla,rend_fpu,v,pixel.FPU,variedades,zeros.wfd.r,gcm,grd3,i,ind.fpu)
+g=gc;rm(list = ls())

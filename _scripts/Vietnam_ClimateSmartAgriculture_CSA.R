@@ -28,7 +28,7 @@ options(digits=3)
 options(scipen = 999)
 
 #Cargar marco de datos principal-------------
-md<-read.csv("CSA_VIET.csv",header=T)
+md<-read.csv("CSA_VIET2.csv",header=T)
 phi<- md
 
 
@@ -45,6 +45,7 @@ mdsub_phi$impactparameter<-revalue(mdsub_phi$impactparameter, c("QNXAgg -- Net T
                                                                     "AnmlNumXAgg -- Animal Numbers"="Animal Numbers",
                                                                     "AnmlYldXAgg -- Animal Yield"="Animal Yield"))
 
+sp<- unique(mdsub_phi$commodity)
 # convertir  a variable caracter
 mdsub_phi$impactparameter <- as.character(mdsub_phi$impactparameter)
 mdsub_phi$scenario <- as.character(mdsub_phi$scenario)
@@ -61,11 +62,11 @@ mdsub_phi<-subset(mdsub_phi,mdsub_phi$commodity=="ccafe"| mdsub_phi$commodity=="
                       mdsub_phi$commodity=="cpork" | mdsub_phi$commodity=="jpork" |
                       mdsub_phi$commodity=="crice" | mdsub_phi$commodity=="jrice" |
                       mdsub_phi$commodity=="csubf" | mdsub_phi$commodity=="jsubf" |
-                      mdsub_phi$commodity=="ccas" |  mdsub_phi$commodity=="jcas" |
-                      mdsub_phi$commodity=="cvege" | mdsub_phi$commodity=="jvege" |
+                      mdsub_phi$commodity=="ccass" |  mdsub_phi$commodity=="jcass" |
                       mdsub_phi$commodity=="cothr" | mdsub_phi$commodity=="jothr" |
                       mdsub_phi$commodity=="crt" | mdsub_phi$commodity=="jrt" |
-                      mdsub_phi$commodity=="jteas" | mdsub_phi$commodity=="cteas")
+                      mdsub_phi$commodity=="jteas" | mdsub_phi$commodity=="cteas"|
+                      mdsub_phi$commodity=="jsugc" | mdsub_phi$commodity=="csugc")
 
 
   
@@ -76,8 +77,6 @@ row.names(mdsub_phi)<- 1: nrow(mdsub_phi)
 # cambio de nombre de los cultivos 
 mdsub_phi$commodity<-revalue(mdsub_phi$commodity, c( "ccafe"="Coffe",
                                                      "jcafe"="Coffe",
-                                                     "cfv"="Fruits and Vegetables",
-                                                     "jfv"="Fruits and Vegetables",
                                                      "cmaiz"="Maize",
                                                      "jmaiz"="Maize",
                                                      "cmeat"="Meat",
@@ -93,7 +92,11 @@ mdsub_phi$commodity<-revalue(mdsub_phi$commodity, c( "ccafe"="Coffe",
                                                      "cothr"="Other Crops",
                                                      "jothr"="Other Crops",
                                                      "crt"= "Root and Tubers",
-                                                     "jrt"= "Root and Tubers"))
+                                                     "jrt"= "Root and Tubers",
+                                                     "jsugc"= "Sugarcane",
+                                                     "csugc"= "Sugarcane",
+                                                     "ccass"= "Cassava",
+                                                     "jcass"= "Cassava"))
 
 mdwide_phi<- mdsub_phi %>%
   spread ("year", "Val")
@@ -105,7 +108,7 @@ mdwide_phi<-mdwide_phi[,-c(5:19)]
 rownames(mdwide_phi)<- 1: nrow(mdwide_phi)
 
 #Copia de seguridad pais filtrado------
-write.csv(mdwide_phi,paste(copy, country,"Total.csv", sep = ""), row.names = FALSE)
+write.csv(mdwide_phi,paste(copy, country,"Vietnam2Total.csv", sep = ""), row.names = FALSE)
 
 #Net Trade y  filtros logicos-----------------
 Phinet<- mdwide_phi[which(mdwide_phi$impactparameter=="Net Trade"),]
@@ -123,7 +126,7 @@ pp<-  which(Phinet$X2050>0 & Phinet$X2020>0) # net trade positivo  exportador ne
 export<-   c(pp)
 import <-  c(nn)
 tran_XtoM<- c(np) # inicia exportador termina importador
-#tran_MtoX<- c(pn) # inicia importador termina exportador
+tran_MtoX<- c(pn) # inicia importador termina exportador
 
 hard<- c(nn,pp,np)
 
@@ -139,7 +142,7 @@ for(j in 1:nrow(Phinet)){
 }
 
 ##Copia de seguridad cambios relativos y vectores de desempeño
-write.csv(Phinet,paste(copy, country, "RelativosTOTAL.csv", sep = ""), row.names = FALSE)
+write.csv(Phinet,paste(copy, country, "Vietnam2RelativosTOTAL.csv", sep = ""), row.names = FALSE)
 
 # # copia ojo con el orden
 phill<- Phinet
@@ -151,9 +154,9 @@ phill$trend[tran_XtoM]<- "Transition X to M"
 phill$trend[import] <- "Negative"
 
 #list por crops
-# crops<- list( "Coconut", "Cocoa", "Coffe",  "Fruits and Vegetables",
-#               "Maize", "Meat", "Pork", "Rice", "sub-Tropical fruit", 
-#               "Temperate fruit", "Vegetables" ) 
+crops<- unique(phill$commodity)
+crops<- list( "Cassava","Coffe", "Maize", "Meat", "Other Crops","Pork",              
+    "Rice","Root and Tubers", "sub-Tropical fruit", "Tea" ) 
 
 crops<- unique(phill$commodity)
 cxx <- list()
@@ -183,7 +186,7 @@ cxx <- do.call(rbind, cxx)
 cxx$CC_mean <- rowMeans(x=cxx[,5:8], na.rm=TRUE)
 cxx$NoCC_mean <- cxx[,9]
 cxx<- cxx[,c("impactparameter","commodity","region","trend","CC_mean","NoCC_mean")]
-write.csv(cxx, paste(copy, country, "NettradeTOTAL.csv", sep = ""),row.names = FALSE)
+write.csv(cxx, paste(copy, country, "Vietnam2NettradeTOTAL.csv", sep = ""),row.names = FALSE)
 
 
 
@@ -209,7 +212,7 @@ Phill2_t <- Phill2_t[,c("impactparameter", "commodity", "region", "Cat", "mean",
 Phill2_t$NoCC<- NULL
 #Reshape
 Phill2_t <- Phill2_t %>% spread(Cat, mean)
-write.csv(Phill2_t, paste(copy,country,"TableSumm.csv", sep=""), row.names = FALSE)
+write.csv(Phill2_t, paste(copy,country,"Vietnam2TableSumm.csv", sep=""), row.names = FALSE)
 
 #Solicitud datos CSA-------------
 mdwide_PhilCSA<- mdwide_phi
@@ -236,21 +239,21 @@ csa <- csa %>% spread(Cat, Value)
 csa$Year <- as.numeric(gsub(pattern = "X", replacement = "", x = csa$Year))
 csa$percentual_change <- (csa$CC-csa$NoCC)/csa$NoCC * 100
 
-write.csv(csa, paste(copy, country, "CSAAreaYield.csv", sep = ""), row.names = FALSE)
+write.csv(csa, paste(copy, country, "Vietnam2CSAAreaYield.csv", sep = ""), row.names = FALSE)
 
 
 
 library(ggplot2)
 
 #grafico Area Cultivos
-tiff(filename=paste(grd, country, "AreaCommodities.tiff", sep=""), width = 10, height = 10, units = 'in', res =800)
+tiff(filename=paste(grd, country, "Vietnam2AreaCommodities.tiff", sep=""), width = 10, height = 10, units = 'in', res =800)
 
 n<- ggplot(csa[which(csa$impactparameter=="Total Area"),], aes(x=Year, y=percentual_change ))
 n<- n + geom_line(aes(colour = commodity),  size = 0.5) + facet_wrap( ~ commodity,ncol=2)
 n<- n + geom_area(position = "stack", alpha = 0.4)
 n<- n + ggtitle("Area ") + theme_bw() + theme(plot.title=element_text(size=15, face = 'bold'))
 n<- n + xlab('Years') + ylab('Percentual change') + coord_equal() + theme(legend.position="none")
-n<- n + coord_cartesian(ylim = c(-15, 2)) +  scale_y_continuous( breaks=seq(-15, 2,0.5 ))
+n<- n + coord_cartesian(ylim = c(-15, 2)) #+  scale_y_continuous( breaks=seq(-15, 2,0.5 ))
 n<- n + coord_cartesian(xlim = c(2020, 2050)) +   scale_x_continuous( breaks=seq(2020,2050,5))
 
 n
@@ -258,8 +261,16 @@ dev.off()
 
 
 library(ggplot2)
-#grafico numero de Aminales 
-tiff(filename=paste(grd, country, "Numer Animales.tiff", sep=""), width = 10, height = 10, units = 'in', res =800)
-ÿ
-dev.off()
+#grafico numero de Animales 
+tiff(filename=paste(grd,"Numer Animales Vietnam2.tiff", sep=""), width = 10, height = 10, units = 'in', res =800)
 
+n1<- ggplot(csa[which(csa$impactparameter=="Animal Numbers"),], aes(x=Year, y=percentual_change ))
+n1<- n1 + geom_line(aes(colour = commodity),  size = 0.5) + facet_wrap( ~ commodity,ncol=2)
+n1<- n1 + geom_area(position = "stack", alpha = 0.4)
+n1<- n1 + ggtitle("Animal Numbers") + theme_bw() + theme(plot.title=element_text(size=15, face = 'bold'))
+n1<- n1 + xlab('Years') + ylab('Percentual change') + coord_equal() + theme(legend.position="none")
+n1<- n1 + coord_cartesian(ylim = c(-0.5, 0.5)) #+ scale_y_continuous( breaks=seq(-0.5,0.5,0.2))
+n1<- n1 + coord_cartesian(xlim = c(2020, 2050)) #+   scale_x_continuous( breaks=seq(2020,2050,5))
+
+n1
+dev.off()
