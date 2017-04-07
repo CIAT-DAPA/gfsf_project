@@ -28,28 +28,28 @@ github<- "C:/Users/CEGONZALEZ/Documents/GitHub/gfsf_project/_scripts/"
 
 #Parte A. Revision a nivel de FPU---------------------------------------------------------------
 #Este codigo permite hacer agregaciones por Variedades/gcm a nivel de FPU para evualar desemeño
-github<- "C:/Users/CEGONZALEZ/Documents/GitHub/gfsf_project/_scripts/"
-files <- list.files(github,full.names=TRUE,pattern="Evaluación")
-sapply(files, source)
+# github<- "C:/Users/CEGONZALEZ/Documents/GitHub/gfsf_project/_scripts/"
+# files <- list.files(github,full.names=TRUE,pattern="Evaluación")
+# sapply(files, source)
 
-#### Source for each crop, treating individual 
-source("C:/Users/CEGONZALEZ/Documents/GitHub/gfsf_project/_scripts/EvaluaciónRiceBID.R")
-source("C:/Users/CEGONZALEZ/Documents/GitHub/gfsf_project/_scripts/EvaluaciónWheatBID.R")
-source("C:/Users/CEGONZALEZ/Documents/GitHub/gfsf_project/_scripts/EvaluaciónBeanBID.R")
-source("C:/Users/CEGONZALEZ/Documents/GitHub/gfsf_project/_scripts/EvaluaciónMaizeBID.R")
-#source("C:/Users/CEGONZALEZ/Documents/GitHub/gfsf_project/_scripts/EvaluaciónSoybeanBID.R")
+# #### Source for each crop, treating individual 
+# source("C:/Users/CEGONZALEZ/Documents/GitHub/gfsf_project/_scripts/EvaluaciónRiceBID.R")
+# source("C:/Users/CEGONZALEZ/Documents/GitHub/gfsf_project/_scripts/EvaluaciónWheatBID.R")
+# source("C:/Users/CEGONZALEZ/Documents/GitHub/gfsf_project/_scripts/EvaluaciónBeanBID.R")
+# source("C:/Users/CEGONZALEZ/Documents/GitHub/gfsf_project/_scripts/EvaluaciónMaizeBID.R")
+# #source("C:/Users/CEGONZALEZ/Documents/GitHub/gfsf_project/_scripts/EvaluaciónSoybeanBID.R")
 
 #Parte B Analisis  y procesamiento de datos a nivel de PIXEL:---------------------------------- 
 #Este codigo tiene el proposito de realizar analisis sobre el comportamiento de los rendimientos a nivel de pixel por FPU
 #usando variedades,gcms,etc. El resultado final son files tipo .csv 
 ### "Codigo para crear files por pixeles que corresponden a los FPU y visualizar su comportamiento"
-github<- "C:/Users/CEGONZALEZ/Documents/GitHub/gfsf_project/_scripts/"
-files <- list.files(github,full.names=TRUE,pattern="Proof")
-sapply(files, source)
+# github<- "C:/Users/CEGONZALEZ/Documents/GitHub/gfsf_project/_scripts/"
+# files <- list.files(github,full.names=TRUE,pattern="Proof")
+# sapply(files, source)
+# 
 
 
-
-#### Source for each crop, treating individual 
+#### Source for each crop, treating individual
 source("C:/Users/CEGONZALEZ/Documents/GitHub/gfsf_project/_scripts/ProofByPixelBean.R")
 source("C:/Users/CEGONZALEZ/Documents/GitHub/gfsf_project/_scripts/ProofByPixelWheat.R")
 source("C:/Users/CEGONZALEZ/Documents/GitHub/gfsf_project/_scripts/ProofByPixelRice.R")

@@ -468,7 +468,6 @@ bean_rainfed<- grid.arrange(w[[1]],w[[2]],w[[3]],w[[4]],w[[5]],w[[6]],w[[7]],w[[
 plot(bean_rainfed)
 dev.off()
 
-
 #trigo---------
 t1<- lapply(irrigado,wheat)
 t2<- lapply(secano,wheat)
@@ -583,3 +582,4 @@ dev.off()
 
 g=gc;rm(list=ls())
 
+g=gc;rm(list = ls())

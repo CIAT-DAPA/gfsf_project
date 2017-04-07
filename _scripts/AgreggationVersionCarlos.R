@@ -5,6 +5,8 @@
 #directorios
 grd1<-("//dapadfs/workspace_cluster_6/Socioeconomia/GF_and_SF/BID_2/Pixels/VariesSelect/")
 copy<- ("//dapadfs/workspace_cluster_6/Socioeconomia/GF_and_SF/BID_2/YieldsWeight/")
+gcm <- c("bcc_csm1_1", "bnu_esm","cccma_canesm2", "gfld_esm2g", "inm_cm4", "ipsl_cm5a_lr",
+         "miroc_miroc5", "mpi_esm_mr", "ncc_noresm1_m")
 
 
 #objetos
