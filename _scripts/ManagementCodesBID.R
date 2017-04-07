@@ -72,9 +72,12 @@ source("C:/Users/CEGONZALEZ/Documents/GitHub/gfsf_project/_scripts/AgreggationVe
 ### "Presentacion del formato adecuado para ser leido por IMPACT"
 source("C:/Users/CEGONZALEZ/Documents/GitHub/gfsf_project/_scripts/CalculoTasasCrecimientoAnualizadas.R")
 
-#Presentacion del file en el formato requerido por CCProcssing.gms
+#Presentacion del file en el formato requerido por CCProcessing.gms
 source("C:/Users/CEGONZALEZ/Documents/GitHub/gfsf_project/_scripts/FormatoLongAppropiateIMPACT.R")
 
+#Parte D.---------------------------------------------------------------------------------------
+#Procesamiento de los resultados de IMPACT para presentar reportes y graficos.
+source("C:/Users/CEGONZALEZ/Documents/GitHub/gfsf_project/_scripts/ProcesamientoResultadosIMMPACTBIDVersionCarlos.R")
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  END     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
