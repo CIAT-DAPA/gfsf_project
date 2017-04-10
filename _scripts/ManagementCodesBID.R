@@ -78,7 +78,7 @@ source("C:/Users/CEGONZALEZ/Documents/GitHub/gfsf_project/_scripts/FormatoLongAp
 #Parte D.---------------------------------------------------------------------------------------
 #Procesamiento de los resultados de IMPACT para presentar reportes y graficos.
 source("C:/Users/CEGONZALEZ/Documents/GitHub/gfsf_project/_scripts/ProcesamientoResultadosIMMPACTBIDVersionCarlos.R")
-#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  END     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% END %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 
