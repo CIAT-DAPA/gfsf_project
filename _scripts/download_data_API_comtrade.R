@@ -1,6 +1,6 @@
-# Using the UN Comtrade data API with R
+# Using the UN Comtrade data API with R for CASSAVA
 # Source: https://comtrade.un.org/data/Doc/api/ex/r
-# Implemented by: H. Achicanoy, 2016
+# Implemented by: H. Achicanoy & C. Gonzalez, 2017
 
 # R options
 options(warn = -1)
