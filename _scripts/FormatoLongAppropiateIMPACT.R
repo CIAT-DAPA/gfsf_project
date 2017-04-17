@@ -188,33 +188,17 @@ for(i in 1:length(a1)){
       
 }
 
-#Hacer una leyenda unica
 library(gtable)
 legend <- gtable_filter(ggplot_gtable(ggplot_build(w[[1]] + theme(legend.position="bottom"))), "guide-box")
-lheight <- sum(legend$height)
+
 
 png(filename = paste(pic,"RiceIrrigatedComparasions&R2.png"), 
     width = 20, height = 20, units = 'in', res = 150)
-rice_irrigated<- grid.arrange(w[[1]],w[[2]],w[[3]],w[[4]],w[[5]],w[[6]],w[[7]],w[[8]], w[[9]], ncol=3, nrow =3,
-                              top=textGrob("Rice Irrigated by GCMs\n growth rate Initial Vs updated", 
-                                           gp=gpar(fontsize=20,font=8)), 
-                              legend)
-plot(rice_irrigated)
-dev.off()
-
-
-## prubea
-
-png(filename = paste(pic,"###RiceIrrigatedComparasions&R2.png"), 
-    width = 20, height = 20, units = 'in', res = 150)
-rice_irrigated<- arrangeGrob(w[[1]],w[[2]],w[[3]],w[[4]],w[[5]],w[[6]],w[[7]],w[[8]], w[[9]],
+rice_irrigated<- arrangeGrob(w[[1]],w[[2]],w[[3]],w[[4]],w[[5]],w[[6]],w[[7]],w[[8]], w[[9]],ncol=4, nrow =3,
                              top= textGrob("Rice Irrigated by GCMs\n growth rate Initial Vs updated", 
                                       gp=gpar(fontsize=20,font=8)), legend)
 plot(rice_irrigated)
 dev.off()
-
-
-
 
 #secano
 
@@ -258,12 +242,15 @@ for(i in 1:length(a2)){
       
 }
 
+legend <- gtable_filter(ggplot_gtable(ggplot_build(w[[1]] + theme(legend.position="bottom"))), "guide-box")
 png(filename = paste(pic,"RiceRainfedComparasions&R2.png"), 
     width = 20, height = 20, units = 'in', res = 150)
-rice_rainfed<- grid.arrange(w[[1]],w[[2]],w[[3]],w[[4]],w[[5]],w[[6]],w[[7]],w[[8]], w[[9]], ncol=3, nrow =3,
-                            top=textGrob("Rice Rainfed by GCMs\n growth rate Initial Vs updated", gp=gpar(fontsize=20,font=8)))
+rice_rainfed<- arrangeGrob(w[[1]],w[[2]],w[[3]],w[[4]],w[[5]],w[[6]],w[[7]],w[[8]], w[[9]],ncol=4, nrow =3,
+                             top= textGrob("Rice Rainfed by GCMs\n growth rate Initial Vs updated", 
+                                           gp=gpar(fontsize=20,font=8)), legend)
 plot(rice_rainfed)
 dev.off()
+
 
 #Maize----------
 m1<- lapply(irrigado,maize)
@@ -317,13 +304,15 @@ for(i in 1:length(m1)){
       
 }
 
+
+legend <- gtable_filter(ggplot_gtable(ggplot_build(w[[1]] + theme(legend.position="bottom"))), "guide-box")
 png(filename = paste(pic,"MaizeIrrigatedComparasions&R2.png"), 
     width = 20, height = 20, units = 'in', res = 150)
-maize_irrigated<- grid.arrange(w[[1]],w[[2]],w[[3]],w[[4]],w[[5]],w[[6]],w[[7]],w[[8]], w[[9]], ncol=3, nrow =3,
-                               top=textGrob("Maize Irrigated by GCMs\n growth rate Initial Vs updated", gp=gpar(fontsize=15,font=8)))
+maize_irrigated<- arrangeGrob(w[[1]],w[[2]],w[[3]],w[[4]],w[[5]],w[[6]],w[[7]],w[[8]], w[[9]],ncol=4, nrow =3,
+                             top= textGrob("Maize Irrigated by GCMs\n growth rate Initial Vs updated", 
+                                           gp=gpar(fontsize=20,font=8)), legend)
 plot(maize_irrigated)
 dev.off()
-
 
 #secano
 
@@ -367,12 +356,17 @@ for(i in 1:length(m2)){
       
 }
 
+
+legend <- gtable_filter(ggplot_gtable(ggplot_build(w[[1]] + theme(legend.position="bottom"))), "guide-box")
 png(filename = paste(pic,"MaizeRainfedComparasions&R2.png"), 
     width = 20, height = 20, units = 'in', res = 150)
-maize_rainfed<- grid.arrange(w[[1]],w[[2]],w[[3]],w[[4]],w[[5]],w[[6]],w[[7]],w[[8]], w[[9]], ncol=3, nrow =3, 
-                             top=textGrob("Maize Rainfed by GCMs\n growth rate Initial Vs updated", gp=gpar(fontsize=15,font=8)))
+maize_rainfed<- arrangeGrob(w[[1]],w[[2]],w[[3]],w[[4]],w[[5]],w[[6]],w[[7]],w[[8]], w[[9]],ncol=4, nrow =3,
+                              top= textGrob("Maize Rainfed by GCMs\n growth rate Initial Vs updated", 
+                                            gp=gpar(fontsize=20,font=8)), legend)
 plot(maize_rainfed)
 dev.off()
+
+
 
 #frijol-------------
 f1<- lapply(irrigado,bean)
@@ -425,10 +419,12 @@ for(i in 1:length(f1)){
       
 }
 
+legend <- gtable_filter(ggplot_gtable(ggplot_build(w[[1]] + theme(legend.position="bottom"))), "guide-box")
 png(filename = paste(pic,"BeansIrrigatedComparasions&R2.png"), 
     width = 20, height = 20, units = 'in', res = 150)
-bean_irrigated<- grid.arrange(w[[1]],w[[2]],w[[3]],w[[4]],w[[5]],w[[6]],w[[7]],w[[8]], w[[9]], ncol=3, nrow =3,
-                               top=textGrob("Beans Irrigated by GCMs\n growth rate Initial Vs updated", gp=gpar(fontsize=20,font=8)))
+bean_irrigated<- arrangeGrob(w[[1]],w[[2]],w[[3]],w[[4]],w[[5]],w[[6]],w[[7]],w[[8]], w[[9]],ncol=4, nrow =3,
+                            top= textGrob("Beans Irrigated by GCMs\n growth rate Initial Vs updated", 
+                                          gp=gpar(fontsize=20,font=8)), legend)
 plot(bean_irrigated)
 dev.off()
 
@@ -475,12 +471,15 @@ for(i in 1:length(f2)){
       
 }
 
+legend <- gtable_filter(ggplot_gtable(ggplot_build(w[[1]] + theme(legend.position="bottom"))), "guide-box")
 png(filename = paste(pic,"BeanRainfedComparasions&R2.png"), 
     width = 20, height = 20, units = 'in', res = 150)
-bean_rainfed<- grid.arrange(w[[1]],w[[2]],w[[3]],w[[4]],w[[5]],w[[6]],w[[7]],w[[8]], w[[9]], ncol=3, nrow =3, 
-                             top=textGrob("Bean Rainfed by GCMs\n growth rate Initial Vs updated", gp=gpar(fontsize=20,font=8)))
+bean_rainfed<- arrangeGrob(w[[1]],w[[2]],w[[3]],w[[4]],w[[5]],w[[6]],w[[7]],w[[8]], w[[9]],ncol=4, nrow =3,
+                             top= textGrob("Beans Rainfed by GCMs\n growth rate Initial Vs updated", 
+                                           gp=gpar(fontsize=20,font=8)), legend)
 plot(bean_rainfed)
 dev.off()
+
 
 #trigo---------
 t1<- lapply(irrigado,wheat)
@@ -532,12 +531,15 @@ for(i in 1:length(t1)){
       
 }
 
+legend <- gtable_filter(ggplot_gtable(ggplot_build(w[[1]] + theme(legend.position="bottom"))), "guide-box")
 png(filename = paste(pic,"WheatIrrigatedComparasions&R2.png"), 
     width = 20, height = 20, units = 'in', res = 150)
-Wheat_irrigated<- grid.arrange(w[[1]],w[[2]],w[[3]],w[[4]],w[[5]],w[[6]],w[[7]],w[[8]], w[[9]], ncol=3, nrow =3,
-                              top=textGrob("Wheat Irrigated by GCMs\n growth rate Initial Vs updated", gp=gpar(fontsize=20,font=8)))
+Wheat_irrigated<- arrangeGrob(w[[1]],w[[2]],w[[3]],w[[4]],w[[5]],w[[6]],w[[7]],w[[8]], w[[9]],ncol=4, nrow =3,
+                           top= textGrob("Wheat Irrigated by GCMs\n growth rate Initial Vs updated", 
+                                         gp=gpar(fontsize=20,font=8)), legend)
 plot(Wheat_irrigated)
 dev.off()
+
 
 
 #secano
@@ -582,16 +584,127 @@ for(i in 1:length(t2)){
       
 }
 
+
+legend <- gtable_filter(ggplot_gtable(ggplot_build(w[[1]] + theme(legend.position="bottom"))), "guide-box")
 png(filename = paste(pic,"WheatRainfedComparasions&R2.png"), 
     width = 20, height = 20, units = 'in', res = 150)
-wheat_rainfed<- grid.arrange(w[[1]],w[[2]],w[[3]],w[[4]],w[[5]],w[[6]],w[[7]],w[[8]], w[[9]], ncol=3, nrow =3, 
-                            top=textGrob("Wheat Rainfed by GCMs\n growth rate Initial Vs updated", gp=gpar(fontsize=20,font=8)))
+wheat_rainfed<- arrangeGrob(w[[1]],w[[2]],w[[3]],w[[4]],w[[5]],w[[6]],w[[7]],w[[8]], w[[9]],ncol=4, nrow =3,
+                              top= textGrob("Wheat Rainfed by GCMs\n growth rate Initial Vs updated", 
+                                            gp=gpar(fontsize=20,font=8)), legend)
 plot(wheat_rainfed)
 dev.off()
 
 
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Analysis %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%#--------------------------
+cfiles<- c(a1,a2,f1,f2,m1,m2,t1,t2)
 
+for(i in 1:length(cfiles)){
+      row.names(cfiles[[i]])<- 1: nrow(cfiles[[i]])
+      ## logica de los valores 
+      nn<-  which(cfiles[[i]]$initial<0 & cfiles[[i]]$updated<0) 
+      pn<-  which(cfiles[[i]]$initial>0 & cfiles[[i]]$updated<0) 
+      np<-  which(cfiles[[i]]$initial<0 & cfiles[[i]]$updated>0) 
+      pp<-  which(cfiles[[i]]$initial>0 & cfiles[[i]]$updated>0)
+      weird<-  which(cfiles[[i]]$initial==0 & cfiles[[i]]$updated!=0) 
+      
+      positive <- c(pp)
+      negative <-  c(nn)
+      tran_NegatoPosi<- c(np) 
+      tran_PositoNega<- c(pn)
+      weird <- c(weird)
+      
+      cfiles[[i]]$comparison<- NA 
+      cfiles[[i]]$comparison[positive] <- "Positive"
+      cfiles[[i]]$comparison[negative] <- "Negative"
+      cfiles[[i]]$comparison[tran_NegatoPosi]<- "Before negative- now positive"
+      cfiles[[i]]$comparison[tran_PositoNega]<- "Before positive- now negative"
+      cfiles[[i]]$comparison[weird]<- "Special cases"
+      
+      
+}
+
+datacomplete<- do.call(rbind, cfiles)
+write.csv(datacomplete,paste(pic,"tc_comparison.csv", sep = ""))
+
+
+w<- list()
+cfiles<- c(a1,a2,f1,f2,m1,m2,t1,t2)
+cfilesr<- c(ar1,ar2,fr1,fr2,mr1,mr2,tr1,tr2)
+
+for(i in 1:length(cfiles)){
+      
+      for(j in 1:length(cfilesr)){
+            
+            png(filename = paste(pic,unique(cfiles[[i]]$j),"_",
+                                 unique(cfiles[[i]]$lnd),"_", unique(cfiles[[i]]$gcm),
+                                 "_TC",".png",sep=""), 
+                width = 15, height = 15, units = 'in', res = 150)
+            
+            w[[i]]<- ggplot(data = cfiles[[i]],aes(x=initial,y=updated))+ 
+                  geom_point(aes(color=fpu),size=3) +
+                  stat_smooth(method = "lm", col= "red")+
+                  labs(title = paste("R2 = ",signif(summary(cfilesr[[j]])$r.squared, 5),
+                                     " Slope =",signif(cfilesr[[j]]$coef[[2]], 5),
+                                     " P =",signif(summary(cfilesr[[j]])$coef[2,4], 5),"\nGCM = ",unique(cfiles[[i]]$gcm)))+
+                  theme(axis.text.x=element_text(size=16))+
+                  theme(axis.text.y=element_text(size=16))+
+                  theme(legend.position="none")+
+                  #theme(legend.title = element_text(size=18,face="bold"))+
+                  #theme(legend.text = element_text(size=8))+  
+                  guides(color=guide_legend("FPUs"))+ 
+                  geom_hline(aes(yintercept=0))+ 
+                  geom_vline(aes(xintercept=0))+ 
+                  ylab('Growth rate annual updated') +  
+                  xlab('Growth rate annual Previous')
+
+            plot(w[[i]])
+            dev.off()
+
+            cat(paste("Running comparasion ", unique(cfiles[[i]]$j),
+                      "_", unique(cfiles[[i]]$gcm),
+                      "_", unique(cfiles[[i]]$lnd),
+                      " it's done!!!\n", sep = ""))
+            
+            
+      }
+      
+}
+
+
+for(i in 1:length(crops.enj)){
+      for( j in 1:length(treat)){ 
+            cg<- list.files(pic,pattern = paste(crops.enj[i],"_",treat[j],sep =""), full.names = T)
+            cg<- lapply(cg, png::readPNG)
+            gridExtra::grid.arrange(grobs=cg)
+            
+#             png(filename = paste(pic,crops.enj[i],treat[j],"Comparasions&R2.png",sep = ""), 
+#                 width = 20, height = 20, units = 'in', res = 150)
+#             loco<- grid.arrange(grobs =gc ,ncol=4, nrow =3,
+#                                top= textGrob(paste(crops.enj[i]," ",treat[j],
+#                                                    "by GCMs\n growth rate Initial Vs updated", sep = ""), 
+#                                              gp=gpar(fontsize=20,font=8)))
+#             plot(loco)
+#             dev.off()
+            }
+       
+}
+
+# legend <- gtable_filter(ggplot_gtable(ggplot_build(w[[1]] + theme(legend.position="bottom"))), "guide-box")
+# png(filename = paste(pic,unique(cfiles[[i]]$j),unique(cfiles[[i]]$lnd),"Comparasions&R2.png",sep = ""), 
+#     width = 20, height = 20, units = 'in', res = 150)
+# loco<- arrangeGrob(w,ncol=4, nrow =3,
+#                    top= textGrob(paste(unique(cfiles[[i]]$j)," ", unique(cfiles[[i]]$lnd),
+#                                        "by GCMs\n growth rate Initial Vs updated", sep = ""), 
+#                                  gp=gpar(fontsize=20,font=8)), legend)
+# plot(loco)
+# dev.off()
+
+# 
+# grid.arrange(grobs = plist, ncol = 2) ## display plot
+# ggsave(file = OutFileName, arrangeGrob(grobs = plist, ncol = 2))  ## save plot
+# 
 
 g=gc;rm(list=ls())
+
 
 
