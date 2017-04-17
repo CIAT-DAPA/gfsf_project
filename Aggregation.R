@@ -1,6 +1,6 @@
 #Programa para agregar los rendimientos a nivel de pixel de los modelos de c
 # ultivos a  rendimientos a nivel de FPU para ser usados en el modelo IMPACT.
-
+# Benjamin test
 
 #Especificar cultivo
 cultivos = c('arroz','maiz','frijol','trigo','soya')
