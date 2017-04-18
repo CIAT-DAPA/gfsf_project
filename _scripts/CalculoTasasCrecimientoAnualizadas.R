@@ -10,7 +10,7 @@ options(scipen=999)
 
 #Lista de tipos de sistemas
 sys<- c( "IRRI", "RA")
-crops<- c("Rice","Bean","Wheat","Maize") # Soybean
+crops<- c("Rice","Bean","Wheat","Maize", "Soybean") 
 
 
 
@@ -71,6 +71,6 @@ for (c in 1:length(crops)){
       
 
 
-rm(list=ls())
+g=gc;rm(list=ls())
 
 

@@ -55,7 +55,7 @@ source("C:/Users/CEGONZALEZ/Documents/GitHub/gfsf_project/_scripts/ProofByPixelW
 source("C:/Users/CEGONZALEZ/Documents/GitHub/gfsf_project/_scripts/ProofByPixelRice.R")
 source("C:/Users/CEGONZALEZ/Documents/GitHub/gfsf_project/_scripts/ProofByPixelMaize.R")
 source("C:/Users/CEGONZALEZ/Documents/GitHub/gfsf_project/_scripts/ProofByPixelWheat.R")
-#source("C:/Users/CEGONZALEZ/Documents/GitHub/gfsf_project/_scripts/ProofByPixelSoybean.R")
+source("C:/Users/CEGONZALEZ/Documents/GitHub/gfsf_project/_scripts/ProofByPixelSoybean.R")
 source("C:/Users/CEGONZALEZ/Documents/GitHub/gfsf_project/_scripts/ProofByPixelWFD.R")
 
 #Parte C.----------------------------------------------------------------------------------------

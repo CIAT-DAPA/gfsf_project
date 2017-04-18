@@ -18,11 +18,11 @@ library(gridExtra)
 
 #Lista de tipos de sistemas
 sys<- c( "IRRI", "RA")
-crops<- c("Rice","Bean","Wheat","Maize") # Soybean
+crops<- c("Rice","Bean","Wheat","Maize", "Soybean")
 
 #Lista de cultivos
 crops.en<-c("rice","maiz","soyb","bean","whea")
-crops.enj<-c("jrice","jbean","jwhea","jmaiz" ) #"jsoyb",
+crops.enj<-c("jrice","jbean","jwhea","jmaiz", "jsoyb") 
 
 # GCMs
 gcm <- c("bcc_csm1_1", "bnu_esm","cccma_canesm2", "gfld_esm2g", "inm_cm4", "ipsl_cm5a_lr",
@@ -45,7 +45,8 @@ colnames(c_files)[3]<- "lnd"
 c_files$j<-revalue(c_files$j, c("Bean"="jbean",
                                 "Rice"="jrice",
                                 "Maize"="jmaiz",
-                                "Wheat"="jwhea"))
+                                "Wheat"="jwhea",
+                                "Soybean"="jsoyb"))
 c_files$lnd<- revalue(c_files$lnd, c("IRRI"="air",
                                 "RA"="arf"))
 # formato adecuado para IMPACT                                                   
@@ -69,8 +70,8 @@ data1<- read.csv("C:/Users/CEGONZALEZ/Documents/Scripts/BID/CCPROCESSING/InputFi
 data2<- c_files
 
 
-#Sin soya
-data1<- data1[which(data1$j!="jsoyb"),]
+# #Sin soya
+# data1<- data1[which(data1$j!="jsoyb"),]
 row.names(data1)<- 1:nrow(data1)
 
 data1$fpu<- as.character(data1$fpu)
@@ -101,22 +102,25 @@ reg<- function(x){
 # Filter using treat rainfed
 Function_rainfed<- function(x)
       {subset(x=x, grepl("arf",lnd))}
-# Filter using treat irragated
+# Filter using treat irrigated
 Function_irrigated<- function(x)
             {subset(x=x, grepl("air",lnd))}
 # Filter using crops
 rice<- function(x)
       {subset(x=x, grepl("jrice",j))}
+
 bean<- function(x)
       {subset(x=x, grepl("jbean",j))}
+
 wheat<- function(x)
       {subset(x=x, grepl("jwhea",j))}
+
 
 maize<- function(x)
       {subset(x=x, grepl("jmaiz",j))}
 
-# soy<- function(x)
-#       {subset(x=x, grepl("jsoyb",j))}
+soybean<- function(x)
+      {subset(x=x, grepl("jsoyb",j))}
 
 
    
@@ -595,8 +599,124 @@ plot(wheat_rainfed)
 dev.off()
 
 
+#Soybean------
+
+
+s1<- lapply(irrigado,soybean)
+s2<- lapply(secano,soybean)
+s<- list(s1,s2)
+##reg
+sr1<- lapply(s1, reg)
+sr2<- lapply(s2, reg)
+
+#irrigado
+
+w<- list()
+
+for(i in 1:length(s1)){
+      
+      png(filename = paste(pic,unique(s1[[i]]$j),"_",
+                           unique(s1[[i]]$lnd),"_", unique(s1[[i]]$gcm),
+                           "_TC",".png",sep=""), 
+          width = 15, height = 15, units = 'in', res = 150)
+      
+      w[[i]]<- ggplot(data = s1[[i]],aes(x=initial,y=updated))+ 
+            geom_point(aes(color=fpu),size=3) +
+            stat_smooth(method = "lm", col= "red")+
+            labs(title = paste("R2 = ",signif(summary(sr1[[i]])$r.squared, 5),
+                               " Slope =",signif(sr1[[i]]$coef[[2]], 5),
+                               " P =",signif(summary(sr1[[i]])$coef[2,4], 5),"\nGCM = ",unique(s1[[i]]$gcm)))+
+            theme(axis.text.x=element_text(size=16))+
+            theme(axis.text.y=element_text(size=16))+
+            theme(legend.position="none")+
+            #theme(legend.title = element_text(size=18,face="bold"))+
+            #theme(legend.text = element_text(size=8))+  
+            guides(color=guide_legend("FPUs"))+ 
+            geom_hline(aes(yintercept=0))+ 
+            geom_vline(aes(xintercept=0))+ 
+            ylab('Growth rate annual updated') +  
+            xlab('Growth rate annual Previous') 
+      #annotate(geom = "text",  x=-0.0025, y=0, label=unique(t1[[i]]$gcm),size=10)
+      
+      
+      
+      plot(w[[i]])
+      dev.off()
+      
+      cat(paste("Running comparasion ", unique(s1[[i]]$j),
+                "_", unique(s1[[i]]$gcm),
+                "_", unique(s1[[i]]$lnd),
+                " it's done!!!\n", sep = ""))
+      
+      
+}
+
+legend <- gtable_filter(ggplot_gtable(ggplot_build(w[[1]] + theme(legend.position="bottom"))), "guide-box")
+png(filename = paste(pic,"SoybeanIrrigatedComparasions&R2.png"), 
+    width = 20, height = 20, units = 'in', res = 150)
+Soybean_irrigated<- arrangeGrob(w[[1]],w[[2]],w[[3]],w[[4]],w[[5]],w[[6]],w[[7]],w[[8]], w[[9]],ncol=4, nrow =3,
+                              top= textGrob("Soybean Irrigated by GCMs\n growth rate Initial Vs updated", 
+                                            gp=gpar(fontsize=20,font=8)), legend)
+plot(Soybean_irrigated)
+dev.off()
+
+
+
+#secano
+
+w<- list()
+
+for(i in 1:length(s2)){
+      
+      png(filename = paste(pic,unique(s2[[i]]$j),"_",
+                           unique(s2[[i]]$lnd),"_", unique(s2[[i]]$gcm),
+                           "_TC",".png",sep=""), 
+          width = 15, height = 15, units = 'in', res = 150)
+      
+      w[[i]]<- ggplot(data = s2[[i]],aes(x=initial,y=updated))+ 
+            geom_point(aes(color=fpu),size=3) +
+            stat_smooth(method = "lm", col= "red")+
+            labs(title = paste("R2 = ",signif(summary(sr2[[i]])$r.squared, 5),
+                               " Slope =",signif(sr2[[i]]$coef[[2]], 5),
+                               " P =",signif(summary(sr2[[i]])$coef[2,4], 5),"\nGCM = ",unique(s2[[i]]$gcm)))+
+            theme(axis.text.x=element_text(size=16))+
+            theme(axis.text.y=element_text(size=16))+
+            theme(legend.position="none")+
+            #theme(legend.title = element_text(size=18,face="bold"))+
+            #theme(legend.text = element_text(size=8))+  
+            guides(color=guide_legend("FPUs"))+ 
+            geom_hline(aes(yintercept=0))+ 
+            geom_vline(aes(xintercept=0))+ 
+            ylab('Growth rate annual updated') +  
+            xlab('Growth rate annual Previous')
+      #annotate(geom = "text",  x=-0.0025, y=0, label=unique(t2[[i]]$gcm),size=10)
+      
+      
+      
+      plot(w[[i]])
+      dev.off()
+      
+      cat(paste("Running comparasion ", unique(s2[[i]]$j),
+                "_", unique(s2[[i]]$gcm),
+                "_", unique(s2[[i]]$lnd),
+                " it's done!!!\n", sep = ""))
+      
+      
+}
+
+
+legend <- gtable_filter(ggplot_gtable(ggplot_build(w[[1]] + theme(legend.position="bottom"))), "guide-box")
+png(filename = paste(pic,"SoybeanRainfedComparasions&R2.png"), 
+    width = 20, height = 20, units = 'in', res = 150)
+wheat_rainfed<- arrangeGrob(w[[1]],w[[2]],w[[3]],w[[4]],w[[5]],w[[6]],w[[7]],w[[8]], w[[9]],ncol=4, nrow =3,
+                            top= textGrob("Soybean Rainfed by GCMs\n growth rate Initial Vs updated", 
+                                          gp=gpar(fontsize=20,font=8)), legend)
+plot(wheat_rainfed)
+dev.off()
+
+
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Analysis %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%#--------------------------
-cfiles<- c(a1,a2,f1,f2,m1,m2,t1,t2)
+cfiles<- c(a1,a2,f1,f2,m1,m2,t1,t2,s1,s2)
 
 for(i in 1:length(cfiles)){
       row.names(cfiles[[i]])<- 1: nrow(cfiles[[i]])
@@ -628,8 +748,8 @@ write.csv(datacomplete,paste(pic,"tc_comparison.csv", sep = ""))
 
 
 w<- list()
-cfiles<- c(a1,a2,f1,f2,m1,m2,t1,t2)
-cfilesr<- c(ar1,ar2,fr1,fr2,mr1,mr2,tr1,tr2)
+cfiles<- c(a1,a2,f1,f2,m1,m2,t1,t2,s1,s2)
+cfilesr<- c(ar1,ar2,fr1,fr2,mr1,mr2,tr1,tr2,sr1,sr2)
 
 for(i in 1:length(cfiles)){
       

@@ -11,7 +11,7 @@ gcm <- c("bcc_csm1_1", "bnu_esm","cccma_canesm2", "gfld_esm2g", "inm_cm4", "ipsl
 
 #objetos
 sys<- c( "IRRI", "RA")
-crops<- c("Rice","Bean","Wheat","Maize") # Soybean
+crops<- c("Rice","Bean","Wheat","Maize", "Soybean") 
 
 for(c in 1:length(crops)){
       

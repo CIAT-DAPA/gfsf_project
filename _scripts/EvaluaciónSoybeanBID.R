@@ -7,8 +7,8 @@ setwd("//dapadfs/workspace_cluster_3/bid-cc-agricultural-sector/19-BID-reanalysi
 gdr1<- c("//dapadfs/workspace_cluster_3/bid-cc-agricultural-sector/19-BID-reanalysis/Soybean/future/final/SOY_irrigation_")
 gdr2<- c("//dapadfs/workspace_cluster_3/bid-cc-agricultural-sector/19-BID-reanalysis/Soybean/future/final/SOY_rainfed_")
 grd3<- c("//dapadfs/workspace_cluster_3/bid-cc-agricultural-sector/08-Cells_toRun/matrices_cultivo/version2017/")
-copyfuture<- c("//dapadfs/workspace_cluster_6/Socioeconomia/GF_and_SF/BID_2/Soybean_IRR/Soybean_Future/")
-copyhistorical<- c("//dapadfs/workspace_cluster_6/Socioeconomia/GF_and_SF/BID_2/Soybean_IRR/Soybean_Historical/")
+copyfuture<- c("//dapadfs/workspace_cluster_6/Socioeconomia/GF_and_SF/BID_2/SoybeanIRRI/Soybean_Future/")
+copyhistorical<- c("//dapadfs/workspace_cluster_6/Socioeconomia/GF_and_SF/BID_2/SoybeanIRRI/Soybean_Historical/")
 
 
 
@@ -70,7 +70,7 @@ for (v in 1:length(variedades)){
             #         } else {
             #             md<-md[-ind.falla,]
             #         }
-            #         
+                     
             #Agregar producción y area a nivel de fpu
             md_fpu<-aggregate(md[,c("ones","Area", paste0("Prod_20",22:49))],by=list(md[,"FPU"]),
                               FUN= function(x) {sum(x, na.rm=TRUE)} )
@@ -111,6 +111,7 @@ for (v in 1:length(variedades)){
             
       } 
 }  
+
 ###Historical----------------------
 
 ##Directorios
@@ -214,11 +215,11 @@ g=gc;rm(list = ls())
 setwd("//dapadfs/workspace_cluster_3/bid-cc-agricultural-sector/19-BID-reanalysis/Soybean/future/final/")
 gdr1<- c("//dapadfs/workspace_cluster_3/bid-cc-agricultural-sector/19-BID-reanalysis/Soybean/future/final/SOY_rainfed_")
 grd3<- c("//dapadfs/workspace_cluster_3/bid-cc-agricultural-sector/08-Cells_toRun/matrices_cultivo/version2017/")
-copyfuture<- c("//dapadfs/workspace_cluster_6/Socioeconomia/GF_and_SF/BID_2/Soybean_RA/Soybean_Future/")
-copyhistorical<- c("//dapadfs/workspace_cluster_6/Socioeconomia/GF_and_SF/BID_2/Soybean_RA/Soybean_Historical/")
+copyfuture<- c("//dapadfs/workspace_cluster_6/Socioeconomia/GF_and_SF/BID_2/SoybeanRA/Soybean_Future/")
+copyhistorical<- c("//dapadfs/workspace_cluster_6/Socioeconomia/GF_and_SF/BID_2/SoybeanRA/Soybean_Historical/")
 
 
-###Future--------------------------------------------
+##Future--------------------------------------------
 
 ###GCMs y variedades de trigo
 gcm <- c("bcc_csm1_1", "bnu_esm","cccma_canesm2", "gfld_esm2g", "inm_cm4", "ipsl_cm5a_lr",
@@ -314,18 +315,16 @@ for (v in 1:length(variedades)){
       } 
 }  
 
-
-
 ##Historical----------------
 ##Directorios
 gdr1<- c("//dapadfs/workspace_cluster_3/bid-cc-agricultural-sector/19-BID-reanalysis/Soybean/historical/final/SOY_rainfed_")
 
 
-##WFD y variedades de trigo----------------
+##WFD y variedades de trigo
 variedades<- c("DONMARIO", "Hutcheson")
 
 
-#loop para cargar datos -------------
+#loop para cargar datos 
 for (v in 1:length(variedades)){
       
       try(load(paste(gdr1,variedades[v],"_","WFD",".RDat",sep = "")))
