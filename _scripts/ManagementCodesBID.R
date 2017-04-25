@@ -58,8 +58,13 @@ source("C:/Users/CEGONZALEZ/Documents/GitHub/gfsf_project/_scripts/ProofByPixelW
 source("C:/Users/CEGONZALEZ/Documents/GitHub/gfsf_project/_scripts/ProofByPixelSoybean.R")
 source("C:/Users/CEGONZALEZ/Documents/GitHub/gfsf_project/_scripts/ProofByPixelWFD.R")
 
-#Parte C.----------------------------------------------------------------------------------------
 
+#Review min, max, range mean for pixels data
+### Este codigo permite por cultivo/gcm obtener la distribución de los rendimientos 
+### para evitar datos muy bajos o muy elevados
+source("C:/Users/CEGONZALEZ/Documents/GitHub/gfsf_project/_scripts/ReviewDataWeirAllCrops.R")
+
+#Parte C.----------------------------------------------------------------------------------------
 ### "codigo para calcular los rendimientos maximos por variedad por cada pixel/gcm"
 source("C:/Users/CEGONZALEZ/Documents/GitHub/gfsf_project/_scripts/SelectYieldByVarietiesAtPixel.R")
 
