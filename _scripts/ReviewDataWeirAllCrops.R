@@ -154,8 +154,9 @@ for(c in 1:length(crops)){
             weirdest<- rbind(c_filesqWierd2, c_filesqWierd1)
             rownames(weirdest)<- 1:nrow(weirdest)
             
-           write.csv(weirdest,paste(resum,"ExtremeData",crops[c],"_",sys[s] ,".csv",sep = "")) 
             
+           write.csv(weirdest,paste(resum,"ExtremeData",crops[c],"_",sys[s] ,".csv",sep = "")) 
+      
             
       }
 }

@@ -11,14 +11,15 @@ gcm <- c("bcc_csm1_1", "bnu_esm","cccma_canesm2", "gfld_esm2g", "inm_cm4", "ipsl
 
 #objetos
 sys<- c( "IRRI", "RA")
-crops<- c("Rice","Bean","Wheat","Maize", "Soybean") 
+crops<- c("Rice","Bean","Wheat","Maize","Soybean") 
 
+c=5
 for(c in 1:length(crops)){
       
       for(g in 1:length(gcm)){
             
-            for(s in 1:length(sys)){
-                  dataF<-list.files(path =grd1,pattern = crops[c],full.names = T)
+            try(for(s in 1:length(sys)){
+                  dataF<-list.files(path =grd1,pattern = paste(crops[c],"_",sys[s],"_.csv",sep=""),full.names = T)
                   dataF<-lapply(dataF,read.csv,stringsAsFactors = F)
                   DataFiles<- do.call(rbind,dataF)
                   DataFiles$X<- NULL
@@ -71,9 +72,9 @@ for(c in 1:length(crops)){
                   #Exportar resultados
                   write.csv(DataFiles_fpu,paste(copy,crops[c],"_",sys[s],"_",gcm[g], "_FPU.csv", sep = ""))
                   
-                  cat(paste("Running Yields weight and aggregate for ", crops[c]," ", sys[s], " ",  gcm[g], "it's done\n", sep = "" ))
+                  cat(paste("Running Yields weight and aggregate for ", crops[c]," ", sys[s], " ",  gcm[g], " it's done\n", sep = "" ))
                   
-            }      
+            } )     
       }      
 }
 

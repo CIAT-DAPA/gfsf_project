@@ -47,7 +47,7 @@ for (v in 1:length(variedades)){
             
             #Convertir rend en un data.frame
             rend<-data.frame(rend)
-            
+
             #Asignar nombres a el data frame de rendimientos
             colnames(rend)<-paste0("20",22:49)
             
@@ -81,50 +81,6 @@ for (v in 1:length(variedades)){
 
 
 
-########## PARTE B
-#cargar files
-# crops<- c("Wheat")  #, "Bean", "Maize", "Rice" "Rice", "Soybean"
-# c_files <- list.files(path=grdpix, pattern = "IRRI",full.names = T)
-# c_files <- lapply(c_files, read.csv, stringsAsFactors = F)
-# c_files <- do.call(rbind,c_files)
-# c_files$X<- NULL
-# 
-# for(p in 1:length(pots)){
-#       by_pots <- list()
-#       
-#       #### filter
-#       by_pots[[p]] <- c_files[which(c_files$FPU==pots[[p]]),]
-#       
-#       if(nrow(by_pots[[p]]) >= 1){
-#             ##### reshape
-#             require(plyr)
-#             require(tidyr)
-#             by_pots[[p]]<- by_pots[[p]] %>% 
-#                   gather(year,val, 9:36) 
-#             #### tratamiento para años
-#             by_pots[[p]]$year<- sub(pattern = "X", replacement = "", x = by_pots[[p]]$year, ignore.case = T)
-#             
-#             #hacer graficas
-#             png(filename = paste(copyPix,"Wheat","_","IRR_",pots[p],"_","trend",".png",sep=""), 
-#                 width = 20, height = 12, units = 'in', res = 100)
-#             require(ggplot2)
-#             n<-ggplot(data=by_pots[[p]], aes(x=year,y=val,colour=pix))+ 
-#                   geom_line(aes(group=pix))+
-#                   geom_point()+ facet_grid(v~sce)+
-#                   ylab("Yield ") + ggtitle("Scatter plot")+
-#                   xlab("Years") +
-#                   theme(axis.text.x=element_text(size=7, angle=90))+
-#                   guides(color=guide_legend("Varieties"))+ theme(legend.position="none")
-#             plot(n)
-#             dev.off()
-#       } else {
-#             cat(paste(" WHEAT IRRI FPU: ", pots[[p]], " does not have varieties\n", sep = ""))
-#       }
-#       
-# }
-
-
-
 ##----------------------------------------------------------------RAINFED 
 
 ###GCMs y variedades de trigo
@@ -145,6 +101,8 @@ for (v in 1:length(variedades)){
             
             #descartar pixeles con demasiadas fallas
             rend[rend==-99] = 0  #convertir -99 a 0
+            rend[is.na(rend)]= 0  #convertir -99 a 0
+            
             
 #             #find areas where consistently failing and discard these from aggregation
 #             zeros.wfd.r = apply(rend,1,function(x) sum(x==0,na.rm=T))
@@ -186,48 +144,6 @@ for (v in 1:length(variedades)){
 }
 
 
-
-# ########### PARTE B
-# #cargar files
-# crops<- c("Wheat")  #, "Bean", "Maize", "Rice" "Rice", "Soybean"
-# c_files <- list.files(path=grdpix, pattern = "RA",full.names = T)
-# c_files <- lapply(c_files, read.csv, stringsAsFactors = F)
-# c_files <- do.call(rbind,c_files)
-# c_files$X<- NULL
-# 
-# for(p in 1:length(pots)){
-#       by_pots <- list()
-#       
-#       #### filter
-#       by_pots[[p]] <- c_files[which(c_files$FPU==pots[[p]]),]
-#       
-#       if(nrow(by_pots[[p]]) >= 1){
-#             ##### reshape
-#             require(plyr)
-#             require(tidyr)
-#             by_pots[[p]]<- by_pots[[p]] %>% 
-#                   gather(year,val, 9:36) 
-#             #### tratamiento para años
-#             by_pots[[p]]$year<- sub(pattern = "X", replacement = "", x = by_pots[[p]]$year, ignore.case = T)
-#             
-#             #hacer graficas
-#             png(filename = paste(copyPix,"Wheat","_","RA_",pots[p],"_","trend",".png",sep=""), 
-#                 width = 20, height = 12, units = 'in', res = 100)
-#             require(ggplot2)
-#             n<-ggplot(data=by_pots[[p]], aes(x=year,y=val,colour=pix))+ 
-#                   geom_line(aes(group=pix))+
-#                   geom_point()+ facet_grid(v~sce)+
-#                   ylab("Yield ") + ggtitle("Scatter plot")+
-#                   xlab("Years") +
-#                   theme(axis.text.x=element_text(size=7, angle=90))+
-#                   guides(color=guide_legend("Varieties"))+ theme(legend.position="none")
-#             plot(n)
-#             dev.off()
-#       } else {
-#             cat(paste(" WHEAT RA FPU: ", pots[[p]], " does not have varieties\n", sep = ""))
-#       }
-#       
-# }
 
 g=gc;rm(list = ls())
 

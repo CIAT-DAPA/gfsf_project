@@ -1,4 +1,4 @@
-# codigo para presentar el docunmento en un formato apropiado
+#Codigo para presentar el docunmento en un formato apropiado
 
 #directorio datos
 setwd("//dapadfs/workspace_cluster_6/Socioeconomia/GF_and_SF/BID_2/TasasCrecimiento/")
@@ -99,12 +99,15 @@ colnames(total)[6]<-"updated"
 #Regression lineal
 reg<- function(x){ 
       lm(data=x, updated~ initial)}
+
 # Filter using treat rainfed
 Function_rainfed<- function(x)
-      {subset(x=x, grepl("arf",lnd))}
+{subset(x=x, grepl("arf",lnd))}
+
 # Filter using treat irrigated
 Function_irrigated<- function(x)
-            {subset(x=x, grepl("air",lnd))}
+{subset(x=x, grepl("air",lnd))}
+
 # Filter using crops
 rice<- function(x)
       {subset(x=x, grepl("jrice",j))}
@@ -152,8 +155,10 @@ ar2<- lapply(a2, reg)
 ## graficos de arroz
 #irrigado
 #summary(ar1[[1]])
-w<- list()
 
+
+w<- list()
+#i=1
 for(i in 1:length(a1)){
       
       png(filename = paste(pic,unique(a1[[i]]$j),"_",
@@ -165,20 +170,17 @@ for(i in 1:length(a1)){
             geom_point(aes(color=fpu),size=3) +
             stat_smooth(method = "lm", col= "red")+
             labs(title = paste("R2 = ",signif(summary(ar1[[i]])$r.squared, 5),
-                               " Slope =",signif(ar1[[i]]$coef[[2]], 5),
+                               " Slope =",signif(summary(ar1[[i]])$coef[[2]], 5),
                                " P =",signif(summary(ar1[[i]])$coef[2,4], 5),"\nGCM = ",unique(a1[[i]]$gcm)))+
             theme(axis.text.x=element_text(size=16))+
             theme(axis.text.y=element_text(size=16))+
             theme(legend.position="none")+
-           #theme(legend.title = element_text(size=18,face="bold"))+
-            #theme(legend.text = element_text(size=8))+  
             guides(color=guide_legend("FPUs"))+ 
             theme(legend.position="none")+
             geom_hline(aes(yintercept=0))+ 
             geom_vline(aes(xintercept=0))+ 
             ylab('Growth rate annual updated') +  
             xlab('Growth rate annual Previous')
-            #annotate(geom = "text", x=-0.0025, y=0, label=unique(a1[[i]]$gcm),size=10)
 
 
       plot(w[[i]])
@@ -218,21 +220,18 @@ for(i in 1:length(a2)){
       w[[i]]<- ggplot(data = a2[[i]],aes(x=initial,y=updated))+ 
             geom_point(aes(color=fpu),size=3) +
             stat_smooth(method = "lm", col= "red")+
-            labs(title = paste("R2 = ",signif(summary(ar1[[i]])$r.squared, 5),
-                               " Slope =",signif(ar1[[i]]$coef[[2]], 5),
-                               " P =",signif(summary(ar1[[i]])$coef[2,4], 5),"\nGCM = ",unique(a2[[i]]$gcm)))+
+            labs(title = paste("R2 = ",signif(summary(ar2[[i]])$r.squared, 5),
+                               " Slope =",signif(summary(ar2[[i]])$coef[[2]], 5),
+                               " P =",signif(summary(ar2[[i]])$coef[2,4], 5),"\nGCM = ",unique(a2[[i]]$gcm)))+
             theme(axis.text.x=element_text(size=16))+
             theme(axis.text.y=element_text(size=16))+
             theme(legend.position="none")+
-            #theme(legend.title = element_text(size=18,face="bold"))+
-            #theme(legend.text = element_text(size=8))+  
             guides(color=guide_legend("FPUs"))+ 
             geom_hline(aes(yintercept=0))+ 
             geom_vline(aes(xintercept=0))+ 
             ylab('Growth rate annual updated') +  
             xlab('Growth rate annual Previous') 
-            #annotate(geom = "text",  x=-0.0025, y=0, label=unique(a2[[i]]$gcm),size=10)
-      
+
       
       
       plot(w[[i]])
@@ -265,7 +264,6 @@ mr1<- lapply(m1, reg)
 mr2<- lapply(m2, reg)
 
 
-## graficos de arroz
 #irrigado
 
 w<- list()
@@ -281,22 +279,17 @@ for(i in 1:length(m1)){
             geom_point(aes(color=fpu),size=3) +
             stat_smooth(method = "lm", col= "red")+
             labs(title = paste("R2 = ",signif(summary(mr1[[i]])$r.squared, 5),
-                               " Slope =",signif(mr1[[i]]$coef[[2]], 5),
+                               " Slope =",signif(summary(mr1[[i]])$coef[[2]], 5),
                                " P =",signif(summary(mr1[[i]])$coef[2,4], 5),"\nGCM = ",unique(m1[[i]]$gcm)))+
             theme(axis.text.x=element_text(size=16))+
             theme(axis.text.y=element_text(size=16))+
             theme(legend.position="none")+
-            #theme(legend.title = element_text(size=18,face="bold"))+
-            #theme(legend.text = element_text(size=8))+  
             guides(color=guide_legend("FPUs"))+ 
             geom_hline(aes(yintercept=0))+ 
             geom_vline(aes(xintercept=0))+ 
             ylab('Growth rate annual updated') +  
             xlab('Growth rate annual Previous') 
-            #annotate(geom = "text",  x=-0.0025, y=0, label=unique(m1[[i]]$gcm),size=12)
-      
-      
-      
+
       plot(w[[i]])
       dev.off()
       
@@ -333,22 +326,17 @@ for(i in 1:length(m2)){
             geom_point(aes(color=fpu),size=3) +
             stat_smooth(method = "lm", col= "red")+
             labs(title = paste("R2 = ",signif(summary(mr2[[i]])$r.squared, 5),
-                               " Slope =",signif(mr2[[i]]$coef[[2]], 5),
+                               " Slope =",signif(summary(mr2[[i]]$coef[[2]], 5)),
                                " P =",signif(summary(mr2[[i]])$coef[2,4], 5),"\nGCM = ",unique(m2[[i]]$gcm)))+
             theme(axis.text.x=element_text(size=16))+
             theme(axis.text.y=element_text(size=16))+
             theme(legend.position="none")+
-            #theme(legend.title = element_text(size=18,face="bold"))+
-            #theme(legend.text = element_text(size=8))+  
             guides(color=guide_legend("FPUs"))+ 
             geom_hline(aes(yintercept=0))+ 
             geom_vline(aes(xintercept=0))+ 
             ylab('Growth rate annual updated') +  
             xlab('Growth rate annual Previous')
-            #annotate(geom = "text",  x=-0.0025, y=0, label=unique(m2[[i]]$gcm),size=12)
-      
-      
-      
+
       plot(w[[i]])
       dev.off()
       
@@ -396,20 +384,17 @@ for(i in 1:length(f1)){
             geom_point(aes(color=fpu),size=3) +
             stat_smooth(method = "lm", col= "red")+
             labs(title = paste("R2 = ",signif(summary(fr1[[i]])$r.squared, 5),
-                               " Slope =",signif(fr1[[i]]$coef[[2]], 5),
+                               " Slope =",signif(summary(fr1[[i]])$coef[[2]], 5),
                                " P =",signif(summary(fr1[[i]])$coef[2,4], 5), "\nGCM = ",unique(f1[[i]]$gcm)))+
             theme(axis.text.x=element_text(size=16))+
             theme(axis.text.y=element_text(size=16))+
             theme(legend.position="none")+
-            #theme(legend.title = element_text(size=18,face="bold"))+
-            #theme(legend.text = element_text(size=8))+  
             guides(color=guide_legend("FPUs"))+ 
             geom_hline(aes(yintercept=0))+ 
             geom_vline(aes(xintercept=0))+ 
             ylab('Growth rate annual updated') +  
             xlab('Growth rate annual Previous') 
-            #annotate(geom = "text",  x=-0.0025, y=0, label=unique(f1[[i]]$gcm),size=10)
-      
+
       
       
       plot(w[[i]])
@@ -448,22 +433,17 @@ for(i in 1:length(f2)){
             geom_point(aes(color=fpu),size=3) +
             stat_smooth(method = "lm", col= "red")+
             labs(title = paste("R2 = ",signif(summary(fr2[[i]])$r.squared, 5),
-                               " Slope =",signif(fr2[[i]]$coef[[2]], 5),
+                               " Slope =",signif(summary(fr2[[i]])$coef[[2]], 5),
                                " P =",signif(summary(fr2[[i]])$coef[2,4], 5),"\nGCM = ",unique(f2[[i]]$gcm)))+
             theme(axis.text.x=element_text(size=16))+
             theme(axis.text.y=element_text(size=16))+
             theme(legend.position="none")+
-            #theme(legend.title = element_text(size=18,face="bold"))+
-            #theme(legend.text = element_text(size=8))+  
             guides(color=guide_legend("FPUs"))+ 
             geom_hline(aes(yintercept=0))+ 
             geom_vline(aes(xintercept=0))+ 
             ylab('Growth rate annual updated') +  
             xlab('Growth rate annual Previous')
-            #annotate(geom = "text",  x=-0.0025, y=0, label=unique(f2[[i]]$gcm),size=10)
-      
-      
-      
+
       plot(w[[i]])
       dev.off()
       
@@ -508,20 +488,17 @@ for(i in 1:length(t1)){
             geom_point(aes(color=fpu),size=3) +
             stat_smooth(method = "lm", col= "red")+
             labs(title = paste("R2 = ",signif(summary(tr1[[i]])$r.squared, 5),
-                               " Slope =",signif(tr1[[i]]$coef[[2]], 5),
+                               " Slope =",signif(summary(tr1[[i]])$coef[[2]], 5),
                                " P =",signif(summary(tr1[[i]])$coef[2,4], 5),"\nGCM = ",unique(t1[[i]]$gcm)))+
             theme(axis.text.x=element_text(size=16))+
             theme(axis.text.y=element_text(size=16))+
             theme(legend.position="none")+
-            #theme(legend.title = element_text(size=18,face="bold"))+
-            #theme(legend.text = element_text(size=8))+  
             guides(color=guide_legend("FPUs"))+ 
             geom_hline(aes(yintercept=0))+ 
             geom_vline(aes(xintercept=0))+ 
             ylab('Growth rate annual updated') +  
             xlab('Growth rate annual Previous') 
-            #annotate(geom = "text",  x=-0.0025, y=0, label=unique(t1[[i]]$gcm),size=10)
-      
+
       
       
       plot(w[[i]])
@@ -561,20 +538,17 @@ for(i in 1:length(t2)){
             geom_point(aes(color=fpu),size=3) +
             stat_smooth(method = "lm", col= "red")+
             labs(title = paste("R2 = ",signif(summary(tr2[[i]])$r.squared, 5),
-                               " Slope =",signif(tr2[[i]]$coef[[2]], 5),
+                               " Slope =",signif(summary(tr2[[i]])$coef[[2]], 5),
                                " P =",signif(summary(tr2[[i]])$coef[2,4], 5),"\nGCM = ",unique(t2[[i]]$gcm)))+
             theme(axis.text.x=element_text(size=16))+
             theme(axis.text.y=element_text(size=16))+
             theme(legend.position="none")+
-            #theme(legend.title = element_text(size=18,face="bold"))+
-            #theme(legend.text = element_text(size=8))+  
             guides(color=guide_legend("FPUs"))+ 
             geom_hline(aes(yintercept=0))+ 
             geom_vline(aes(xintercept=0))+ 
             ylab('Growth rate annual updated') +  
             xlab('Growth rate annual Previous')
-            #annotate(geom = "text",  x=-0.0025, y=0, label=unique(t2[[i]]$gcm),size=10)
-      
+
       
       
       plot(w[[i]])
@@ -601,7 +575,6 @@ dev.off()
 
 #Soybean------
 
-
 s1<- lapply(irrigado,soybean)
 s2<- lapply(secano,soybean)
 s<- list(s1,s2)
@@ -624,21 +597,17 @@ for(i in 1:length(s1)){
             geom_point(aes(color=fpu),size=3) +
             stat_smooth(method = "lm", col= "red")+
             labs(title = paste("R2 = ",signif(summary(sr1[[i]])$r.squared, 5),
-                               " Slope =",signif(sr1[[i]]$coef[[2]], 5),
+                               " Slope =",signif(summary(sr1[[i]])$coef[[2]], 5),
                                " P =",signif(summary(sr1[[i]])$coef[2,4], 5),"\nGCM = ",unique(s1[[i]]$gcm)))+
             theme(axis.text.x=element_text(size=16))+
             theme(axis.text.y=element_text(size=16))+
             theme(legend.position="none")+
-            #theme(legend.title = element_text(size=18,face="bold"))+
-            #theme(legend.text = element_text(size=8))+  
             guides(color=guide_legend("FPUs"))+ 
             geom_hline(aes(yintercept=0))+ 
             geom_vline(aes(xintercept=0))+ 
             ylab('Growth rate annual updated') +  
             xlab('Growth rate annual Previous') 
-      #annotate(geom = "text",  x=-0.0025, y=0, label=unique(t1[[i]]$gcm),size=10)
-      
-      
+
       
       plot(w[[i]])
       dev.off()
@@ -677,20 +646,17 @@ for(i in 1:length(s2)){
             geom_point(aes(color=fpu),size=3) +
             stat_smooth(method = "lm", col= "red")+
             labs(title = paste("R2 = ",signif(summary(sr2[[i]])$r.squared, 5),
-                               " Slope =",signif(sr2[[i]]$coef[[2]], 5),
+                               " Slope =",signif(summary(sr2[[i]])$coef[[2]], 5),
                                " P =",signif(summary(sr2[[i]])$coef[2,4], 5),"\nGCM = ",unique(s2[[i]]$gcm)))+
             theme(axis.text.x=element_text(size=16))+
             theme(axis.text.y=element_text(size=16))+
             theme(legend.position="none")+
-            #theme(legend.title = element_text(size=18,face="bold"))+
-            #theme(legend.text = element_text(size=8))+  
             guides(color=guide_legend("FPUs"))+ 
             geom_hline(aes(yintercept=0))+ 
             geom_vline(aes(xintercept=0))+ 
             ylab('Growth rate annual updated') +  
             xlab('Growth rate annual Previous')
-      #annotate(geom = "text",  x=-0.0025, y=0, label=unique(t2[[i]]$gcm),size=10)
-      
+
       
       
       plot(w[[i]])
@@ -747,82 +713,6 @@ datacomplete<- do.call(rbind, cfiles)
 write.csv(datacomplete,paste(pic,"tc_comparison.csv", sep = ""))
 
 
-w<- list()
-cfiles<- c(a1,a2,f1,f2,m1,m2,t1,t2,s1,s2)
-cfilesr<- c(ar1,ar2,fr1,fr2,mr1,mr2,tr1,tr2,sr1,sr2)
-
-for(i in 1:length(cfiles)){
-      
-      for(j in 1:length(cfilesr)){
-            
-            png(filename = paste(pic,unique(cfiles[[i]]$j),"_",
-                                 unique(cfiles[[i]]$lnd),"_", unique(cfiles[[i]]$gcm),
-                                 "_TC",".png",sep=""), 
-                width = 15, height = 15, units = 'in', res = 150)
-            
-            w[[i]]<- ggplot(data = cfiles[[i]],aes(x=initial,y=updated))+ 
-                  geom_point(aes(color=fpu),size=3) +
-                  stat_smooth(method = "lm", col= "red")+
-                  labs(title = paste("R2 = ",signif(summary(cfilesr[[j]])$r.squared, 5),
-                                     " Slope =",signif(cfilesr[[j]]$coef[[2]], 5),
-                                     " P =",signif(summary(cfilesr[[j]])$coef[2,4], 5),"\nGCM = ",unique(cfiles[[i]]$gcm)))+
-                  theme(axis.text.x=element_text(size=16))+
-                  theme(axis.text.y=element_text(size=16))+
-                  theme(legend.position="none")+
-                  #theme(legend.title = element_text(size=18,face="bold"))+
-                  #theme(legend.text = element_text(size=8))+  
-                  guides(color=guide_legend("FPUs"))+ 
-                  geom_hline(aes(yintercept=0))+ 
-                  geom_vline(aes(xintercept=0))+ 
-                  ylab('Growth rate annual updated') +  
-                  xlab('Growth rate annual Previous')
-
-            plot(w[[i]])
-            dev.off()
-
-            cat(paste("Running comparasion ", unique(cfiles[[i]]$j),
-                      "_", unique(cfiles[[i]]$gcm),
-                      "_", unique(cfiles[[i]]$lnd),
-                      " it's done!!!\n", sep = ""))
-            
-            
-      }
-      
-}
-
-
-for(i in 1:length(crops.enj)){
-      for( j in 1:length(treat)){ 
-            cg<- list.files(pic,pattern = paste(crops.enj[i],"_",treat[j],sep =""), full.names = T)
-            cg<- lapply(cg, png::readPNG)
-            gridExtra::grid.arrange(grobs=cg)
-            
-#             png(filename = paste(pic,crops.enj[i],treat[j],"Comparasions&R2.png",sep = ""), 
-#                 width = 20, height = 20, units = 'in', res = 150)
-#             loco<- grid.arrange(grobs =gc ,ncol=4, nrow =3,
-#                                top= textGrob(paste(crops.enj[i]," ",treat[j],
-#                                                    "by GCMs\n growth rate Initial Vs updated", sep = ""), 
-#                                              gp=gpar(fontsize=20,font=8)))
-#             plot(loco)
-#             dev.off()
-            }
-       
-}
-
-# legend <- gtable_filter(ggplot_gtable(ggplot_build(w[[1]] + theme(legend.position="bottom"))), "guide-box")
-# png(filename = paste(pic,unique(cfiles[[i]]$j),unique(cfiles[[i]]$lnd),"Comparasions&R2.png",sep = ""), 
-#     width = 20, height = 20, units = 'in', res = 150)
-# loco<- arrangeGrob(w,ncol=4, nrow =3,
-#                    top= textGrob(paste(unique(cfiles[[i]]$j)," ", unique(cfiles[[i]]$lnd),
-#                                        "by GCMs\n growth rate Initial Vs updated", sep = ""), 
-#                                  gp=gpar(fontsize=20,font=8)), legend)
-# plot(loco)
-# dev.off()
-
-# 
-# grid.arrange(grobs = plist, ncol = 2) ## display plot
-# ggsave(file = OutFileName, arrangeGrob(grobs = plist, ncol = 2))  ## save plot
-# 
 
 g=gc;rm(list=ls())
 

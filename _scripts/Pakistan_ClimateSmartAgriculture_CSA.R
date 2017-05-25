@@ -26,7 +26,7 @@ options(scipen = 999)
 
 
 #Cargar marco de datos principal-------------
-md<-read.csv("CSA_MOZ2.csv",header=T)
+md<-read.csv("CSA_PAK.csv",header=T)
 phi<- md
 
 #Conocer los cultivos y agregaciones 
@@ -37,41 +37,26 @@ phi$commodity<-revalue(phi$commodity, c( "cbeef"="Cattle-Meat",
                                          "jbeef"="Cattle-Meat",
                                          "cmaiz"="Maize",
                                          "jmaiz"="Maize",
-                                         "cbean"="Beans",
-                                         "jbean"="Beans",
-                                         "cpota"="Potato",
-                                         "jpota"="Potato",
+                                         "cmilk"="Milk",
+                                         "jmilk"="Milk",
+                                         "ceggs"="Eggs",
+                                         "jeggs"="Eggs",
                                          "crice"="Rice",
                                          "jrice"="Rice",
                                          "cwhea"="Wheat",
                                          "jwhea"="Wheat",
                                          "jvege"="Vegetable as group",
                                          "cvege"="Vegetable as group",
-                                         "csoybeanoil"="Soybean Oils",
-                                         "jsoybeanoil"="Soybean Oils",
-                                         "coilseeds"="Oilseeds(rapeseed/mustard)",
+                                         "jpoul"="Poultry",
+                                         "cpoul"="Poultry ",
                                          "ccott"= "Cotton",
                                          "jcott"= "Cotton",
-                                         "jlamb"="Sheep & Goats",
-                                         "clamb"="Sheep & Goats",
-                                         "csoyb"="Soybean as oils group",
-                                         "jsoyb"="Soybean as oils group",
-                                         "csoyb"="Soybean Traded Oilseed",
-                                         "jsoyb"="Soybean Traded Oilseed",
-                                         "csbnt"="Soybean Non-traded Oilseed",
-                                         "jsbnt"="Soybean Non-traded Oilseed",
-                                         "csbol"="Soybean Oil Processed Oils",
-                                         "jsbol"="Soybean Oil Processed Oils",
-                                         "csbml"="Soybean Meal Oilmeals",
-                                         "jsbml"="Soybean Meal Oilmeals",
-                                         "jpoul"="Poultry",
-                                         "cpoul"="Poultry",
-                                         "csorg"="Sorgum",
-                                         "jsorg"="Sorgum",
-                                         "ccass"="Cassava",
-                                         "jcass"="Cassava",
-                                         "cpulses"="Pulses",
-                                         "jpulses"="Pulses"))
+                                         "csugc"="Sugarcane",
+                                         "jsugc"="Sugarcane",
+                                         "jsubf"="Tropical fruit",
+                                         "csubf"="Tropical fruit",
+                                         "jchkp"="Chickpea",
+                                         "cchkp"="Chickpea"))
 
 
 # Dataframe para hacer analisis por systmas de produccion
@@ -111,12 +96,11 @@ phi$productiontype<- as.character(phi$productiontype)
 # Data.frame no tiene en cuenta los sistemas de producción
 phi$productiontype<- NULL
 crops<- unique(phi$commodity)
-cultivations<-  c("Pulses","Maize","Rice","Wheat","Potato","Vegetable as group", "Soybean Meal Oilmeals", "Soybean Oils","Soybean as oils group",
-                  "Soybean Oil Processed Oils","Sorgum","Cassava" )
-cultivationsTrade<- c("Cattle-Meat", "Sheep & Goats","Poultry","Maize","Rice","Sorgum","Wheat", "Cassava",                   
-                      "Potato","Vegetable as group","Soybean as oils group","Soybean Oil Processed Oils",
-                      "Soybean Meal Oilmeals", "Cotton", "Soybean Oils","Pulses")
-animals<- c("Cattle-Meat","Sheep & Goats","Poultry")
+cultivations<-  c("Maize","Rice", "Wheat","Chickpea","Tropical fruit","Vegetable as group", "Sugarcane","Cotton" )
+cultivationsTrade<- c("Rice", "Wheat","Chickpea","Tropical fruit","Vegetable as group", "Sugarcane","Cotton","Cattle-Meat","Poultry","Eggs" ,"Milk")
+maize<- c("Maize")
+
+animals<- c("Cattle-Meat","Eggs" , "Poultry", "Milk"  )
 other<- c("-")
 row.names(phi)<- 1: nrow(phi)
 
@@ -158,7 +142,7 @@ z<- do.call(rbind, k)
 
 # exportar datos a excel
 require(xlsx)
-write.xlsx( x = z,file= paste(copy, "MOZ.xlsx", sep = ""),
+write.xlsx( x = z,file= paste(copy, "PK.xlsx", sep = ""),
             sheetName = "DatosTotales", col.names = TRUE, append = TRUE, showNA = FALSE)
 
 
@@ -171,7 +155,7 @@ z<- z %>%
 n<- list()
 for (i in seq_along(datatotal)){
     
-    png(filename=paste("C:/Users/CEGONZALEZ/Documents/CSA/",datatotal[i],"MOZ.png",sep=""), 
+    png(filename=paste("C:/Users/CEGONZALEZ/Documents/CSA/",datatotal[i],"PK.png",sep=""), 
          width = 10, height = 10, units = 'in', res = 300)
     
     n[[i]]<- print(ggplot(z[which(z$impactparameter==datatotal[i]),], aes(x=commodity, y=Val, fill=scenarios)) + 
@@ -254,7 +238,7 @@ z<- do.call(rbind, k)
 
 # exportar datos a excel
 require(xlsx)
-write.xlsx( x = z,file= paste(copy, "MOZ.xlsx", sep = ""),
+write.xlsx( x = z,file= paste(copy, "PK.xlsx", sep = ""),
             sheetName = "DataAgregados", col.names = TRUE, append = TRUE, showNA = FALSE)
 
 
@@ -267,7 +251,7 @@ z<- z %>%
 n<- list()
 for (i in seq_along(dataagg)){
     
-    png(filename=paste("C:/Users/CEGONZALEZ/Documents/CSA/",dataagg[i],"MOZ.png",sep=""), 
+    png(filename=paste("C:/Users/CEGONZALEZ/Documents/CSA/",dataagg[i],"PK.png",sep=""), 
          width = 10, height = 10, units = 'in', res = 300)
     
     n[[i]]<- print(ggplot(z[which(z$impactparameter==dataagg[i]),], aes(x=commodity, y=Val, fill=scenarios)) + 
@@ -320,7 +304,7 @@ z<- do.call(rbind, k)
 
 # exportar datos a excel
 require(xlsx)
-write.xlsx( x = z,file= paste(copy, "MOZ.xlsx", sep = ""),
+write.xlsx( x = z,file= paste(copy, "PK.xlsx", sep = ""),
             sheetName = "DataAnimal", col.names = TRUE, append = TRUE, showNA = FALSE)
 
 
@@ -333,7 +317,7 @@ z<- z %>%
 n<- list()
 for (i in seq_along(dataanimal)){
     
-    png(filename=paste("C:/Users/CEGONZALEZ/Documents/CSA/",dataanimal[i],"MOZ.png",sep=""), 
+    png(filename=paste("C:/Users/CEGONZALEZ/Documents/CSA/",dataanimal[i],"PK.png",sep=""), 
          width = 10, height = 10, units = 'in', res = 300)
     
     n[[i]]<- print(ggplot(z[which(z$impactparameter==dataanimal[i]),], aes(x=commodity, y=Val, fill=scenarios)) + 
@@ -414,7 +398,7 @@ z<- do.call(rbind, k)
 
 # exportar datos a excel
 require(xlsx)
-write.xlsx( x = z,file= paste(copy, "MOZ.xlsx", sep = ""),
+write.xlsx( x = z,file= paste(copy, "PK.xlsx", sep = ""),
             sheetName = "DatosEspeciales", col.names = TRUE, append = TRUE, showNA = FALSE)
 
 
@@ -427,7 +411,7 @@ z<- z %>%
 n<- list()
 for (i in seq_along(dataespecial)){
     
-    png(filename=paste("C:/Users/CEGONZALEZ/Documents/CSA/",dataespecial[i],"MOZ.png",sep=""), 
+    png(filename=paste("C:/Users/CEGONZALEZ/Documents/CSA/",dataespecial[i],"PK.png",sep=""), 
          width = 10, height = 10, units = 'in', res = 300)
     
     n[[i]]<- print(ggplot(z[which(z$impactparameter==dataespecial[i]),], aes(x=commodity, y=Val, fill=scenarios)) + 
@@ -480,7 +464,7 @@ z<- do.call(rbind, k)
 
 # exportar datos a excel
 require(xlsx)
-write.xlsx( x = z,file= paste(copy, "MOZ.xlsx", sep = ""),
+write.xlsx( x = z,file= paste(copy, "PK.xlsx", sep = ""),
             sheetName = "SystemsProduction", col.names = TRUE, append = TRUE, showNA = FALSE)
 
 
@@ -498,7 +482,7 @@ z$commodity<- as.character(z$commodity)
 n<- list()
 for (i in seq_along(datasys)){
     
-    png(filename=paste("C:/Users/CEGONZALEZ/Documents/CSA/",datasys[i],"MOZ.png",sep=""), 
+    png(filename=paste("C:/Users/CEGONZALEZ/Documents/CSA/",datasys[i],"PK.png",sep=""), 
          width = 10, height = 10, units = 'in', res = 300)
     
     n[[i]]<- print(ggplot(z[which(z$impactparameter==datasys[i]),], aes(x=commodity, y=Val, fill=scenarios)) + 
@@ -555,7 +539,7 @@ row.names(mdwide_tan)<- 1: nrow(mdwide_tan)
 
 
 #Copia de seguridad pais filtrado------
-write.csv(mdwide_tan,paste(copy,"mdwideMOZTotal.csv", sep = ""), row.names = FALSE)
+write.csv(mdwide_tan,paste(copy,"mdwidePAKTotal.csv", sep = ""), row.names = FALSE)
 
 #Net Trade y  filtros logicos-----------------
 tznet<- mdwide_tan[which(mdwide_tan$impactparameter=="Net Trade"),]
@@ -588,7 +572,7 @@ for(j in 1:nrow(tznet)){
 }
 
 ##Copia de seguridad cambios relativos y vectores de desempeño
-write.csv(tznet,paste(copy,"CambiosRelativosMOZTOTAL.csv", sep = ""), row.names = FALSE)
+write.csv(tznet,paste(copy,"CambiosRelativosPAKTOTAL.csv", sep = ""), row.names = FALSE)
 
 # copia
 tanz<- tznet
@@ -596,16 +580,17 @@ tanz$trend<- NA
 tanz$trend[import] <- "Negative"
 tanz$trend[export] <- "Positive"
 tanz$trend[tran_MtoX]<- "Transition from M to X"
-
+tanz$trend[tran_XtoM]<- "Transition from X to M"
+                 
 c <- list()
 
 for (i in 1:length(cultivationsTrade)){
     
     if(length(which(tanz$commodity==cultivationsTrade[[i]]))>0){
         z <- tanz[which(tanz$commodity==cultivationsTrade[[i]]),]
-        x <- table(z$trend[z$Cat=='CC'])
+        x <- sort(table(z$trend[z$Cat=='CC']),decreasing = T)
         z <- z[,c("impactparameter","scenario", "commodity", "region", "Cat", "impacto")] %>% spread("scenario","impacto")
-        if(x >= 3){
+        if(x>= 3){
             z$trend <- names(x)
         }
         c[[i]] <- z
@@ -616,6 +601,7 @@ for (i in 1:length(cultivationsTrade)){
     
 }
 
+
 ##Unir los cultivos
 c <- do.call(rbind, c)  
 
@@ -623,7 +609,18 @@ c <- do.call(rbind, c)
 c$CC_mean <- rowMeans(x=c[,5:8], na.rm=TRUE)
 c$NoCC_mean <- c[,9]
 c<- c[,c("impactparameter","commodity","region","trend","CC_mean","NoCC_mean")]
-write.csv(c, paste(copy, "NettradeMOZTOTAL.csv", sep = ""),row.names = FALSE)
+write.csv(c, paste(copy, "NettradePAKTOTAL.csv", sep = ""),row.names = FALSE)
+
+#### asunto maíz
+
+maizedf<- tanz[which(tanz$commodity==maize),]
+chicha<-maizedf[-1,]
+chicha <- chicha[,c("impactparameter","scenario", "commodity", "region", "Cat", "impacto", "trend")] %>% spread("scenario","impacto")
+chicha$CC_mean <- rowMeans(x=chicha[,6:8], na.rm=TRUE)
+chicha$NoCC_mean <- chicha[,9]
+chicha<- chicha[,c("impactparameter","commodity","region","trend","CC_mean","NoCC_mean")]
+write.csv(chicha, paste(copy, "NettradeMaizPAKTOTAL.csv", sep = ""),row.names = FALSE)
+
 
 #Area  y rendimientos---------------------------------------
 tznet2<- mdwide_tan
@@ -642,8 +639,11 @@ tznet2_t$NoCC<- NULL
 #Reshape
 tznet2_t <- tznet2_t %>% spread(Cat, mean)
 
+write.csv(x =tznet2_t, file =paste(copy,"areayieldPK.csv",sep = ""))
 
-write.csv(x =tznet2_t, file =paste(copy,"areayieldMOZ.csv",sep = ""))
+
+## Asunto maiz
+
 
 #Solicitud datos CSA-------------
 mdwide_tzaCSA<- mdwide_tan
@@ -672,11 +672,11 @@ csa <- csa %>%
 csa$Year <- as.numeric(x = csa$Year)
 csa$percentual_change <- (csa$CC-csa$NoCC)/csa$NoCC * 100
 
-write.csv(csa, paste(copy, "MOZCSAAreaYield.csv", sep = ""), row.names = FALSE)
+write.csv(csa, paste(copy, "PAKCSAAreaYield.csv", sep = ""), row.names = FALSE)
 
 
 #grafico Area de cultivo
-png(filename=paste(grd,"AreaCommoditiesMOZ.png", sep=""), width = 10, height = 10, units = 'in', res =800)
+png(filename=paste(grd,"AreaCommoditiesPAK.png", sep=""), width = 10, height = 10, units = 'in', res =800)
 
 n<- ggplot(csa[which(csa$impactparameter=="Total Area"),], aes(x=Year, y=percentual_change ))
 n<- n + geom_line(aes(colour = commodity),  size = 0.5) + facet_wrap( ~ commodity,ncol=2)
@@ -694,7 +694,7 @@ dev.off()
 
 
 #grafico numero de Aminales 
-png(filename=paste(grd,"Numer Animales MOZ.png", sep=""), width = 10, height = 10, units = 'in', res =800)
+png(filename=paste(grd,"Numer Animales PK.png", sep=""), width = 10, height = 10, units = 'in', res =800)
 
 n1<- ggplot(csa[which(csa$impactparameter=="Animal Numbers"),], aes(x=Year, y=percentual_change ))
 n1<- n1 + geom_line(aes(colour = commodity),  size = 0.5) + facet_wrap( ~ commodity,ncol=2)

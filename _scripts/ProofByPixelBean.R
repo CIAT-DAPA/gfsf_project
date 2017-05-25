@@ -82,47 +82,6 @@ for (v in 1:length(variedades)){
 
 
 
-# ########### PARTE B
-# #cargar files
-# crops<- c("Bean")  #, "Bean", "Bean", "Rice" "Rice", "Soybean"
-# c_files <- list.files(path=grdpix, pattern = "IRRI",full.names = T)
-# c_files <- lapply(c_files, read.csv, stringsAsFactors = F)
-# c_files <- do.call(rbind,c_files)
-# c_files$X<- NULL
-# 
-# for(p in 1:length(pots)){
-#       by_pots <- list()
-#       
-#       #### filter
-#       by_pots[[p]] <- c_files[which(c_files$FPU==pots[[p]]),]
-#       
-#       if(nrow(by_pots[[p]]) >= 1){
-#             ##### reshape
-#             require(plyr)
-#             require(tidyr)
-#             by_pots[[p]]<- by_pots[[p]] %>% 
-#                   gather(year,val, 9:36) 
-#             #### tratamiento para años
-#             by_pots[[p]]$year<- sub(pattern = "X", replacement = "", x = by_pots[[p]]$year, ignore.case = T)
-#             
-#             #hacer graficas
-#             png(filename = paste(copyPix,"Bean","_","IRR_",pots[p],"_","trend",".png",sep=""), 
-#                 width = 20, height = 12, units = 'in', res = 100)
-#             require(ggplot2)
-#             n<-ggplot(data=by_pots[[p]], aes(x=year,y=val,colour=pix))+ 
-#                   geom_line(aes(group=pix))+
-#                   geom_point()+ facet_grid(v~sce)+
-#                   ylab("Yield ") + ggtitle("Scatter plot")+
-#                   xlab("Years") +
-#                   theme(axis.text.x=element_text(size=7, angle=90))+
-#                   guides(color=guide_legend("Varieties"))+theme(legend.position="none")
-#             plot(n)
-#             dev.off()
-#       } else {
-#             cat(paste(" BEAN IRRI FPU: ", pots[[p]], " does not have varieties\n", sep = ""))
-#       }
-#       
-# }
 
 
 
@@ -187,48 +146,6 @@ for (v in 1:length(variedades)){
 }
 
 
-
-# ########### PARTE B
-# #cargar files
-# crops<- c("Bean")  #, "Bean", "Bean", "Rice" "Rice", "Soybean"
-# c_files <- list.files(path=grdpix, pattern = "RA",full.names = T)
-# c_files <- lapply(c_files, read.csv, stringsAsFactors = F)
-# c_files <- do.call(rbind,c_files)
-# c_files$X<- NULL
-# 
-# for(p in 1:length(pots)){
-#       by_pots <- list()
-#       
-#       #### filter
-#       by_pots[[p]] <- c_files[which(c_files$FPU==pots[[p]]),]
-#       
-#       if(nrow(by_pots[[p]]) >= 1){
-#             ##### reshape
-#             require(plyr)
-#             require(tidyr)
-#             by_pots[[p]]<- by_pots[[p]] %>% 
-#                   gather(year,val, 9:36) 
-#             #### tratamiento para años
-#             by_pots[[p]]$year<- sub(pattern = "X", replacement = "", x = by_pots[[p]]$year, ignore.case = T)
-#             
-#             #hacer graficas
-#             png(filename = paste(copyPix,"Bean","_","RA_",pots[p],"_","trend",".png",sep=""), 
-#                 width = 20, height = 12, units = 'in', res = 100)
-#             require(ggplot2)
-#             n<-ggplot(data=by_pots[[p]], aes(x=year,y=val,colour=pix))+ 
-#                   geom_line(aes(group=pix))+
-#                   geom_point()+ facet_grid(v~sce)+
-#                   ylab("Yield ") + ggtitle("Scatter plot")+
-#                   xlab("Years") +
-#                   theme(axis.text.x=element_text(size=7, angle=90))+
-#                   guides(color=guide_legend("Varieties"))+ theme(legend.position="none")
-#             plot(n)
-#             dev.off()
-#       } else {
-#             cat(paste(" BEAN RA FPU: ", pots[[p]], " does not have varieties\n", sep = ""))
-#       }
-#       
-# }
 
 g=gc;rm(list = ls())
 

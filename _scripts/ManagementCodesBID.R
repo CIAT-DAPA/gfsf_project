@@ -21,7 +21,7 @@ Time<- c( "Future", "Historical")
 #############################################Codes Github
 # Para replicar los codigos aca presentados se debe acceder al github re-running 
 github<- "C:/Users/CEGONZALEZ/Documents/GitHub/gfsf_project/_scripts/"
-
+setwd("C:/Users/CEGONZALEZ/Documents/GitHub/gfsf_project/_scripts")
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  END     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
@@ -32,12 +32,6 @@ github<- "C:/Users/CEGONZALEZ/Documents/GitHub/gfsf_project/_scripts/"
 # files <- list.files(github,full.names=TRUE,pattern="Evaluación")
 # sapply(files, source)
 
-# #### Source for each crop, treating individual 
-# source("C:/Users/CEGONZALEZ/Documents/GitHub/gfsf_project/_scripts/EvaluaciónRiceBID.R")
-# source("C:/Users/CEGONZALEZ/Documents/GitHub/gfsf_project/_scripts/EvaluaciónWheatBID.R")
-# source("C:/Users/CEGONZALEZ/Documents/GitHub/gfsf_project/_scripts/EvaluaciónBeanBID.R")
-# source("C:/Users/CEGONZALEZ/Documents/GitHub/gfsf_project/_scripts/EvaluaciónMaizeBID.R")
-# #source("C:/Users/CEGONZALEZ/Documents/GitHub/gfsf_project/_scripts/EvaluaciónSoybeanBID.R")
 
 #Parte B Analisis  y procesamiento de datos a nivel de PIXEL:---------------------------------- 
 #Este codigo tiene el proposito de realizar analisis sobre el comportamiento de los rendimientos a nivel de pixel por FPU
@@ -54,7 +48,6 @@ source("C:/Users/CEGONZALEZ/Documents/GitHub/gfsf_project/_scripts/ProofByPixelB
 source("C:/Users/CEGONZALEZ/Documents/GitHub/gfsf_project/_scripts/ProofByPixelWheat.R")
 source("C:/Users/CEGONZALEZ/Documents/GitHub/gfsf_project/_scripts/ProofByPixelRice.R")
 source("C:/Users/CEGONZALEZ/Documents/GitHub/gfsf_project/_scripts/ProofByPixelMaize.R")
-source("C:/Users/CEGONZALEZ/Documents/GitHub/gfsf_project/_scripts/ProofByPixelWheat.R")
 source("C:/Users/CEGONZALEZ/Documents/GitHub/gfsf_project/_scripts/ProofByPixelSoybean.R")
 source("C:/Users/CEGONZALEZ/Documents/GitHub/gfsf_project/_scripts/ProofByPixelWFD.R")
 
@@ -62,11 +55,19 @@ source("C:/Users/CEGONZALEZ/Documents/GitHub/gfsf_project/_scripts/ProofByPixelW
 #Review min, max, range mean for pixels data
 ### Este codigo permite por cultivo/gcm obtener la distribución de los rendimientos 
 ### para evitar datos muy bajos o muy elevados
-source("C:/Users/CEGONZALEZ/Documents/GitHub/gfsf_project/_scripts/ReviewDataWeirAllCrops.R")
+
+#1 Graficas por Pixel
+source("C:/Users/CEGONZALEZ/Documents/GitHub/gfsf_project/_scripts/GraphsAtPixelLevel.R")
+#2.Deteccion de outliers and extremes values
+source("C:/Users/CEGONZALEZ/Documents/GitHub/gfsf_project/_scripts/Outliers.R")
+
 
 #Parte C.----------------------------------------------------------------------------------------
 ### "codigo para calcular los rendimientos maximos por variedad por cada pixel/gcm"
 source("C:/Users/CEGONZALEZ/Documents/GitHub/gfsf_project/_scripts/SelectYieldByVarietiesAtPixel.R")
+
+# 3.review FPUs aggregation tendencia entre WFD/GCMS
+source("C:/Users/CEGONZALEZ/Documents/GitHub/gfsf_project/_scripts/AgreggationProofByFPU.R")
 
 #Agregacion de rendimientos a nivel de pixel a FPU
 #Este codigo toma los rendimientos y los agrega a nivel FPU, calculando una rendimiento ponderado

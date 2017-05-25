@@ -16,7 +16,7 @@ crops<- c("Rice","Bean","Wheat","Maize", "Soybean")
 
 models<- c("bcc_csm1_1","bnu_esm","cccma_canesm2", "gfld_esm2g", "inm_cm4", "ipsl_cm5a_lr", "miroc_miroc5" ,"mpi_esm_mr","ncc_noresm1_m","WFD") 
 
-
+#c=2;s=2;m=1
 for (c in 1:length(crops)){
       for (s in 1:length(sys)) {
             for(m in 1:length(models)){

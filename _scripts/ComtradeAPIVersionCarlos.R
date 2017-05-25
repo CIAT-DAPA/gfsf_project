@@ -173,3 +173,5 @@ rbindMat <- lapply(1:nrow(inList$combinations), function(i){
       
 })
 rbindMat <- do.call(bind_rows, rbindMat)
+
+saveRDS(object = rbindMat,file = "country1.RDS")
