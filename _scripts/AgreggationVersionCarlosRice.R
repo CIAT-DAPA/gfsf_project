@@ -13,7 +13,9 @@ gcm <- c("bcc_csm1_1", "bnu_esm","cccma_canesm2", "gfld_esm2g", "inm_cm4", "ipsl
 sys<- c( "IRRI", "RA")
 crops<- c("Rice","Bean","Wheat","Maize","Soybean") 
 
-c=5
+# c=1
+# s=1
+# g=1
 for(c in 1:length(crops)){
       
       for(g in 1:length(gcm)){
@@ -25,35 +27,34 @@ for(c in 1:length(crops)){
                   DataFiles$X<- NULL
                   gcm<- unique(DataFiles$sce)
                   
+                  if((crops[c]=="Rice")){
+                        
+                        require(dplyr)
+                        require(tidyr)
+                        test<- filter(DataFiles,FPU %in% c("CHC_CHL","NWS_ECU"))
+                        DataFiles<- DataFiles[which(DataFiles$FPU!="CHC_CHL"& DataFiles$FPU!="NWS_ECU"),]
+                        zeros.wfd.r = apply(test[,8:ncol(test)],1,function(x) sum(x==0,na.rm=T))
+                        ind.falla = which(zeros.wfd.r>=14)
+                        
+                        if(sum(ind.falla)!=0){ 
+                               test<-test[-ind.falla,]
+                        }else{}
+                        
+                  DataFiles<- rbind(DataFiles,test)
+                  }else{}
                   
-                  #filtrar por gcm;sys   
                   DataFiles<- DataFiles[which(DataFiles$sce==gcm[g]),]
-                  DataFiles<- DataFiles[which(DataFiles$sys==sys[s]),]
-                  
                   #Agregar columnas de producción de 2022 a 2049
                   DataFiles[,paste0("Prod_20",22:49)]<-DataFiles[,"Area"]*DataFiles[,paste0("X20",22:49)]
                   DataFiles[,'ones'] = 1
                   
-                  
-#                   #Find areas where consistently failing and discard these from aggregation
-#                   zeros.wfd.r = apply(DataFiles[,8:ncol(DataFiles)],1,function(x) sum(x==0,na.rm=T))
-#                   ind.falla = which(zeros.wfd.r>=14)
-#                   
-#                   #Descartar pixeles con más de 13 años con fallas en la linea base
-#                   if(sum(ind.falla) == 0)
-#                   {
-#                         DataFiles<-DataFiles
-#                   } else {
-#                         DataFiles<-DataFiles[-ind.falla,]
-#                   }
-#                   
-#                   
+                 
                   #Eliminar las columnas de los rendimientos
                   DataFiles<-DataFiles[,!names(DataFiles) %in% (paste0("X20",22:49))]
                   
                   
                   #Agregar producción y area a nivel de fpu
-                  DataFiles_fpu<-aggregate(DataFiles[,c("ones","Area",paste0("Prod_20",22:49))],by=list(DataFiles[,"FPU"]),FUN= function(x) {sum(x, na.rm=TRUE)} )
+                  DataFiles_fpu<- aggregate(DataFiles[,c("ones","Area",paste0("Prod_20",22:49))],by=list(DataFiles[,"FPU"]),FUN= function(x) {sum(x, na.rm=TRUE)} )
                   
                   #Agregar Rendimientos a nivel de fpu (rendimiento ponderado)
                   DataFiles_fpu[,paste0("Rend_fpu_20",22:49)]<-DataFiles_fpu[,paste0("Prod_20",22:49)]/DataFiles_fpu[,"Area"]
@@ -63,6 +64,8 @@ for(c in 1:length(crops)){
                   
                   #Asignar nombres apropiados a las columnas
                   colnames(DataFiles_fpu)<-c("FPU","num_pixels",paste0("Rend_fpu_20",22:49))
+                  # DataFiles_fpu$mean<- rowMeans(DataFiles_fpu[,3:30]) 
+                  
                   DataFiles_fpu$sce<- gcm[g]
                   DataFiles_fpu$sys<- sys[s]
                   
@@ -98,25 +101,26 @@ for(c in 1:length(crops)){
                   DataFiles<- do.call(rbind,dataF)
                   DataFiles$X<- NULL
                   rownames(DataFiles)<- 1:nrow(DataFiles)
-                       
+                  
+                  if((crops[c]=="Rice")){
+                        
+                        require(dplyr)
+                        require(tidyr)
+                        test<- filter(DataFiles,FPU %in% c("CHC_CHL","NWS_ECU"))
+                        DataFiles<- DataFiles[which(DataFiles$FPU!="CHC_CHL"& DataFiles$FPU!="NWS_ECU"),]
+                        zeros.wfd.r = apply(test[,8:ncol(test)],1,function(x) sum(x==0,na.rm=T))
+                        ind.falla = which(zeros.wfd.r>=14)
+                        
+                        if(sum(ind.falla)!=0){ 
+                              test<-test[-ind.falla,]
+                        }else{}
+                        
+                        DataFiles<- rbind(DataFiles,test)
+                  }else{} 
 
                   #Agregar columnas de producción de 2022 a 2049
                   DataFiles[,paste0("Prod_20",22:49)]<-DataFiles[,"Area"]*DataFiles[,paste0("X20",22:49)]
                   DataFiles[,'ones'] = 1
-                  
-                  
-#                   #Find areas where consistently failing and discard these from aggregation
-#                   zeros.wfd.r = apply(DataFiles[,8:ncol(DataFiles)],1,function(x) sum(x==0,na.rm=T))
-#                   ind.falla = which(zeros.wfd.r>=14)
-#                   
-#                   #Descartar pixeles con más de 13 años con fallas en la linea base
-#                   if(sum(ind.falla) == 0)
-#                   {
-#                         DataFiles<-DataFiles
-#                   } else {
-#                         DataFiles<-DataFiles[-ind.falla,]
-#                   }
-                  
                   
                   #Eliminar las columnas de los rendimientos
                   DataFiles<-DataFiles[,!names(DataFiles) %in% (paste0("X20",22:49))]
@@ -135,6 +139,7 @@ for(c in 1:length(crops)){
                   colnames(DataFiles_fpu)<-c("FPU","num_pixels",paste0("Rend_fpu_20",22:49))
                   DataFiles_fpu$sce<- "WFD"
                   DataFiles_fpu$sys<- sys[s]
+                  #DataFiles_fpu$mean<- rowMeans(DataFiles_fpu[,3:30]) 
                   
                   #Ordenar datos
                   DataFiles_fpu<- DataFiles_fpu[,c("FPU","num_pixels", "sce", "sys", paste0("Rend_fpu_20",22:49))]

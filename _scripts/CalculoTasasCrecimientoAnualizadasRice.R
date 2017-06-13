@@ -1,4 +1,4 @@
-### calculo de tasas de crecimiento anualizadas
+### calculo de tasas de crecimiento anualizada, ajuste y correcion Rice
 
 grd<- ("//dapadfs/workspace_cluster_6/Socioeconomia/GF_and_SF/BID_2/YieldsWeight/")
 copy<- ("//dapadfs/workspace_cluster_6/Socioeconomia/GF_and_SF/BID_2/TasasCrecimiento/")
@@ -16,7 +16,9 @@ crops<- c("Rice","Bean","Wheat","Maize", "Soybean")
 
 models<- c("bcc_csm1_1","bnu_esm","cccma_canesm2", "gfld_esm2g", "inm_cm4", "ipsl_cm5a_lr", "miroc_miroc5" ,"mpi_esm_mr","ncc_noresm1_m","WFD") 
 
-c=2;s=2;m=1
+# c=1
+# s=1
+# m=1
 for (c in 1:length(crops)){
       for (s in 1:length(sys)) {
             for(m in 1:length(models)){
@@ -40,7 +42,7 @@ for (c in 1:length(crops)){
                   
                   #creando matrix para vaciar los datos
                   tc_an<- matrix(nrow =nrow(y),ncol = ncol(y))
-                  t<-1986:2036 # est o ha sido ajustado alterna 1984:2034
+                  t<-1986:2036 # est o ha sido ajustado
 
                   ###calculo de la tasa de crecimiento
                   for (i in 3:ncol(y)){
@@ -62,7 +64,6 @@ for (c in 1:length(crops)){
                   tc_an<- tc_an[,c( "crops", "treat", models)]
                   
                   write.csv(x = tc_an,file = paste(copy,"tc_an_",crops[c],"_",sys[s],"_FPU.csv", sep = ""))
-                  
                   cat(paste("Running rates", crops[c], " ", sys[s], " it's done\n", sep = "" ))
                   }
             }

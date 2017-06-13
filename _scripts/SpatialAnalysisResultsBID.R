@@ -103,15 +103,19 @@ library(ggthemes)
 library(broom)
 library(dplyr)
 library(tidyr)
+library(reshape)
+library(ggplot2)
+library(RColorBrewer)
+
 
 fpuMaps <- shapefile(paste0(map,"FPU_Latinoamerica.shp"))
 grd<-c("//dapadfs/workspace_cluster_6/Socioeconomia/GF_and_SF/BID_2/YieldsWeight/")
-c=i=1
+
 
 plotList<-list()
 allg<- list()
 #Rice
-c=1
+
 avgCrops <- lapply(1:length(crops), function(c){
       
       dataF <- list.files(path = grd, pattern = crops[c],full.names = T)
@@ -129,8 +133,7 @@ avgCrops <- do.call(rbind, avgCrops)
 # gg <- gg + theme_bw()
 # gg
 
-require(ggplot2)
-library(RColorBrewer)
+
 hm.palette <- colorRampPalette(rev(brewer.pal(11, 'Spectral')), space='Lab')  
 names(avgCrops)[5] <- "Yields_weighted"
 
@@ -180,8 +183,8 @@ for(c in 1:length(crops)){
       
      
       
-      
-      
+c=1
+i=1
       
 for(i in 1:length(gcm)){
 
@@ -206,9 +209,29 @@ for(i in 1:length(gcm)){
              geom_path(data = newobj,colour="black", aes(long, lat, group=group), size=0.5)+
              coord_map()+ scale_fill_viridis() + 
              labs(title=paste( crops[c], " promedio de los rendimientos ponderados y agregados\n", gcm[i]," ,sistema irrigado\n (2050-2020)" ,sep = ""))
-       
+       p
      
               plotList[[i]]<-p 
    
  } 
-  
+
+### prueba grafica para un solo systema
+
+require(dplyr)
+test<-DataFiles
+
+
+proof <- test %>% group_by(sce,sys) %>% do(., merge(fpuMaps, ., by.x="New_FPU", by.y="FPU") 
+                                               %>% fortify(., region = "New_FPU"))
+
+
+                                        
+
+p<-ggplot() + geom_map(data = test, aes(map_id =FPU, fill = mean),colour="black", map = proof) +
+      expand_limits(x = proof$long, y = proof$lat)+
+      geom_path(data = proof,colour="black", aes(long, lat, group=group), size=0.5)+
+      coord_map()+ scale_fill_viridis() + 
+      labs(title=paste( crops[c], " promedio de los rendimientos ponderados y agregados\n", gcm[i]," ,sistema irrigado\n (2050-2020)" ,sep = ""))
+p
+
+

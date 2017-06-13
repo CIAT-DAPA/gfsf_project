@@ -1,9 +1,8 @@
 
-## Operacion "Codigos BID, el final esta cerca programar o morir".
-## Autores: Los sobrevivientes Harold A. & Carlos Edo
+########################################################### INICIO ##########################################################################
+## Autores: Harold A. & Carlos Edo
 
 
-#Objetos de uso general--------------------------------------------------------------------------
 gcm <- c("bcc_csm1_1", "bnu_esm","cccma_canesm2", "gfld_esm2g", "inm_cm4", "ipsl_cm5a_lr",
          "miroc_miroc5", "mpi_esm_mr", "ncc_noresm1_m")
 
@@ -18,31 +17,15 @@ crops<- c( "Rice","Wheat", "Bean", "Soybean","Maize")
 Time<- c( "Future", "Historical")
 
 
-#############################################Codes Github
+######################################################## Codes Github #######################################################
 # Para replicar los codigos aca presentados se debe acceder al github re-running 
-github<- "C:/Users/CEGONZALEZ/Documents/GitHub/gfsf_project/_scripts/"
 setwd("C:/Users/CEGONZALEZ/Documents/GitHub/gfsf_project/_scripts")
-#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  END     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
+#_______________________CROP MODEL _______________________
 
-#Parte A. Revision a nivel de FPU---------------------------------------------------------------
-#Este codigo permite hacer agregaciones por Variedades/gcm a nivel de FPU para evualar desemeño
-# github<- "C:/Users/CEGONZALEZ/Documents/GitHub/gfsf_project/_scripts/"
-# files <- list.files(github,full.names=TRUE,pattern="Evaluación")
-# sapply(files, source)
-
-
-#Parte B Analisis  y procesamiento de datos a nivel de PIXEL:---------------------------------- 
-#Este codigo tiene el proposito de realizar analisis sobre el comportamiento de los rendimientos a nivel de pixel por FPU
-#usando variedades,gcms,etc. El resultado final son files tipo .csv 
-### "Codigo para crear files por pixeles que corresponden a los FPU y visualizar su comportamiento"
-# github<- "C:/Users/CEGONZALEZ/Documents/GitHub/gfsf_project/_scripts/"
-# files <- list.files(github,full.names=TRUE,pattern="Proof")
-# sapply(files, source)
-# 
-
-
+#Parte A. Matriz cultivo + rendimientos modelados--------------------------------------------------
+# unimos las coordenadas y los resultados de la modelacion por variedad y GCM
 #### Source for each crop, treating individual
 source("C:/Users/CEGONZALEZ/Documents/GitHub/gfsf_project/_scripts/ProofByPixelBean.R")
 source("C:/Users/CEGONZALEZ/Documents/GitHub/gfsf_project/_scripts/ProofByPixelWheat.R")
@@ -51,39 +34,70 @@ source("C:/Users/CEGONZALEZ/Documents/GitHub/gfsf_project/_scripts/ProofByPixelM
 source("C:/Users/CEGONZALEZ/Documents/GitHub/gfsf_project/_scripts/ProofByPixelSoybean.R")
 source("C:/Users/CEGONZALEZ/Documents/GitHub/gfsf_project/_scripts/ProofByPixelWFD.R")
 
-
-#Review min, max, range mean for pixels data
-### Este codigo permite por cultivo/gcm obtener la distribución de los rendimientos 
-### para evitar datos muy bajos o muy elevados
-
-#1 Graficas por Pixel
-source("C:/Users/CEGONZALEZ/Documents/GitHub/gfsf_project/_scripts/GraphsAtPixelLevel.R")
-#2.Deteccion de outliers and extremes values
-source("C:/Users/CEGONZALEZ/Documents/GitHub/gfsf_project/_scripts/Outliers.R")
-
-
-#Parte C.----------------------------------------------------------------------------------------
+#Parte B. Seleccion de variedades  por rendimientos max a nivel de  pixel  ----------------------------
 ### "codigo para calcular los rendimientos maximos por variedad por cada pixel/gcm"
 source("C:/Users/CEGONZALEZ/Documents/GitHub/gfsf_project/_scripts/SelectYieldByVarietiesAtPixel.R")
 
-# 3.review FPUs aggregation tendencia entre WFD/GCMS
-source("C:/Users/CEGONZALEZ/Documents/GitHub/gfsf_project/_scripts/AgreggationProofByFPU.R")
 
-#Agregacion de rendimientos a nivel de pixel a FPU
-#Este codigo toma los rendimientos y los agrega a nivel FPU, calculando una rendimiento ponderado
-### "codigo para calcular lso rendimientos poderados y agregados por FPU"
-source("C:/Users/CEGONZALEZ/Documents/GitHub/gfsf_project/_scripts/AgreggationVersionCarlos.R")
+#Parte C. Agregación de rendimientos a nivel de FPU, intervencion para Arroz en Chile/Ecuador  --------
+### "codigo para calcular los rendimientos maximos por variedad por cada pixel/gcm"
+source("C:/Users/CEGONZALEZ/Documents/GitHub/gfsf_project/_scripts/AgreggationVersionCarlosRice.R")
 
 
-### "Presentacion del formato adecuado para ser leido por IMPACT"
+#Parte D. Calculo de las tasas de crecimiento -------------------------------------------------------
+#Este codigo toma los rendimientos ponderados GCM e WFD y calcula la tasa de crecimiento a nivel de FPU
 source("C:/Users/CEGONZALEZ/Documents/GitHub/gfsf_project/_scripts/CalculoTasasCrecimientoAnualizadas.R")
 
-#Presentacion del file en el formato requerido por CCProcessing.gms
-source("C:/Users/CEGONZALEZ/Documents/GitHub/gfsf_project/_scripts/FormatoLongAppropiateIMPACT.R")
 
-#Parte D.---------------------------------------------------------------------------------------
+#Parte E. transfiere los archivos procesados en R a GAMS para ser incluidos en el modelo IMPACT ------- 
+#Presentacion del file en el formato requerido por CCProcessing.gms
+source("C:/Users/CEGONZALEZ/Documents/GitHub/gfsf_project/_scripts/FormatoLongAppropiateIMPACTRice.R")
+
+
+#_______________________IMPACT MODEL _______________________
+#Parte F.---------------------------------------------------------------------------------------
 #Procesamiento de los resultados de IMPACT para presentar reportes y graficos.
-source("C:/Users/CEGONZALEZ/Documents/GitHub/gfsf_project/_scripts/ProcesamientoResultadosIMMPACTBIDVersionCarlos.R")
+source("C:/Users/CEGONZALEZ/Documents/GitHub/gfsf_project/_scripts/ResultsRegionsBIDPhase2BIDV2.R")
+
+#Parte G.---------------------------------------------------------------------------------------
+#Procesamiento de los resultados de IMPACT para presentar reportes y graficos.
+source("C:/Users/CEGONZALEZ/Documents/GitHub/gfsf_project/_scripts/RasterByChapterBID.R")
+
+
+#Parte F.---------------------------------------------------------------------------------------
+#Este codigo permite graficar los raster tanto del reporte final como del capitulo del libro
+#Dentro de el se halla un codigo para calcular los rendimientos promedios entre variedades.
+source("C:/Users/CEGONZALEZ/Documents/GitHub/gfsf_project/_scripts/SpatialAnalysisResultsBID.R")
+
+
+
+#_____________________FOLDERS_____________________________________
+# Version 2 o "V2" esta relacionada con los resultados elegidos para presentar
+# Phase 2 esta relacionado con los resultados actuales de la modelacion de cultivo e impact
+# Resultados generados por impact 
+("\\dapadfs\workspace_cluster_6\Socioeconomia\GF_and_SF\BID_2\ResultsIMPACT\AggregationBID\Phase2")
+
+# Folder donde se guardan los archivos para los reportes
+("\\dapadfs\workspace_cluster_6\Socioeconomia\GF_and_SF\BID_2\ResultsIMPACT\AggregationBID\Phase2\Test\Tablas&GraficasReporte")
+
+# Tasas de crecimiento diferentes versiones "LongFormat_v2"
+("\\dapadfs\workspace_cluster_6\Socioeconomia\GF_and_SF\BID_2\tc_copy")
+
+
+
+######################################################## Codigos de pruebas y analisis  ##########################################
+
+#     1 Graficas por Pixel
+source("C:/Users/CEGONZALEZ/Documents/GitHub/gfsf_project/_scripts/GraphsAtPixelLevel.R")
+#     2.Deteccion de outliers and extremes values, definicion de status de los rendimientos a nivel de Pixel 
+source("C:/Users/CEGONZALEZ/Documents/GitHub/gfsf_project/_scripts/Outliers.R")
+
+#     3.review FPUs aggregation tendencia entre WFD/GCMS, agregaciones de cultivos por FPU, para revisiones mas detalladas
+source("C:/Users/CEGONZALEZ/Documents/GitHub/gfsf_project/_scripts/AgreggationProofByFPU.R")
+
+#     4.review FPUs aggregation tendencia entre WFD/GCMS
+source("C:/Users/CEGONZALEZ/Documents/GitHub/gfsf_project/_scripts/comparisonInitiall_UpdatedResultsIMPACTV2.R")
+
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% END %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
