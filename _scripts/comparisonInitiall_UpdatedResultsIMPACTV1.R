@@ -148,7 +148,7 @@ z<- do.call(rbind, k)
 
 # exportar datos a excel
 require(xlsx)
-write.xlsx( x = z,file= paste(copy, "BID.xlsx", sep = ""),
+write.xlsx( x = z,file= paste(copy, "BID1.xlsx", sep = ""),
             sheetName = "DatosTotales", col.names = TRUE, append = TRUE, showNA = FALSE)
 
 
@@ -163,7 +163,7 @@ hm.palette <- colorRampPalette(rev(brewer.pal(11, 'Spectral')), space='Lab')
 n<- list()
 for (i in seq_along(datatotal)){
       
-      png(filename=paste(copy,datatotal[i],"BID.png",sep=""), 
+      png(filename=paste(copy,datatotal[i],"BID1.png",sep=""), 
           width = 10, height = 10, units = 'in', res = 300)
       
        n<-ggplot(z[which(z$impactparameter==datatotal[i]),], aes(region,commodity)) + 
@@ -256,7 +256,7 @@ z<- do.call(rbind, k)
 
 # exportar datos a excel
 require(xlsx)
-write.xlsx( x = z,file= paste(copy, "BID.xlsx", sep = ""),
+write.xlsx( x = z,file= paste(copy, "BID1.xlsx", sep = ""),
             sheetName = "DataAgregados", col.names = TRUE, append = TRUE, showNA = FALSE)
 
 
@@ -269,7 +269,7 @@ z<- z %>%
 n<- list()
 for (i in seq_along(dataagg)){
       
-      png(filename=paste(copy,dataagg[i],"BID.png",sep=""), 
+      png(filename=paste(copy,dataagg[i],"BID1.png",sep=""), 
           width = 10, height = 10, units = 'in', res = 300)
       
     n<-ggplot(z[which(z$impactparameter==dataagg[i]),], aes(region,commodity)) + 
@@ -320,7 +320,7 @@ z<- k
 
 # exportar datos a excel
 require(xlsx)
-write.xlsx( x = z,file= paste(copy, "BID.xlsx", sep = ""),
+write.xlsx( x = z,file= paste(copy, "BID1.xlsx", sep = ""),
             sheetName = "DatosEspeciales", col.names = TRUE, append = TRUE, showNA = FALSE)
 
 
@@ -330,7 +330,7 @@ z<- z %>%
       gather("scenarios", "Val" , 5:ncol(z))
 
 
-png(filename=paste(copy,"NetTradeBID.png",sep=""), 
+png(filename=paste(copy,"NetTradeBID1.png",sep=""), 
  width = 10, height = 10, units = 'in', res = 300)
 
 n<-ggplot(z, aes(region,commodity)) + 
@@ -385,7 +385,7 @@ z<- do.call(rbind, k)
 
 # exportar datos a excel
 require(xlsx)
-write.xlsx( x = z,file= paste(copy, "BID.xlsx", sep = ""),
+write.xlsx( x = z,file= paste(copy, "BID1.xlsx", sep = ""),
             sheetName = "SystemsProduction", col.names = TRUE, append = TRUE, showNA = FALSE)
 
 
@@ -403,7 +403,7 @@ z$commodity<- as.character(z$commodity)
 n<- list()
 for (i in seq_along(datasys)){
       
-      png(filename=paste(copy,datasys[i],"BID.png",sep=""), 
+      png(filename=paste(copy,datasys[i],"BID1.png",sep=""), 
           width = 10, height = 10, units = 'in', res = 300)
       
       n<-ggplot(z[which(z$impactparameter==datasys[i]),], aes(region,commodity)) + 
@@ -498,16 +498,9 @@ z<- z %>% spread(phase, Freq)
 z<- as.data.frame(z)
 # exportar datos a excel
 require(xlsx)
-write.xlsx(x = z,file= paste(copy, "BID.xlsx", sep = ""),
+write.xlsx(x = z,file= paste(copy, "BID1.xlsx", sep = ""),
             sheetName = "TrendsNetTrade", col.names = TRUE, append = TRUE, showNA = FALSE)
 
-
-# ##Calcular la media de los impactos
-# tanz$CC_mean <- rowMeans(x=c[,5:8], na.rm=TRUE)
-# tanz$NoCC_mean <- c[,9]
-# tanz<- tanz[,c("impactparameter","commodity","region","trend","CC_mean","NoCC_mean")]
-# write.csv(c, paste(copy, "NettradePAKTOTAL.csv", sep = ""),row.names = FALSE)
-# 
 
 #Area  y rendimientos---------------------------------------
 tznet2<- mdwide_tan
@@ -527,7 +520,7 @@ tznet2_t$NoCC<- NULL
 tznet2_t <- tznet2_t %>% spread(Cat, mean)
 
 require(xlsx)
-write.xlsx(x = tznet2_t,file= paste(copy, "BID.xlsx", sep = ""),
+write.xlsx(x = tznet2_t,file= paste(copy, "BID1.xlsx", sep = ""),
            sheetName = "Area&YieldTotal", col.names = TRUE, append = TRUE, showNA = FALSE)
 
 
@@ -558,67 +551,67 @@ csa$percentual_change <- (csa$CC-csa$NoCC)/csa$NoCC * 100
 
 csa<- as.data.frame(csa)
 require(xlsx)
-write.xlsx(x = csa,file= paste(copy, "BID.xlsx", sep = ""),
+write.xlsx(x = csa,file= paste(copy, "BID1.xlsx", sep = ""),
            sheetName = "dippArea&Yield", col.names = TRUE, append = TRUE, showNA = FALSE)
 
 
-
-#grafico Area de cultivo
-png(filename=paste(copy,"AreaCommoditiesBID.png", sep=""), width = 10, height = 10, units = 'in', res =800)
-
-n<- ggplot(csa[which(csa$impactparameter=="Total Area"),], aes(x=Year, y=percentual_change,group=region,color=region ))+
-      geom_line(size=0.7) + facet_grid(phase~commodity,scales = "free")+
-      xlab('Years') + ylab('Percentual change') + coord_equal() +
-      coord_cartesian(ylim = c(-10, 10)) +  
-      coord_cartesian(xlim = c(2020, 2050)) +  
-      scale_x_continuous( breaks=seq(2020,2050,1))+
-      labs(title=paste("Net Trade by crops and comparison Initiall and Updated results\n All scenarios",sep = ""))
-      
-
-
-plot(n)
-dev.off()
-
-
-
-
-
-c<-ggplot(data=z, aes(Val,Year,group=Scenarios,color=Scenarios)) +
-      geom_line(linetype="dashed",size=1)+ facet_grid(Commodity~., scales = "free") +
-      labs(title=paste("Net Trade by FPU= ",fpu[f], " ,RTB Crops\n All scenarios",sep = ""),y="Net trade (000 mt)",x="Year")+
-      theme(strip.text.y = element_text(angle = 0,size = 12))+
-      geom_hline(aes(yintercept=0)) 
-
-plot(c)
-dev.off()  
-
-
-
-
-
-
-plots <- csa %>% group_by(region, phase) %>% do (plot = ggplot(., aes(x=Year, y=percentual_change ))+ 
-                                                     geom_line(aes(colour = commodity),  size = 0.5) + 
-                                                     facet_wrap( ~ commodity,ncol=2)+
-                                                     geom_area(position = "stack", alpha = 0.4)+
-                                                     ggtitle("Area") + theme_bw() + theme(plot.title=element_text(size=15, face = 'bold'))+
-                                                     xlab('Years') + ylab('Percentual change') + coord_equal() + theme(legend.position="none")+
-                                                     coord_cartesian(ylim = c(-10, 10)) +   scale_y_continuous( breaks=seq(-10, 10, 2))+
-                                                     coord_cartesian(xlim = c(2020, 2050)))
-                                                        
-
-
-# #grafico numero de Aminales 
-# png(filename=paste(grd,"Numer Animales PK.png", sep=""), width = 10, height = 10, units = 'in', res =800)
 # 
-# n1<- ggplot(csa[which(csa$impactparameter=="Animal Numbers"),], aes(x=Year, y=percentual_change ))
-# n1<- n1 + geom_line(aes(colour = commodity),  size = 0.5) + facet_wrap( ~ commodity,ncol=2)
-# n1<- n1 + geom_area(position = "stack", alpha = 0.4)
-# n1<- n1 + ggtitle("Animal Numbers") + theme_bw() + theme(plot.title=element_text(size=15, face = 'bold'))
-# n1<- n1 + xlab('Years') + ylab('Percentual change') + coord_equal() + theme(legend.position="none")
-# n1<- n1 + coord_cartesian(ylim = c(-0.5, 0.5)) + scale_y_continuous( breaks=seq(-0.5,0.5,0.2))
-# n1<- n1 + coord_cartesian(xlim = c(2020, 2050)) +   scale_x_continuous( breaks=seq(2020,2050,5))
+# #grafico Area de cultivo
+# png(filename=paste(copy,"AreaCommoditiesBID1.png", sep=""), width = 10, height = 10, units = 'in', res =800)
 # 
-# n1
+# n<- ggplot(csa[which(csa$impactparameter=="Total Area"),], aes(x=Year, y=percentual_change,group=region,color=region ))+
+#       geom_line(size=0.7) + facet_grid(phase~commodity,scales = "free")+
+#       xlab('Years') + ylab('Percentual change') + coord_equal() +
+#       coord_cartesian(ylim = c(-10, 10)) +  
+#       coord_cartesian(xlim = c(2020, 2050)) +  
+#       scale_x_continuous( breaks=seq(2020,2050,1))+
+#       labs(title=paste("AREA by crops and comparison Initiall and Updated results\n All scenarios",sep = ""))
+#       
+# 
+# 
+# plot(n)
 # dev.off()
 # 
+# 
+# 
+# 
+# 
+# c<-ggplot(data=z, aes(Val,Year,group=Scenarios,color=Scenarios)) +
+#       geom_line(linetype="dashed",size=1)+ facet_grid(Commodity~., scales = "free") +
+#       labs(title=paste("Net Trade by FPU= ",fpu[f], " ,RTB Crops\n All scenarios",sep = ""),y="Net trade (000 mt)",x="Year")+
+#       theme(strip.text.y = element_text(angle = 0,size = 12))+
+#       geom_hline(aes(yintercept=0)) 
+# 
+# plot(c)
+# dev.off()  
+# 
+# 
+# 
+# 
+# 
+# 
+# plots <- csa %>% group_by(region, phase) %>% do (plot = ggplot(., aes(x=Year, y=percentual_change ))+ 
+#                                                      geom_line(aes(colour = commodity),  size = 0.5) + 
+#                                                      facet_wrap( ~ commodity,ncol=2)+
+#                                                      geom_area(position = "stack", alpha = 0.4)+
+#                                                      ggtitle("Area") + theme_bw() + theme(plot.title=element_text(size=15, face = 'bold'))+
+#                                                      xlab('Years') + ylab('Percentual change') + coord_equal() + theme(legend.position="none")+
+#                                                      coord_cartesian(ylim = c(-10, 10)) +   scale_y_continuous( breaks=seq(-10, 10, 2))+
+#                                                      coord_cartesian(xlim = c(2020, 2050)))
+#                                                         
+# 
+# 
+# # #grafico numero de Aminales 
+# # png(filename=paste(grd,"Numer Animales PK.png", sep=""), width = 10, height = 10, units = 'in', res =800)
+# # 
+# # n1<- ggplot(csa[which(csa$impactparameter=="Animal Numbers"),], aes(x=Year, y=percentual_change ))
+# # n1<- n1 + geom_line(aes(colour = commodity),  size = 0.5) + facet_wrap( ~ commodity,ncol=2)
+# # n1<- n1 + geom_area(position = "stack", alpha = 0.4)
+# # n1<- n1 + ggtitle("Animal Numbers") + theme_bw() + theme(plot.title=element_text(size=15, face = 'bold'))
+# # n1<- n1 + xlab('Years') + ylab('Percentual change') + coord_equal() + theme(legend.position="none")
+# # n1<- n1 + coord_cartesian(ylim = c(-0.5, 0.5)) + scale_y_continuous( breaks=seq(-0.5,0.5,0.2))
+# # n1<- n1 + coord_cartesian(xlim = c(2020, 2050)) +   scale_x_continuous( breaks=seq(2020,2050,5))
+# # 
+# # n1
+# # dev.off()
+# # 

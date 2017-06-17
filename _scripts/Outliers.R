@@ -6,8 +6,6 @@
 gdr1<- c("//dapadfs/workspace_cluster_6/Socioeconomia/GF_and_SF/BID_2/Pixels/")
 sys<- c( "IRRI", "RA")
 crops<- c("Rice","Bean","Wheat","Maize", "Soybean") 
-# reg<- read.csv("//dapadfs/workspace_cluster_6/Socioeconomia/GF_and_SF/BID_2/ListFPUs.csv",header = T,stringsAsFactors = F )
-# pots<- reg[,1]
 data_out<-c("//dapadfs/workspace_cluster_6/Socioeconomia/GF_and_SF/BID_2/Pixels/outliers/")
 
 ########################################### Proceso para detectar los outliers generacion de tablas--------
@@ -157,7 +155,7 @@ for(c in 1:length(crops)){
 }
 
 
-##################### apilar los datos finales para el reporte
+##################### Apilar los datos finales para el reporte
 ###  compilacion reportes
 c_files <- list.files(path=data_out, pattern =c("DataExtremes_"),full.names = T)
 c_files <- lapply(c_files, read.csv, stringsAsFactors = F)
@@ -269,10 +267,6 @@ for(c in 1:length(crops)){
 } 
 
 ########################################## outliers detection #################################################
-
-library(extremevalues)
-library(outliers)
-
 
 for(c in 1:length(crops)){ 
       #cargar files

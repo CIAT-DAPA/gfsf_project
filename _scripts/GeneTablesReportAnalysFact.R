@@ -1,5 +1,6 @@
 
-### review primer resultado de IMPACT
+### Generacion de tablas reportes para ser usadas en los analysis multifactoriales
+### CArlos Eduardo
 
 library(dplyr)
 library(tidyr)

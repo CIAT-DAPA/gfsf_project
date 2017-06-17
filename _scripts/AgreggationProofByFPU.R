@@ -9,8 +9,6 @@ grd1<- ("//dapadfs/workspace_cluster_6/Socioeconomia/GF_and_SF/BID_2/Pixels/Vari
 copy<- ("//dapadfs/workspace_cluster_6/Socioeconomia/GF_and_SF/BID_2/sum/FPUWeight/")
 gcm <- c("bcc_csm1_1", "bnu_esm","cccma_canesm2", "gfld_esm2g", "inm_cm4", "ipsl_cm5a_lr",
          "miroc_miroc5", "mpi_esm_mr", "ncc_noresm1_m", "WFD")
-# reg<- read.csv("//dapadfs/workspace_cluster_6/Socioeconomia/GF_and_SF/BID_2/ListFPUs.csv",header = T,stringsAsFactors = F )
-# pots<- reg[,1]
 resum<- ("//dapadfs/workspace_cluster_6/Socioeconomia/GF_and_SF/BID_2/sum/hist/")
 
 #objetos
