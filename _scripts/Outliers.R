@@ -334,3 +334,8 @@ c_files$X<- NULL
 c_files<- c_files[,c("crop","sys","variable", "mean","sd", "min", "max")]
 write.csv(c_files,file = paste(resum,"SummaryALLcrops.csv", sep = ""))
 
+
+####################### 
+
+library(mice)
+tempnomiss<- mice(replacecolumn)

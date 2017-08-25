@@ -1,6 +1,6 @@
 # codigo para cargar datos por grupos y dejarlos listos para el procesamiento.
 # Autor Carlos Edo Gonzalez R. 
-
+g=gc;rm(list = ls())
 # directories-------
 setwd("//dapadfs/workspace_cluster_6/Socioeconomia/GF_and_SF/USAIDForGFSF/USAIDForGFSF")
 copy<- c("//dapadfs/workspace_cluster_6/Socioeconomia/GF_and_SF/USAIDForGFSF/Graphs/")
@@ -44,7 +44,7 @@ saveRDS(datasys, file = paste(rdsFiles, "datasys.rds",sep = ""))
 rm(clist,datasys)
 
 # Datos categorias totales-------------
-datatotal<- c("TYldXAgg", "TAreaXAgg")
+datatotal<- c("TAreaXAgg", "TYldXAgg", "QSupXAgg") # agregado TYldXAgg, 
 clist<-list()
 for( i in 1:length(datatotal)){
       #load files
@@ -65,7 +65,7 @@ rm(clist,datatotal)
 
 
 # Datos categorias agregados---------- 
-dataagg<- c("QDXAgg","QINTXAgg","QBFXAgg","QFXAgg", "QLXAgg","QOTHRXAgg","QSupXAgg" )
+dataagg<- c("QINTXAgg","QBFXAgg","QFXAgg", "QLXAgg","QOTHRXAgg" )
 clist<-list()
 for( i in 1:length(dataagg)){
       #load files
@@ -105,8 +105,9 @@ saveRDS(dataanimal, file = paste(rdsFiles, "dataanimal.rds",sep = ""))
 rm(clist,dataanimal)
 
 # data net trade & food -------
-TradeFood<- c("QNXAgg", "FoodAvailXAgg")
+TradeFood<- c("QNXAgg", "FoodAvailXAgg","PerCapKCalCXAgg", "QDXAgg","QSupXAgg")#"TYldXAgg"
 clist<-list()
+#i=3
 for( i in 1:length(TradeFood)){
       #load files
       clist[i]<- list.files(path = grp,pattern= paste("^",TradeFood[i], sep=""),full.names = T)
@@ -124,8 +125,10 @@ TradeFood<- do.call(rbind, clist)
 saveRDS(TradeFood, file = paste(rdsFiles, "TradeFood.rds",sep = ""))
 rm(clist,TradeFood)
 
+
+
 # data socieconomic-------
-EcoFood<- c("GDPXAgg","pcGDPXAgg","PerCapKCalXAgg","PopulationAtRiskXagg","PopXAgg","ShareAtRiskXagg","TotalMalnourishedXagg")
+EcoFood<- c("PopulationAtRiskXagg","PopXAgg","TotalMalnourishedXagg")
 clist<-list()
 for( i in 1:length(EcoFood)){
       #load files
@@ -141,4 +144,129 @@ for( i in 1:length(EcoFood)){
 EcoFood<- do.call(rbind, clist)
 saveRDS(EcoFood, file = paste(rdsFiles, "EcoFood.rds",sep = ""))
 rm(clist,EcoFood)
+
+
+# data socieconomic2-------
+EcoFood2<- c("GDPXAgg","pcGDPXAgg")
+clist<-list()
+for( i in 1:length(EcoFood2)){
+      #load files
+      clist[i]<- list.files(path = grp,pattern= paste("^",EcoFood2[i], sep=""),full.names = T)
+      clist[i]<- lapply(clist[i],read.csv,header=F)
+      clist[[i]]$parameter<- EcoFood2[i]
+      names(clist[[i]])[1]<-"Scenarios"
+      names(clist[[i]])[2]<- "Regions"
+      names(clist[[i]])[3]<-"Year"    
+      names(clist[[i]])[4]<-"Val"
+      cat(paste("Running the impactparameter ",EcoFood2[i],  " it's done\n", sep = "" ))
+}
+EcoFood2<- do.call(rbind, clist)
+saveRDS(EcoFood2, file = paste(rdsFiles, "EcoFood2.rds",sep = ""))
+rm(clist,EcoFood2)
+
+
+# data socieconomic3-------
+EcoFood3<- c("ShareAtRiskXagg")
+clist<-list()
+for( i in 1:length(EcoFood3)){
+      #load files
+      clist[i]<- list.files(path = grp,pattern= paste("^",EcoFood3[i], sep=""),full.names = T)
+      clist[i]<- lapply(clist[i],read.csv,header=F)
+      clist[[i]]$parameter<- EcoFood3[i]
+      names(clist[[i]])[1]<-"Scenarios"
+      names(clist[[i]])[2]<- "Regions"
+      names(clist[[i]])[3]<-"Year"    
+      names(clist[[i]])[4]<-"Val"
+      cat(paste("Running the impactparameter ",EcoFood3[i],  " it's done\n", sep = "" ))
+}
+EcoFood3<- do.call(rbind, clist)
+saveRDS(EcoFood3, file = paste(rdsFiles, "EcoFood3.rds",sep = ""))
+rm(clist,EcoFood3)
+
+
+#Data parameters Water-------
+green<- c("GreenwatXAgg")
+clist<-list()
+
+for( i in 1:length(green)){
+      #load files
+      clist[i]<- list.files(path = grp,pattern= paste("^",green[i], sep=""),full.names = T)
+      clist[i]<- lapply(clist[i],read.csv,header=F)
+      clist[[i]]$parameter<- green[i]
+      names(clist[[i]])[1]<-"Scenarios"
+      names(clist[[i]])[2]<-"Commodity"
+      names(clist[[i]])[3]<-"Regions"    
+      names(clist[[i]])[4]<-"Sys"
+      names(clist[[i]])[5]<-"Year"
+      names(clist[[i]])[6]<-"Val"
+      cat(paste("Running the impactparameter ",green[i],  " it's done\n", sep = "" ))
+}
+green<- do.call(rbind, clist)
+saveRDS(green, file = paste(rdsFiles, "green.rds",sep = ""))
+rm(clist,green)
+
+
+#Data parameter shock climatico-----------
+Blue<- c("BlueWatXAgg")
+clist<-list()
+
+for( i in 1:length(Blue)){
+      #load files
+      clist[i]<- list.files(path = grp,pattern= paste("^",Blue[i], sep=""),full.names = T)
+      clist[i]<- lapply(clist[i],read.csv,header=F)
+      clist[[i]]$parameter<- Blue[i]
+      names(clist[[i]])[1]<-"Scenarios"
+      names(clist[[i]])[2]<-"Commodity"
+      names(clist[[i]])[3]<-"Regions"    
+      names(clist[[i]])[4]<-"Year"
+      names(clist[[i]])[5]<-"Val"
+      cat(paste("Running the impactparameter ",Blue[i],  " it's done\n", sep = "" ))
+}
+Blue<- do.call(rbind, clist)
+saveRDS(Blue, file = paste(rdsFiles, "Blue.rds",sep = ""))
+rm(clist,Blue)
+
+#Data parameter shock climatico--------------
+shock<- c("YldCliShkXAgg")
+clist<-list()
+for( i in 1:length(shock)){
+      #load files
+      clist[i]<- list.files(path = grp,pattern= paste("^",shock[i], sep=""),full.names = T)
+      clist[i]<- lapply(clist[i],read.csv,header=F)
+      clist[[i]]$parameter<- shock[i]
+      names(clist[[i]])[1]<-"Scenarios"
+      names(clist[[i]])[2]<- "Commodity"
+      names(clist[[i]])[3]<-"Regions" 
+      names(clist[[i]])[4]<-"Sys"
+      names(clist[[i]])[5]<-"Year"
+      names(clist[[i]])[6]<-"Val"
+      cat(paste("Running the impactparameter ",shock[i],  " it's done\n", sep = "" ))
+}
+shock<- do.call(rbind, clist)
+saveRDS(shock, file = paste(rdsFiles, "shock.rds",sep = ""))
+rm(clist,shock)
+
+# Precios --------------
+precios<- c("PPXAgg","PCXAgg")
+clist<-list()
+
+for( i in 1:length(precios)){
+      #load files
+      clist[i]<- list.files(path = grp,pattern= paste("^",precios[i], sep=""),full.names = T)
+      clist[i]<- lapply(clist[i],read.csv,header=F)
+      clist[[i]]$parameter<- precios[i]
+      names(clist[[i]])[1]<-"Scenarios"
+      names(clist[[i]])[2]<- "Commodity"
+      names(clist[[i]])[3]<-"Regions" 
+      names(clist[[i]])[4]<-"Year"
+      names(clist[[i]])[5]<-"Val"
+      cat(paste("Running the impactparameter ",precios[i],  " it's done\n", sep = "" ))
+}
+precios<- do.call(rbind, clist)
+saveRDS(precios, file = paste(rdsFiles, "precios.rds",sep = ""))
+rm(clist,precios)
+
+
+# 
+
 

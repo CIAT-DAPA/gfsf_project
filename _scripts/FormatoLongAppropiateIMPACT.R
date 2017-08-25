@@ -32,7 +32,7 @@ gcm <- c("bcc_csm1_1", "bnu_esm","cccma_canesm2", "gfld_esm2g", "inm_cm4", "ipsl
 treat<- c("air", "arf")
 
 # load files 
-c_files<- list.files()
+c_files<- list.files(pattern = ".csv")
 c_files<- lapply(c_files, read.csv)
 c_files<- do.call(rbind, c_files)
 
@@ -66,7 +66,7 @@ write.csv(c_files,file='//dapadfs/workspace_cluster_6/Socioeconomia/GF_and_SF/BI
 
 
 ### poner las versiones que se estan trabajando
-write.csv(c_files,file='//dapadfs/workspace_cluster_6/Socioeconomia/GF_and_SF/BID_2/tc_copy/LongFormat_v1.csv',row.names=F)
+write.csv(c_files,file='//dapadfs/workspace_cluster_6/Socioeconomia/GF_and_SF/BID_2/tc_copy/LongFormat_Final.csv',row.names=F)
 
 #comparaciones con el archivo original
 data1<- read.csv("C:/Users/CEGONZALEZ/Documents/Scripts/BID/CCPROCESSING/InputFiles/LongFormat.csv")
