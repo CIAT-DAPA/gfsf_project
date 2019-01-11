@@ -62,9 +62,6 @@ t<- c(2010, 2030,2050)
 # Vector con los cultivos para RTB incluyendo Bananas
 rtb<- c("PUL-Beans","PUL-Chickpeas","PUL-Cowpeas","PUL-Lentils","PUL-Pigeonpeas","PUL-Other Pulses") 
 
-
-
-
 cfiles<-list.files(path = rdsFiles, pattern = "Blue.rds|dataagg.rds|datatotal.rds|precios.rds|TradeFood.rds",full.names = T)
 cfiles<- lapply(cfiles, readRDS)
 cdata<-cfiles

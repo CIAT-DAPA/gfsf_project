@@ -44,7 +44,7 @@ saveRDS(datasys, file = paste(rdsFiles, "datasys.rds",sep = ""))
 rm(clist,datasys)
 
 # Datos categorias totales-------------
-datatotal<- c("TAreaXAgg", "TYldXAgg", "QSupXAgg") # agregado TYldXAgg, 
+datatotal<- c("TAreaXAgg", "TYldXAgg", "QSupXAgg") # agregado TYldXAgg, "QSupXAgg"
 clist<-list()
 for( i in 1:length(datatotal)){
       #load files
@@ -187,10 +187,10 @@ rm(clist,EcoFood3)
 #Data parameters Water-------
 green<- c("GreenwatXAgg")
 clist<-list()
-
+i=1
 for( i in 1:length(green)){
       #load files
-      clist[i]<- list.files(path = grp,pattern= paste("^",green[i], sep=""),full.names = T)
+      clist[i]<- list.files(path = grp,pattern= paste(green[i], sep=""),full.names = T)
       clist[i]<- lapply(clist[i],read.csv,header=F)
       clist[[i]]$parameter<- green[i]
       names(clist[[i]])[1]<-"Scenarios"
@@ -212,7 +212,7 @@ clist<-list()
 
 for( i in 1:length(Blue)){
       #load files
-      clist[i]<- list.files(path = grp,pattern= paste("^",Blue[i], sep=""),full.names = T)
+      clist[i]<- list.files(path = grp,pattern= paste(Blue[i], sep=""),full.names = T)
       clist[i]<- lapply(clist[i],read.csv,header=F)
       clist[[i]]$parameter<- Blue[i]
       names(clist[[i]])[1]<-"Scenarios"

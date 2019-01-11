@@ -310,8 +310,8 @@ pop_csur<- filter(mdwidefs_pop,region %in% csur_p)%>%  mutate(., region="SUR")
 pop_cen<- filter(mdwidefs_pop,region %in% cen_p)%>%  mutate(., region="CEN")
 
 zpob<- list(pop_and,pop_mex,pop_bra, pop_bra, pop_csur, pop_cen)
-#Agregar por variables para las regiones a analizar
 
+#Agregar por variables para las regiones a analizar
 for( i in 1:length(zpob)){
       zpob[[i]]<-aggregate(zpob[[i]][,c(9:15)],
                            by=list(zpob[[i]]$impactparameter,zpob[[i]]$scenario,zpob[[i]]$region),FUN=sum)

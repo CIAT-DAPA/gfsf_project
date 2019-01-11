@@ -10,19 +10,19 @@ suppressMessages(library(ggplot2))
 suppressMessages(library(plyr))
 suppressMessages(library(grid))
 suppressMessages(library(gridExtra))
-suppressMessages(library(dplyr))
-suppressMessages(library(tidyverse)) 
-suppressMessages(library(modelr)) 
-suppressMessages(library(purrr)) 
-suppressMessages(library(broom)) 
+# suppressMessages(library(dplyr))
+# suppressMessages(library(tidyverse)) 
+# suppressMessages(library(modelr)) 
+# suppressMessages(library(purrr)) 
+# suppressMessages(library(broom)) 
 suppressMessages(library(tidyr)) 
 suppressMessages(library(corrplot)) 
 suppressMessages(library(FactoMineR)) 
 suppressMessages(library(factoextra)) 
 suppressMessages(library(cluster)) 
-suppressMessages(library(RCurl)) 
+# suppressMessages(library(RCurl)) 
 suppressMessages(library(ggthemes)) 
-suppressMessages(library(tidyquant))
+# suppressMessages(library(tidyquant))
 suppressMessages(library(devtools))
 suppressMessages(library(mvoutlier))
 suppressMessages(library(R.utils))
@@ -43,22 +43,56 @@ options(digits=3)
 ############################################################# BIG Regions ####################################################################
 
 rdsFiles<-c("//dapadfs/workspace_cluster_6/Socioeconomia/GF_and_SF/USAIDForGFSF/RTB_files/")
-# Big Regions[
-r<- c("EAP", "EUR","FSU", "LAC", "MEN", "NAM", "SAS", "SSA")
+#rdsFiles<-c("/mnt/workspace_cluster_6/Socioeconomia/GF_and_SF/USAIDForGFSF/RTB_files/")
+# Big Regions
+r<- c("EAP", "EUR","LAC", "MEN", "NAM", "SAS", "SSA")
 
 
 s<- c("SSP2-HGEM-HiYld2","SSP2-HGEM-RegYld2","SSP2-HGEM-HiNARS2", "SSP2-HGEM-MMEFF2","SSP2-HGEM2")
 
 # Parametro 2 All Countries.
-r2<- c("EAP", "EUR","FSU", "LAC", "MEN", "NAM", "SAS", "SSA", "Africa","Americas","DVD", "DVG","WLD")
+r2<- c("EAP", "EUR","FSU", "LAC", "MEN", "NAM", "SAS", "SSA", "Africa","Americas","DVD", "DVG")
 r3<- c("Africa","Americas", "Asia","Europe", "Oceania")
 r4<- c("Australia and New Zealand","Caribbean","Central America", "Central Asia","Eastern Africa","Eastern Asia","Eastern Europe","Melanesia",
        "Middle Africa","Northern Africa","Northern America","Northern Europe","South America","South-Eastern Asia","Southern Africa","Southern Asia",
        "Southern Europe","Western Africa","Western Asia", "Western Europe", "Western and Central Asia")
 r5<- c("MENg","EAPg")
-rall<- c(r2,r3,r4, r5)
+rall<- c(r, r2,r3,r4, r5)
 jrtb<- c("jbana","jcass", "jpota", "jswpt","jyams","jorat")
 
+africa<- c("MEN-Algeria","MEN-Egypt","MEN-Libya", "MEN-Mauritania","MEN-Morocco","MEN-Tunisia",
+           "SSA-Angola", "SSA-Benin",  "SSA-Botswana","SSA-Burkina Faso",
+           "SSA-Burundi", "SSA-Cameroon", "SSA-Central African Rep.", "SSA-Chad","SSA-Congo", "SSA-Djibouti",
+           "SSA-DRC","SSA-Equatorial Guinea", "SSA-Eritrea", "SSA-Ethiopia","SSA-Gabon",
+           "SSA-Gambia","SSA-Ghana", "SSA-Guinea", "SSA-Guinea-Bissau", "SSA-Ivory Coast",
+           "SSA-Kenya", "SSA-Lesotho",  "SSA-Liberia","SSA-Madagascar","SSA-Malawi",
+           "SSA-Mali", "SSA-Mozambique", "SSA-Namibia",  "SSA-Niger", "SSA-Nigeria", "SSA-Rwanda",
+           "SSA-Senegal", "SSA-Sierra Leon", "SSA-Somalia","SSA-South Africa",
+           "SSA-Sudan", "SSA-Swaziland",  "SSA-Tanzania", "SSA-Togo",  "SSA-Uganda", "SSA-Zambia",
+           "SSA-Zimbabwe")
+
+asia<- c("EAP-Cambodia", "EAP-China","EAP-Indonesia","EAP-Japan",
+         "EAP-Laos",  "EAP-Malaysia", "EAP-Mongolia", "EAP-Myanmar",
+         "EAP-North Korea","EAP-Other Indian Ocean", "EAP-Other Southeast Asia","EAP-Philippines",
+         "EAP-South Korea",  "EAP-Thailand", "EAP-Timor L'Este","EAP-Vietnam",
+         "EUR-Cyprus", "FSU-Armenia","FSU-Azerbaijan", "FSU-Georgia",
+         "FSU-Kazakhstan", "FSU-Kyrgyzstan",   "FSU-Tajikistan","FSU-Turkmenistan",
+         "FSU-Uzbekistan", "MEN-Iran","MEN-Iraq","MEN-Israel",
+         "MEN-Jordan", "MEN-Lebanon", "MEN-Palestine","MEN-Rest of Arabia",
+         "MEN-Saudi Arabia", "MEN-Syria", "MEN-Turkey","MEN-Yemen",
+         "SAS-Afghanistan","SAS-Bangladesh", "SAS-Bhutan", "SAS-India",
+         "SAS-Nepal","SAS-Pakistan","SAS-Sri Lanka")
+
+other<- c("EUR-Albania", "EUR-Austria","EUR-Baltic States",
+        "EUR-Belgium-Luxembourg",  "EUR-Bulgaria",
+        "EUR-Croatia",  "EUR-Czech Republic","EUR-Denmark",
+        "EUR-Finland", "EUR-France", "EUR-Germany",
+        "EUR-Greece", "EUR-Hungary","EUR-Iceland",  "EUR-Ireland", "EUR-Italy",
+        "EUR-Netherlands", "EUR-Norway","EUR-Other Balkans","EUR-Poland",
+        "EUR-Portugal","EUR-Romania", "EUR-Slovakia", "EUR-Slovenia",
+        "EUR-Spain", "EUR-Sweden","EUR-Switzerland", "EUR-UK",
+        "FSU-Belarus","FSU-Moldova", "FSU-Russia", "FSU-Ukraine",
+        "SSA-Other Atlantic", "NAM-Canada","NAM-Greenland","NAM-USA")
 
 t<- c(2010, 2030,2050)
 # Vector con los cultivos para RTB incluyendo Bananas
@@ -82,19 +116,19 @@ cdata$Scenarios<- as.character( cdata$Scenarios)
 cdata$Commodity<- as.character( cdata$Commodity)
 cdata$Regions<- as.character( cdata$Regions) 
 
-cdata<- filter(cdata, Scenarios %in% s)
+cdata<- dplyr::filter(cdata, Scenarios %in% s)
 
 
 ##### Graph area, rendimiento----------------
 yfiled<- cdata
-yfiled<- filter(yfiled, Regions %in% r) 
-yfiled<- filter(yfiled, Commodity %in% rtb)
-yfiled<- filter(yfiled, Year==2050)
+yfiled<- dplyr::filter(yfiled, !Regions %in% rall) 
+yfiled<- dplyr::filter(yfiled, Commodity %in% rtb)
+yfiled<- dplyr::filter(yfiled, Year==2050)
 yfiled<- yfiled %>% spread(Scenarios, Val)
 
 
 # Asunto banana
-
+require(dplyr)
 banana<- filter(yfiled, Commodity=="F&V-Banana" |  Commodity=="F&V-Plantain")
 colnames(banana)<- c("Commodity", "Regions","Year","parameter", "HIGH+NARS","HIGH","RMM", "REGION", "REF" )
 banana$Year<- NULL
@@ -107,7 +141,34 @@ proof<- proof %>%  gather(parameter,Val, 3:5)
 proof<- proof %>%  spread(Scenarios,Val)
 proof<- proof[c("Commodity", "Regions", "parameter", "HIGH+NARS", "HIGH", "RMM", "REGION","REF")]
       
-      
+################################# Regions #############################
+
+#africa
+proof_africa<- filter(proof,Regions %in% africa )
+proof_africa$reg<- "Africa"
+# asia
+proof_asia<- filter(proof,Regions %in% asia)
+proof_asia$reg<- "Asia"
+
+#LAC
+proof_lac<- proof[grep(pattern ="LAC",x = proof$Regions, ignore.case = T),]
+proof_lac$reg<- "Latin America & Caribbean"
+
+#Euro and NortA
+proof_other<- filter(proof,Regions %in% other)
+proof_other$reg<- "Europe & N.America"
+
+proof_world<- filter(proof, Regions=="WLD")
+proof_world$reg<- "World"
+
+# stack many dataframe
+cbaba<- do.call("rbind", list(proof_africa,proof_asia,proof_lac,proof_other,proof_world))
+cbaba<- cbaba[c("Commodity","Regions","reg","parameter","HIGH+NARS","HIGH","RMM","REGION","REF")]
+cbaba<- cbaba %>%  gather(Scenarios,Val, 5:ncol(cbaba)) %>% spread(parameter,Val)
+cbaba<- cbaba %>% group_by(reg,Scenarios) %>% summarise(TYldXAgg= sum(QSupXAgg,na.rm=TRUE)/sum(TAreaXAgg,na.rm=TRUE),TAreaXAgg= sum(TAreaXAgg,na.rm=TRUE),QSupXAgg=sum(QSupXAgg) )
+cbaba$Commodity<- "Banana"
+
+#agregacion por regiones 
 proof$HIGH.NARSdif<- ((proof$`HIGH+NARS`- proof$REF)/proof$REF)*100
 proof$HIGHdif<- ((proof$HIGH- proof$REF)/proof$REF)*100
 proof$RMMdif<- ((proof$RMM- proof$REF)/proof$REF)*100

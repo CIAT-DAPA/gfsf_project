@@ -12,8 +12,9 @@ options(scipen=999)
 #Librerias
 library(reshape)
 library(ggplot2)
-library(dplyr)
 library(plyr)
+
+library(dplyr)
 library(grid)
 library(gridExtra)
 

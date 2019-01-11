@@ -25,7 +25,7 @@ library(dismo)
 
 
 #directorio
-setwd("D:/ToBackup/Modelling/global-futures-and-strategic-foresight")
+setwd("C:/Users/CEGONZALEZ/Documents/cassava")
 # directorio de archivos para graficar
 pic <-("C:/Users/CEGONZALEZ/Documents/cassava/graph/")
 # respaldos en Excel
@@ -36,7 +36,7 @@ options(digits=3)
 options(scipen=999)
 
 #matrices de relaciones comerciales 
-fao_matrix_trade<- read.csv("_data/_cassava_data/FAOSTAT_data_11-22-2016.csv", header = TRUE)
+fao_matrix_trade<- read.csv("FAOSTAT_data_11-22-2016.csv", header = TRUE)
 
 #fao_matrix_trade  depuracion de la base de datos --------------
 fao_matrix_trade$Domain.Code<- NULL
@@ -107,62 +107,62 @@ p4wide<- p4  %>%
   spread("Year", "Value")
 
 # Calculate mean
-p1wide$mean <- rowMeans(x=p1wide[,6:ncol(p1wide)], na.rm=TRUE)
-p2wide$mean <- rowMeans(x=p2wide[,6:ncol(p2wide)], na.rm=TRUE)
-p3wide$mean <- rowMeans(x=p3wide[,6:ncol(p3wide)], na.rm=TRUE)
-p4wide$mean <- rowMeans(x=p4wide[,6:ncol(p4wide)], na.rm=TRUE)
+p1wide$median <- rowMedians(x=p1wide[,6:ncol(p1wide)], na.rm=TRUE)
+p2wide$median <- rowMedians(x=p2wide[,6:ncol(p2wide)], na.rm=TRUE)
+p3wide$median <- rowMedians(x=p3wide[,6:ncol(p3wide)], na.rm=TRUE)
+p4wide$median <- rowMedians(x=p4wide[,6:ncol(p4wide)], na.rm=TRUE)
 
 p1wide <- p1wide[,c("Reporter.Countries", "Partner.Countries", "mean" )]
 p2wide <- p2wide[,c("Reporter.Countries", "Partner.Countries", "mean" )]
 p3wide <- p3wide[,c("Reporter.Countries", "Partner.Countries", "mean" )]
 p4wide <- p4wide[,c("Reporter.Countries", "Partner.Countries", "mean" )]
 
-# Calculate median
+# # Calculate median
 library(matrixStats)
-p1wide$median <- rowMedians(x=as.matrix(p1wide[,6:ncol(p1wide)]), na.rm=TRUE)
-p2wide$median <- rowMedians(x=as.matrix(p2wide[,6:ncol(p2wide)]), na.rm=TRUE)
-p3wide$median <- rowMedians(x=as.matrix(p3wide[,6:ncol(p3wide)]), na.rm=TRUE)
-p4wide$median <- rowMedians(x=as.matrix(p4wide[,6:ncol(p4wide)]), na.rm=TRUE)
-
-p1wide <- p1wide[,c("Reporter.Countries", "Partner.Countries", "median" )]
-p2wide <- p2wide[,c("Reporter.Countries", "Partner.Countries", "median" )]
-p3wide <- p3wide[,c("Reporter.Countries", "Partner.Countries", "median" )]
-p4wide <- p4wide[,c("Reporter.Countries", "Partner.Countries", "median" )]
-
-# Calculate skewness
-library(e1071)
-p1wide$skewness <- as.numeric(apply(X = p1wide[,6:ncol(p1wide)], MARGIN = 1, FUN = skewness, na.rm = T))
-p2wide$skewness <- as.numeric(apply(X = p2wide[,6:ncol(p2wide)], MARGIN = 1, FUN = skewness, na.rm = T))
-p3wide$skewness <- as.numeric(apply(X = p3wide[,6:ncol(p3wide)], MARGIN = 1, FUN = skewness, na.rm = T))
-p4wide$skewness <- as.numeric(apply(X = p4wide[,6:ncol(p4wide)], MARGIN = 1, FUN = skewness, na.rm = T))
-
-p1wide <- p1wide[,c("Reporter.Countries", "Partner.Countries", "skewness" )]
-p2wide <- p2wide[,c("Reporter.Countries", "Partner.Countries", "skewness" )]
-p3wide <- p3wide[,c("Reporter.Countries", "Partner.Countries", "skewness" )]
-p4wide <- p4wide[,c("Reporter.Countries", "Partner.Countries", "skewness" )]
-
-# Calculate mode
-library(modeest)
-p1wide$mode <- as.numeric(apply(X = p1wide[,6:ncol(p1wide)], MARGIN = 1, FUN = asselin, na.rm = T))
-p2wide$mode <- as.numeric(apply(X = p2wide[,6:ncol(p2wide)], MARGIN = 1, FUN = asselin, na.rm = T))
-p3wide$mode <- as.numeric(apply(X = p3wide[,6:ncol(p3wide)], MARGIN = 1, FUN = asselin, na.rm = T))
-p4wide$mode <- as.numeric(apply(X = p4wide[,6:ncol(p4wide)], MARGIN = 1, FUN = asselin, na.rm = T))
-
-p1wide <- p1wide[,c("Reporter.Countries", "Partner.Countries", "mode" )]
-p2wide <- p2wide[,c("Reporter.Countries", "Partner.Countries", "mode" )]
-p3wide <- p3wide[,c("Reporter.Countries", "Partner.Countries", "mode" )]
-p4wide <- p4wide[,c("Reporter.Countries", "Partner.Countries", "mode" )]
-
-mat <- list(p1wide, p2wide, p3wide, p4wide)
-
-# Mean calculated
-lapply(1:length(mat), function(i) write.csv(mat[[i]], paste('./_data/_cassava_data/periods_mean/periodo', i, '.csv', sep = '')))
-# Median calculated
-lapply(1:length(mat), function(i) write.csv(mat[[i]], paste('./_data/_cassava_data/periods_median/periodo', i, '.csv', sep = '')))
-# Skewness calculated
-lapply(1:length(mat), function(i) write.csv(mat[[i]], paste('./_data/_cassava_data/periods_skewness/periodo', i, '.csv', sep = '')))
-# Mode calculated
-lapply(1:length(mat), function(i) write.csv(mat[[i]], paste('./_data/_cassava_data/periods_mode/periodo', i, '.csv', sep = '')))
+# p1wide$median <- rowMedians(x=as.matrix(p1wide[,6:ncol(p1wide)]), na.rm=TRUE)
+# p2wide$median <- rowMedians(x=as.matrix(p2wide[,6:ncol(p2wide)]), na.rm=TRUE)
+# p3wide$median <- rowMedians(x=as.matrix(p3wide[,6:ncol(p3wide)]), na.rm=TRUE)
+# p4wide$median <- rowMedians(x=as.matrix(p4wide[,6:ncol(p4wide)]), na.rm=TRUE)
+# 
+# p1wide <- p1wide[,c("Reporter.Countries", "Partner.Countries", "median" )]
+# p2wide <- p2wide[,c("Reporter.Countries", "Partner.Countries", "median" )]
+# p3wide <- p3wide[,c("Reporter.Countries", "Partner.Countries", "median" )]
+# p4wide <- p4wide[,c("Reporter.Countries", "Partner.Countries", "median" )]
+# 
+# # Calculate skewness
+# library(e1071)
+# p1wide$skewness <- as.numeric(apply(X = p1wide[,6:ncol(p1wide)], MARGIN = 1, FUN = skewness, na.rm = T))
+# p2wide$skewness <- as.numeric(apply(X = p2wide[,6:ncol(p2wide)], MARGIN = 1, FUN = skewness, na.rm = T))
+# p3wide$skewness <- as.numeric(apply(X = p3wide[,6:ncol(p3wide)], MARGIN = 1, FUN = skewness, na.rm = T))
+# p4wide$skewness <- as.numeric(apply(X = p4wide[,6:ncol(p4wide)], MARGIN = 1, FUN = skewness, na.rm = T))
+# 
+# p1wide <- p1wide[,c("Reporter.Countries", "Partner.Countries", "skewness" )]
+# p2wide <- p2wide[,c("Reporter.Countries", "Partner.Countries", "skewness" )]
+# p3wide <- p3wide[,c("Reporter.Countries", "Partner.Countries", "skewness" )]
+# p4wide <- p4wide[,c("Reporter.Countries", "Partner.Countries", "skewness" )]
+# 
+# # Calculate mode
+# library(modeest)
+# p1wide$mode <- as.numeric(apply(X = p1wide[,6:ncol(p1wide)], MARGIN = 1, FUN = asselin, na.rm = T))
+# p2wide$mode <- as.numeric(apply(X = p2wide[,6:ncol(p2wide)], MARGIN = 1, FUN = asselin, na.rm = T))
+# p3wide$mode <- as.numeric(apply(X = p3wide[,6:ncol(p3wide)], MARGIN = 1, FUN = asselin, na.rm = T))
+# p4wide$mode <- as.numeric(apply(X = p4wide[,6:ncol(p4wide)], MARGIN = 1, FUN = asselin, na.rm = T))
+# 
+# p1wide <- p1wide[,c("Reporter.Countries", "Partner.Countries", "mode" )]
+# p2wide <- p2wide[,c("Reporter.Countries", "Partner.Countries", "mode" )]
+# p3wide <- p3wide[,c("Reporter.Countries", "Partner.Countries", "mode" )]
+# p4wide <- p4wide[,c("Reporter.Countries", "Partner.Countries", "mode" )]
+# 
+# mat <- list(p1wide, p2wide, p3wide, p4wide)
+# 
+# # Mean calculated
+# lapply(1:length(mat), function(i) write.csv(mat[[i]], paste('./_data/_cassava_data/periods_mean/periodo', i, '.csv', sep = '')))
+# # Median calculated
+# lapply(1:length(mat), function(i) write.csv(mat[[i]], paste('./_data/_cassava_data/periods_median/periodo', i, '.csv', sep = '')))
+# # Skewness calculated
+# lapply(1:length(mat), function(i) write.csv(mat[[i]], paste('./_data/_cassava_data/periods_skewness/periodo', i, '.csv', sep = '')))
+# # Mode calculated
+# lapply(1:length(mat), function(i) write.csv(mat[[i]], paste('./_data/_cassava_data/periods_mode/periodo', i, '.csv', sep = '')))
 
 # p1-----------------------------------------------------------------------------
 auxCarlos<- expand.grid(unique(p1wide$Reporter.Countries), unique(p1wide$Partner.Countries))
@@ -185,7 +185,7 @@ p1wide$mean <- log(p1wide$mean, base=exp(1))
 p1wide$mean[which(p1wide$mean==0)] <- 0.5
 
 circos.clear()
-circos.par(start.degree = 90, gap.degree = 4, track.margin = c(-0.1, 0.1), points.overflow.warning = FALSE)
+circos.par(start.degree = 90, gahead(p.degree = 4, track.margin = c(-0.1, 0.1), points.overflow.warning = FALSE))
 par(mar = rep(0, 4))
 
 

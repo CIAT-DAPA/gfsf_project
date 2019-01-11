@@ -1,0 +1,48 @@
+# source 
+# creating function for change ,
+
+
+vx<- unique(x$parameter) # aca obtengo la variable
+
+LabelsGDX<-function(x){
+      x$impactparameter<-revalue(x$impactparameter, c("ANMLNUMCTYX0" ="Animal numbers",
+                                                      "AnmlYLDCTYX0" ="Animal yields",
+                                                      "AREACTYX0" ="Crop area  and land type",
+                                                      "FoodAvailability" ="Food availability per capita (kg per person)",
+                                                      "GDPHX0" ="Final Household income (billion USD)",
+                                                      "GDPX0" ="Final GDP (billion 2005 USD)",
+                                                      "pcGDPX0" ="Final per capita GDP (000 USD per person)",
+                                                      "PCX0" ="Consumer prices (2005 USD per mt)",
+                                                      "PerCapKCal" ="Per capita calories available (KCal per person per day)",
+                                                      "PerCapKCal_Com" ="Per capita calories  by com (KCal per person per day)",
+                                                      "PEX0" ="Domestic export prices (2005 USD per mt)",
+                                                      "PMX0" ="Domestic import prices (2005 USD per mt)",
+                                                      "PNETX0" ="Net prices (2005 USD per mt)",
+                                                      "POPHX0" ="Final Household population (million)",
+                                                      "PopulationAtRisk" ="Number of people at risk of hunger (million)",
+                                                      "POPX0" ="Final Population (million)",
+                                                      "PPX0" ="Producer prices (2005 USD per mt)",
+                                                      "PWX0" ="World prices (2005 USD per mt)",
+                                                      "QBFX0" ="Biofuel feedstock demand (000 mt)",
+                                                      "QDX0" ="Total demand for commodity",
+                                                      "QESH" ="Export Share of Production",
+                                                      "QEX0" ="Exports for each country and traded commodity (000 mt)",
+                                                      "QFX0" ="Household demand aggregated to commodity",
+                                                      "QHDX0" ="Household demand (000 mt)",
+                                                      "QINTX0" ="Intermediate demand for commodity (000 mt)",
+                                                      "QLX0" ="Livestock feed demand",
+                                                      "QMSH" ="Import Share of Demand",
+                                                      "QMX0" ="Imports for each country and traded commodity (000 mt)",
+                                                      "QNSH1" ="Net Trade Share of Production",
+                                                      "QNSH2" ="Net Trade Share of Demand",
+                                                      "QNX0" ="Net trade for each country and traded commodity (000 mt)",
+                                                      "QOTHRX0" ="Other demand (000 mt)",
+                                                      "QSUPX0" ="Total commodity supply",
+                                                      "QSX0" ="Total production (000 mt)",
+                                                      "ShareAtRisk" ="Share of population at risk of hunger (%)",
+                                                      "TotalMalnourished" ="Number of malnourished children (millions)",
+                                                      "YldCliShkCtyX0" =" Level climate shock index",
+                                                      "YLDCTYX0" =" Yields  by land type",
+                                                      "YldInt2CtyX0" ="Level yield growth index",
+                                                      "YldShkCtyX0" ="Level water shock index"))
+      }

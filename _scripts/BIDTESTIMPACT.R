@@ -616,21 +616,30 @@ gpvCrops$zonas<-revalue(gpvCrops$zonas, c("1"="Caribbean",
                                           "2"="Central America",
                                           "3"="South America"))
 
-png(filename=paste(grp,"grafico1_BIDRegionsV2.png"), 
+
+yr<- seq(from=1961,to = 2013,by = 2)
+gpvCrops<- as.data.frame(gpvCrops)
+gpvCrops<- filter(gpvCrops, year %in% yr)
+
+png(filename=paste(grp,"grafico1_BIDRegions2018.png"), 
     width = 9, height = 6, units = 'in', res = 300)
 ggplot(gpvCrops,aes(year,rate,color=zonas, group=zonas)) + 
       geom_line(size=1) +
       theme(legend.position="bottom",legend.text=element_text(size=12),
             legend.key.size = unit(1, "cm"),text = element_text(size=12))+
-      labs(y="Share of gross production value (%),\n constant 2004-2006 million US$", x="Years") +
-      scale_colour_brewer(palette="Set1",name = "")+ scale_x_continuous(breaks= c(1960:2013,4))+
-      scale_y_continuous(breaks= c(1:25,1))+
+      labs(y="Share of gross production value (%)", x="Years") +
+      scale_colour_brewer(palette="Set1",name = "")+ 
+      # scale_x_continuous(breaks= c(1961:2013,7))+
+      scale_x_continuous(breaks=seq(from=1961,to = 2013,by = 2))+
+       scale_y_continuous(breaks= c(1:25,5))+
       theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 9))+
       theme(axis.text.y = element_text(hjust = 1, size = 12))+
       theme(strip.text.x = element_text(size = 10, face = "bold.italic"))+
       theme(strip.text=element_text(size=11))+
       theme(strip.text.y = element_text(angle = 90,size = 11))
+
 dev.off()   
+
 
 
 

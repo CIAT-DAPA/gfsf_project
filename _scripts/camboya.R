@@ -40,7 +40,9 @@ options(digits=3)
 
 ############################################################# BIG Regions ####################################################################
 
-rdsFiles<-c("//dapadfs/workspace_cluster_6/Socioeconomia/GF_and_SF/USAIDForGFSF/RTB_files/")
+# rdsFiles<-c("//dapadfs/workspace_cluster_6/Socioeconomia/GF_and_SF/USAIDForGFSF/RTB_files/")
+rdsFiles<-c("/mnt/workspace_cluster_6/Socioeconomia/GF_and_SF/USAIDForGFSF/RTB_files/")
+
 # Big Regions[
 r<- c("EAP", "EUR","FSU", "LAC", "MEN", "NAM", "SAS", "SSA")
 
@@ -127,9 +129,9 @@ hm.palette <- colorRampPalette(rev(brewer.pal(11, 'Spectral')), space='Lab')
 y<- filter(yfiled, parameter=="Supply")
 y$Scenarios <- factor(y$Scenarios, levels = c("HIGH","HIGH+NARS","REGION","RMM","REF" ))
 
-write.csv(x = y,file = paste(rdsFiles,"Camboya_HeapMapTest.csv",sep=""))
+write.csv(x = y,file = paste(rdsFiles,"Camboya_HeapMapTestLinux.csv",sep=""))
 
-png(filename=paste(rdsFiles,"Camboya_HeapMapTest.png",sep=""), 
+png(filename=paste(rdsFiles,"Camboya_HeapMapTestLINUX.png",sep=""), 
     width = 12, height = 12, units = 'in', res = 300)
 
 n<- ggplot(data =y, aes(Scenarios, Regions)) + 

@@ -14,6 +14,8 @@ suppressMessages(library(networkD3))
 suppressMessages(library(jsonlite))
 suppressMessages(library(circlize))
 
+
+
 # Define directory and files to read
 setwd('C:/Users/CEGONZALEZ/Documents/cassava/copyData')
 db_dir <- './periods_median/' # Using median as summary measure
@@ -42,6 +44,8 @@ db_time$Reporter[grep(pattern = "China, Macao SAR", x = db_time$Reporter, fixed 
 db_time$Reporter[grep(pattern = "China, mainland", x = db_time$Reporter, fixed = TRUE)] <- 'China'
 db_time$Reporter[grep(pattern = "China, Taiwan Province of", x = db_time$Reporter, fixed = TRUE)] <- 'Taiwan'
 db_time$Reporter[grep(pattern = "Réunion", x = db_time$Reporter, fixed = TRUE)] <- 'Reunion'
+db_time$Reporter[grep(pattern = "United States of America", x = db_time$Reporter, fixed = TRUE)] <- 'USA'
+
 # db_time <- db_time[-which(db_time$Reporter=="Belgium-Luxembourg"),]
 
 db_time$Partner <- gsub(pattern = '* \\((.*?)\\)', replacement = '', x = db_time$Partner)
@@ -52,7 +56,7 @@ db_time$Partner[grep(pattern = "China, Macao SAR", x = db_time$Partner, fixed = 
 db_time$Partner[grep(pattern = "China, mainland", x = db_time$Partner, fixed = TRUE)] <- 'China'
 db_time$Partner[grep(pattern = "China, Taiwan Province of", x = db_time$Partner, fixed = TRUE)] <- 'Taiwan'
 db_time$Partner[grep(pattern = "Réunion", x = db_time$Partner, fixed = TRUE)] <- 'Reunion'
-db_time <- db_time[-which(db_time$Partner=="Belgium-Luxembourg"),]
+# db_time <- db_time[-which(db_time$Partner=="Belgium-Luxembourg"),]
 # db_time <- db_time[-which(db_time$Partner=="Unspecified"),]
 
 db_time$Reporter <- paste(db_time$Reporter, ' >', sep = '')
@@ -65,9 +69,40 @@ real_exports <- db_time[db_time$mean > 0,]; rownames(real_exports) <- 1:nrow(rea
 countryList <- sort(unique(c(as.character(real_exports$Reporter), as.character(real_exports$Partner))))
 nodes <- data.frame(name = countryList, node = (1:length(countryList)) - 1); rm(countryList)
 
+
+#---------------------------------------------------------------------------#
+caribbean<- c("Cuba", "Dominican Republic", "Haiti", "Jamaica")      
+Central_America<- c( "Belize","Costa Rica","Guatemala","Honduras","Mexico","Nicaragua","Panama","El Salvador")
+Australia_and_New_Zealand<- c( "New Zealand", "Australia")
+Central_Asia<- c("Kazakhstan","Kyrgyzstan","Tajikistan","Turkmenistan","Uzbekistan")
+Eastern_Africa<- c("Burundi", "Djibouti","Eritrea","Ethiopia", "Kenya","Madagascar","Mozambique","Malawi","Rwanda","Somalia", "Tanzania",
+                   "Uganda","Zambia","Zimbabwe")
+Eastern_Asia<- c("China","Japan","South Korea","Mongolia","North Korea")
+Eastern_Europe<- c("Bulgaria","Belarus","Czech Republic","Hungary","Moldova","Other Balkans","Poland",
+                   "Romania","Russia","Slovakia","Ukraine")
+Melanesia<- c("Fiji", "Papua New Guinea","Solomon Islands","Vanuatu")
+Middle_Africa<- c("Angola","Central African Rep.","Cameroon","DRC","Congo","Gabon","Equatorial Guinea","Chad")
+Northern_Africa<-c("Algeria","Egypt","Libya","Morocco","Sudan","Tunisia")
+Northern_America<-c("Canada","Greenland","USA")
+Northern_Europe<- c("Baltic States","Denmark", "Finland","Ireland","Iceland","Norway","Sweden","UK")
+South_America<- c("Argentina","Bolivia","Brazil","Chile","Colombia","Ecuador","Guyanas","Peru","Paraguay","Uruguay","Venezuela")
+South_Eastern_Asia<- c("Indonesia","Cambodia","Laos","Myanmar","Malaysia","Other Southeast Asia","Philippines","Thailand",
+                       "Timor LEste","Vietnam")
+Southern_Africa<- c("Botswana", "Lesotho","Namibia","Swaziland","South Africa")
+Southern_Asia<- c("Afghanistan","Bangladesh","Bhutan","India","Iran","Sri Lanka","Nepal","Other Indian Ocean","Pakistan")
+Southern_Europe<- c("Albania","Greece", "Croatia","Italy","Portugal","Spain","Slovenia")
+Western_Africa<- c("Benin","Burkina Faso","Ivory Coast","Ghana","Guinea","Gambia","Guinea-Bissau","Liberia","Mali","Mauritania","Niger","Nigeria","Senegal","Sierra Leon","Togo")
+Western_Asia<-c("Armenia","Azerbaijan","Cyprus", "Georgia", "Iraq", "Israel", "Jordan", "Lebanon","Palestine", "Rest of Arabia","Saudi Arabia",
+                "Syria", "Turkey","Yemen", "Armenia","Azerbaijan")
+Western_Europe<- c("Austria","Belgium-Luxembourg","Switzerland","Germany","France","Netherlands","Other Atlantic")
+
+
+
+
 # -------------------------------------------------------------------------- #
 # Interactive sankey graphs for each period
 # -------------------------------------------------------------------------- #
+j=1
 lapply(1:length(periodList), function(j){
   
   # filter data by period
@@ -101,74 +136,16 @@ lapply(1:length(periodList), function(j){
   sankeyList <- list(links = flows,
                      nodes = virtNodes)
   
-  # make and save each plot
+  # make and save each plot sankey
   s <- sankeyNetwork(Links = sankeyList$links, Nodes = sankeyList$nodes, Source = "Reporter",
                      Target = "Partner", Value = "mean", NodeID = "name",
                      units = "Ton", LinkGroup = "gType", fontSize = 12, nodeWidth = 30)
   saveNetwork(s, paste("C:/Users/CEGONZALEZ/Documents/cassava/copyData/sankey_", gsub(pattern = "-", replacement = "_", periodList[j]), ".html", sep = ""), selfcontained = T)
   
+  
+  
+  
 })
-
-# -------------------------------------------------------------------------- #
-# Modifying text in sankeyNetwork
-# -------------------------------------------------------------------------- #
-# library(networkD3)
-# library(data.table)
-# set.seed(1999)
-# links <- data.table(
-#   src = rep(0:4, times=c(1,1,2,3,5)),
-#   target = sample(1:11, 12, TRUE),
-#   value = sample(100, 12)
-# )[src < target, ]  # no loops
-# nodes <- data.table(name=LETTERS[1:12])
-# 
-# ## Need to hover to get counts
-# sankeyNetwork(Links=links, Nodes=nodes, Source='src', Target='target',
-#               Value='value', NodeID='name', fontSize=16)
-# 
-# ## Add text to label
-# txt <- links[, .(total = sum(value)), by=c('target')]
-# nodes[txt$target+1L, name := paste0(name, ' (', txt$total, ')')]
-# 
-# ## Displays the counts as part of the labels
-# sankeyNetwork(Links=links, Nodes=nodes, Source='src', Target='target',
-#               Value='value', NodeID='name', fontSize=16, width=600, height=300)
-# 
-# #################### move leaf node text right ################
-# # for this to work
-# #   install the newest htmlwidgets
-# #   devtools::install_github("ramnathv/htmlwidgets")
-# 
-# library(htmlwidgets)
-# #  add margin left since we'll need extra room
-# #   if you are wondering why margin left,
-# #   I think we just discovered a bug
-# sn <- sankeyNetwork(
-#   Links=links, Nodes=nodes, Source='src', Target='target',
-#   Value='value', NodeID='name', fontSize=16,
-#   width=600, height=300,
-#   # give us so room for our newly aligned labels
-#   margin = list("left"=100)
-# )
-# # see how it looks
-# sn
-# 
-# # now let's use the new htmlwidget function
-# #  onRender
-# onRender(
-#   sn,
-#   '
-#   function(el,x){
-#   // select all our node text
-#   var node_text = d3.select(el)
-#   .selectAll(".node text")
-#   //and make them match
-#   //https://github.com/christophergandrud/networkD3/blob/master/inst/htmlwidgets/sankeyNetwork.js#L180-L181
-#   .attr("x", 6 + x.options.nodeWidth)
-#   .attr("text-anchor", "start");
-#   }
-#   '
-# )
 
 # -------------------------------------------------------------------------- #
 # Interactive d3/Steven circos of cassava dried exports
@@ -182,6 +159,7 @@ saveRDS(object = real_exports, file = ('C:/Users/CEGONZALEZ/Documents/cassava/co
 real_exports <- readRDS('C:/Users/CEGONZALEZ/Documents/cassava/copyData//log_dried_cassava_exports.rds')
 
 # All posible flows
+i=1
 flows2json <- lapply(1:length(periodList), function(i){
   
   # Subseting by period and make a square matrix of flows
@@ -250,6 +228,7 @@ sink('./_data/_json_files/cassava_dried_exports.json') # redirect console output
 toJSON(json.file, pretty=FALSE)
 sink()
 
+
 # -------------------------------------------------------------------------- #
 # Static circos of cassava dried exports
 # -------------------------------------------------------------------------- #
@@ -269,7 +248,7 @@ lapply(1:length(periodList), function(i){
   par(mar = rep(0, 4))
   
   # Save plot
-  png(paste('C:/Users/CEGONZALEZ/Documents/cassava/copyData/circos_', periodList[i],'.png', sep = ''), width = 10, height = 10, units = 'in', res = 300)
+  png(paste('C:/Users/CEGONZALEZ/Documents/cassava/copyData/circos2_', periodList[i],'.png', sep = ''), width = 10, height = 10, units = 'in', res = 300)
   
   chordDiagram(x = subReal[subReal$mean > 0.8, ], transparency = 0.25,
                directional = 1,
@@ -298,12 +277,13 @@ lapply(1:length(periodList), function(i){
 # Interactive d3/R chord diagram
 # -------------------------------------------------------------------------- #
 # Source: http://data-steve.github.io/d3-r-chord-diagram-of-white-house-petitions-data/
-# if (!require("pacman")) install.packages("pacman")
+if (!require("pacman")) install.packages("pacman")
 pacman::p_load_current_gh("mattflor/chorddiag")
 pacman::p_load(dplyr, magrittr, ggplot2, tidyr, curl)
 
 countryList <- sort(unique(c(as.character(real_exports$Reporter), as.character(real_exports$Partner))))
 
+i=1
 # Making interactive plots
 lapply(1:length(periodList), function(i){
   
@@ -341,9 +321,9 @@ lapply(1:length(periodList), function(i){
                                , groupnamePadding = 5
                                , groupThickness = .05
                                , chordedgeColor = "gray" # getPalette(colorCount)
-                               , groupColors = getPalette(colorCount)
+                               , groupColors = getPalette(subReal[ord,])
                                , showTooltips = FALSE) # Does not show tool box with info
-  saveNetwork(chrd, paste("D:/ToBackup/Modelling/global-futures-and-strategic-foresight/_graphics/_interactive_chord_cassava_dried/version_2/chord_", gsub(pattern = "-", replacement = "_", periodList[i]), ".html", sep = ""), selfcontained = T)
+  saveNetwork(chrd, paste("C:/Users/CEGONZALEZ/Documents/cassava/copyData/chord_2", gsub(pattern = "-", replacement = "_", periodList[i]), ".html", sep = ""), selfcontained = T)
   return(cat('Chord diagram done! for:', periodList[i],'\n'))
   
 })

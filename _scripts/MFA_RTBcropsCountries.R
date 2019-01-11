@@ -51,14 +51,12 @@ r4<- c("Australia and New Zealand","Caribbean","Central America", "Central Asia"
        "Southern Europe","Western Africa","Western Asia", "Western Europe", "Western and Central Asia")
 r5<- c("MENg","EAPg")
 rall<- c(r2,r3,r4, r5)
-jrtb<- c("jbana","jcass", "jpota", "jswpt","jyams","jorat")
+jrtb<- c("jbana","jcass", "jpota", "jswpt","jyams","jorat") # crops
 
 
 t<- c(2010, 2030,2050)
 # Vector con los cultivos para RTB incluyendo Bananas
 rtb<- c("R&T-Potato","R&T-Sweet Potato","R&T-Yams","R&T-Other Roots","R&T-Cassava","F&V-Banana") 
-
-
 
 cfiles<-list.files(path = rdsFiles, pattern = "Blue.rds|dataagg.rds|datatotal.rds|precios.rds|TradeFood.rds",full.names = T)
 cfiles<- lapply(cfiles, readRDS)

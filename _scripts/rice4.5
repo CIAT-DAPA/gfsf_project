@@ -1,0 +1,63 @@
+#### precios y demas variables 
+
+# Codigos para el procesamiento y organizacion de los graficos para el CSA. Climate Smart Acgriculture
+
+#librerias------------
+library(reshape)
+library(ggplot2)
+library(plyr)
+library(grid)
+library(gridExtra)
+library(tidyr)
+library(lattice)
+library(latticeExtra)
+library(dplyr)
+library(xlsx)
+
+#Definir directorio de trabajo-------------
+setwd("C:/Users/CEGONZALEZ/Documents/IMPACT3-Model-ver3.3/OutputFiles/Aggregation/")
+#Direción graficos
+grd<-"//dapadfs/workspace_cluster_6/Socioeconomia/GF_and_SF/CSAIP/"
+#Direción copias seguridad
+copy<-"//dapadfs/workspace_cluster_6/Socioeconomia/GF_and_SF/CSAIP/"
+
+# manejo de digitos
+options(digits=3) 
+options(scipen = 999)
+
+################################################ PARTE A. ####################################################################
+
+
+#Cargar marco de datos principal-------------
+md<-read.csv("Rice4.5.csv",header=T)
+phi<- md
+
+#Conocer los cultivos y agregaciones 
+cult<- unique(phi$commodity)
+phi_sys<- phi 
+# transformar  factor to character
+phi_sys$impactparameter<- as.character(phi_sys$impactparameter)
+phi_sys$scenario<- as.character(phi_sys$scenario)
+phi_sys$commodity<- as.character(phi_sys$commodity)
+phi_sys$region<- as.character(phi_sys$region)
+phi_sys$productiontype<- as.character(phi_sys$productiontype)
+
+parametros<- unique(phi_sys$impactparameter)
+
+# "PCXAgg -- Consumer Prices"
+# "PMXAgg -- Import Prices"
+# "PPXAgg -- Producer Prices"
+# "PNETXAgg -- Net Prices" 
+# "QMSHXAgg -- Import Share of Demand"
+cropsout<- c("AMT", "AOT", "CER", "PUL", "SGR", "AllA" ,"SGC", "MLS", "COT", "OLS", "OIL", "R&T", "F&V", "All", "AllC")
+
+par.1<- c("QMSHXAgg -- Import Share of Demand")
+
+text<- phi_sys %>% filter(., impactparameter %in% par.1) %>% filter(., !commodity %in% cropsout) %>%
+      filter(year=="2050")  
+text<- data.frame(text,"Cat"=ifelse(text$scenario=="WB_NoCC_SSP2","NoCC","CC")) 
+
+text<- text %>% group_by(impactparameter, commodity,region,year, Cat)%>% summarise(mean=mean(Val))%>%
+      spread(Cat,mean)
+text$pp<- text$CC-text$NoCC
+
