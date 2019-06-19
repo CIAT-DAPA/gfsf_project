@@ -3,12 +3,12 @@ require(rgdal)
 library(maptools)
 
 
-dirbase <- "//dapadfs/workspace_cluster_3/bid-cc-agricultural-sector/01-climate-data/monthly_data/Future/multimodel_mean"
+dirbase <- "//dapadfs.cgiarad.org/workspace_cluster_3/bid-cc-agricultural-sector/01-climate-data/monthly_data/Future/multimodel_mean"
 mask1 <- readShapePoly("//dapadfs/workspace_cluster_6/Socioeconomia/GF_and_SF/BID_2/admin_boundaries/adminFiles/10m-admin-0-countries.shp")
 
-iDir <- "//dapadfs/workspace_cluster_3/bid-cc-agricultural-sector/01-climate-data/bc_extracts/plots"
-climPath <- "//dapadfs/workspace_cluster_3/bid-cc-agricultural-sector/01-climate-data/monthly_data/Future"
-shp <- readShapePoly("//dapadfs/workspace_cluster_6/Socioeconomia/GF_and_SF/BID_2/admin_boundaries/adminFiles/10m-admin-0-countries.shp")
+iDir <- "//dapadfs.cgiarad.org/workspace_cluster_3/bid-cc-agricultural-sector/01-climate-data/bc_extracts/plots"
+climPath <- "//dapadfs.cgiarad.org/workspace_cluster_3/bid-cc-agricultural-sector/01-climate-data/monthly_data/Future"
+shp <- readShapePoly("//dapadfs.cgiarad.org/workspace_cluster_6/Socioeconomia/GF_and_SF/BID_2/admin_boundaries/adminFiles/10m-admin-0-countries.shp")
 models <- c('multimodel_mean')
 
 # List of seasons
@@ -17,7 +17,7 @@ seasons <- list("djf"=c(12,1,2), "mam"=3:5, "jja"=6:8, "son"=9:11, "ann"=1:12)
 varList <- c("prec", "tmax", "tmin", "rsds")
 
 
-regList <- c("Colombia", "Peru", "Uruguay", "Costa Rica", "Mexico", "Panama", "Honduras")
+regList <- c("Colombia", "Peru", "Uruguay", "Costa Rica", "Mexico", "Panama", "Honduras", "Dominican Republic")
 # regList="Colombia"
 # reg="Colombia"
 for (reg in regList){

@@ -1,6 +1,6 @@
 ##### PAPER SAN 
 ##### Autores Guillermo & Carlos Edo
-
+#### revision inicial 
 g=gc;rm(list = ls())
 
 ### decimals
@@ -12,15 +12,18 @@ setwd("//dapadfs/workspace_cluster_6/Socioeconomia/GF_and_SF/Paper SAN")
 graph<- c("pic/")
 
 ### librerias
-library(ggplot2); library(dplyr); library(tidyr)
+suppressMessages(library(ggplot2))
+suppressMessages(library(dplyr))
+suppressMessages(library(tidyr))
 suppressMessages(library(tseries)) ### codigo para eliminar mensajes
 suppressMessages(library(RColorBrewer))
 suppressMessages(library(gridExtra))
+
 ### archivo madre
-cfiles<- read.csv("lamp_native_20180926-212748.csv")
+cfiles<- read.csv("./data/lamp_native_20180926-212748.csv")
 xx<-cfiles # respaldo
 
-
+### cambiar la clase de la variable
 xx$MODEL<- as.character(xx$MODEL)
 xx$SCENARIO<- as.character(xx$SCENARIO)
 xx$REGION<- as.character(xx$REGION)
@@ -29,7 +32,7 @@ xx$UNIT<- as.character(xx$UNIT)
 
 ### corregir y unificar nombres
 var<- unique(xx$VARIABLE)
-
+### ajustar nombres
 xx$REGION<- plyr::revalue(xx$REGION, c("Colombia"="COL",
                                        "Brazil"="BR",
                                        "Central America and Caribbean"="CAC",
@@ -45,9 +48,6 @@ xx$REGION<- plyr::revalue(xx$REGION, c("Colombia"="COL",
                                        "ola"="OtherLAC_PHOX",
                                        "ven"="VEN",
                                        "bra"="BR"))
-
-reg<- unique(xx$REGION) 
-length(reg)
 
 lac<- c("ARG", "BR", "CAC", 
         "COL", "MEX", "SUR_AN", "SUR_AS", 
@@ -97,7 +97,6 @@ FindOutliers <- function(data) {
 
 ### eliminar paises innece
 cc<- xx %>% dplyr::filter(REGION %in% lac)
-unique(cc$REGION)
 
 ################################################################## SUBSETS ############################################
 yield<- cc[grep("YEXO", cc$VARIABLE),]
@@ -131,39 +130,34 @@ i=1
 lapply(1:length(tones), function(i){
       ## creating subset tipo variable
       cfiles<- tones[[i]]
-      if(i==1){
-            cfiles$parametro<- "Consumption"
-      }else{}
-      if(i==2){
-            cfiles$parametro<- "Production"
-      }else{}
-      if(i==3){
-            cfiles$parametro<- "Exports"
-      }else{}
-      if(i==4){
-            cfiles$parametro<- "Imports"
-      }else{}
+      if(i==1){ cfiles$parametro<- "Consumption"} else{}
+      if(i==2){ cfiles$parametro<- "Production"} else{}
+      if(i==3){ cfiles$parametro<- "Exports"} else{}
+      if(i==4){ cfiles$parametro<- "Imports"}else{}
       
       ### creating vectors
-      variables<- unique(cfiles$UNIT)
-      crops<- unique(cfiles$VARIABLE)
-      sce<- unique(cfiles$SCENARIO)
+      variables<- unique(cfiles$UNIT);crops<- unique(cfiles$VARIABLE);sce<- unique(cfiles$SCENARIO)
     
        ### Creating subset filter  
-      cfiles<- cfiles %>% dplyr:: filter(UNIT!="EJ/yr")%>% dplyr:: filter(VARIABLE!="Policy Cost|Consumption Loss") %>%
-            dplyr::filter(UNIT!="unitless") %>% filter(VARIABLE!="unitless" )
+      cfiles<- cfiles %>% dplyr:: filter(UNIT!="EJ/yr")%>% 
+        dplyr:: filter(VARIABLE!="Policy Cost|Consumption Loss") %>%
+            dplyr::filter(UNIT!="unitless") %>% 
+        filter(VARIABLE!="unitless" ) %>% 
+        dplyr::filter(UNIT!="billion US$2005/yr")
           
       #### revalue variables
       colnames(cfiles)[4]<- "Crop"
       
       ### function manes
-      source("C:/Users/CEGONZALEZ/Documents/GitHub/gfsf_project/_scripts/functionAjusteNames.R")
+      source("E:/CEGONZALEZ/Documents/GitHub/gfsf_project/_scripts/functionAjusteNames.R")
       cfiles<- ajusteNames(cfiles)
+
       
       ### Eliminate periods
       cfiles$X1990<- NULL; cfiles$X2004<- NULL
-      cfiles<- cfiles %>% select(MODEL, SCENARIO,REGION, Crop, UNIT,X2010,X2020,X2025,X2030,X2035,X2040,X2045,X2050, parametro)
-      
+      cfiles<- cfiles %>% 
+        select(MODEL, SCENARIO,REGION, Crop, UNIT,X2010,X2020,X2025,X2030,X2035,X2040,X2045,X2050, parametro) %>% 
+        na.omit()
       
       ############################################# Trends Graph #####################################
       ### definiendo RCP
@@ -171,32 +165,58 @@ lapply(1:length(tones), function(i){
       write.csv(cfiles,"./Results/ConsumoReview.csv")
       yy<- cfiles; yyy<- cfiles
 
-      #       s=1
+      ############################################ analisis por grupo de escenarios #################
+      s=1
       for(s in 1:length(listSce)){
             xxx<- yy
-            if(s==1){
-                  xxx$sce<- "sce_cfe_tx"
-            }else{}
-            if(s==2){
-                  xxx$sce<- "sce_cfe_notx"
-            }else{}
-            if(s==3){
-                  xxx$sce<- "sce_nocfe_notx"
-            }else{}
-            if(s==4){
-                  xxx$sce<- "sce_nocfe_tx"
-            }else{}
+            if(s==1){xxx$sce<- "sce_cfe_tx"}else{}
+            if(s==2){xxx$sce<- "sce_cfe_notx"}else{}
+            if(s==3){xxx$sce<- "sce_nocfe_notx"}else{}
+            if(s==4){xxx$sce<- "sce_nocfe_tx"}else{}
             
             ### copia para el heatmap
       
             xxx<- xxx[c("MODEL","SCENARIO","REGION","Crop","UNIT","parametro","cat","sce" ,"X2020","X2025","X2030","X2035", "X2040","X2045","X2050")]    
-            ytest45 <- xxx %>% filter(.,SCENARIO %in% listSce[[s]]) %>% gather(yr,val,9:ncol(xxx)) %>% 
-                  filter(.,UNIT!="million US$2005/yr" ) %>% filter(., UNIT!="billion US$2005/yr")
+            ytest45 <- xxx %>% filter(.,SCENARIO %in% listSce[[s]]) %>% 
+              gather(yr,val,9:ncol(xxx)) %>% 
+                  filter(.,UNIT!="million US$2005/yr" ) %>% 
+              filter(., UNIT!="billion US$2005/yr")
+            
             ytest45$yr<- sub(pattern = "X",replacement = "", x = ytest45$yr)
             ytest45$yr<- as.integer(ytest45$yr)
             ytest45$yr<- as.numeric(ytest45$yr) 
-            
             ytest45$UNIT<- NULL
+            
+            #### boxplot rapido rapido
+            
+            plots<- ytest45 %>% group_by(MODEL,REGION) %>% 
+              do(plots=ggplot(data=.,aes(x=REGION,y=val, fill=val))+
+                   geom_boxplot()+  facet_grid(MODEL~SCENARIO) )
+            
+            # boxplot(ytest45$val ~ ytest45$SCENARIO + ytest45$MODEL,
+            #         main=paste(unique(ytest45$parametro)," ",unique(ytest45$sce), sep = ""),
+            #         xlab="Climate and economic models",
+            #         ylab="Consumption by Tons",
+            #         col="orange",
+            #         border="brown",
+            #         boxwex = 0.8,
+            #         xlim = c(0.5, 8), ylim = c(0, 4000), yaxs = "i")
+            # 
+            # boxplot(val ~ SCENARIO,ytest45[which(ytest45$MODEL=="GCAM_LAMP"),],
+            #         main=paste(unique(ytest45$parametro)," ",unique(ytest45$sce), sep = ""),
+            #         xlab="Climate and economic models",
+            #         ylab="Consumption by Tons",
+            #         col="orange",
+            #         border="brown",
+            #         boxwex = 0.8, 
+            #         out=T)
+            
+                    # xlim = c(0.5, 8), ylim = c(0, 4000), yaxs = "i")
+            
+            dev.off()
+
+            
+                        
             datmin<- ytest45 %>% group_by(MODEL,REGION,Crop,yr,parametro,cat,sce) %>% summarize(datamin=min(val,na.rm=T))
             datmed<- ytest45 %>% group_by(MODEL,REGION,Crop,yr,parametro,cat,sce) %>% summarize(datmed=median(val,na.rm=T))
             datmax<- ytest45 %>% group_by(MODEL,REGION,Crop,yr,parametro,cat,sce) %>% summarize(datmax=max(val,na.rm=T))

@@ -83,7 +83,7 @@ foreach(x=1:length(ssps_eco)) %dopar% {
       k<- list()
       r<- list()
       
-      i=1
+      # i=1
       for(i in seq_along(datatotal)){
             
             # selecciono el cultivo
@@ -403,7 +403,7 @@ for(i in 1:length(datatotal)){
       xx$region<- as.character(xx$region)
       yr<- c('2030','2040', '2050')
       xx$change<- ((xx$CC-xx$NoCC)/xx$NoCC)*100
-      xx<- xx %>% select(impactparameter,commodity,region,year,perc_change,sce) %>% spread(sce,perc_change) %>%filter(year %in% yr)
+      xx<- xx %>% dplyr::select(impactparameter,commodity,region,year,perc_change,sce) %>% spread(sce,perc_change) %>%filter(year %in% yr)
       
       write.csv(xx,paste("./pic/",datatotal[i], "_tableRTB.csv", sep = ""))
       
@@ -426,7 +426,7 @@ for(i in 1:length(dataagg)){
       xx$commodity<- as.character(xx$commodity)
       xx$region<- as.character(xx$region)
       yr<- c('2030','2040', '2050')
-      xx<- xx %>% select(impactparameter,commodity,region,year,perc_change,sce) %>% spread(sce,perc_change) %>%filter(year %in% yr)
+      xx<- xx %>% dplyr::select(impactparameter,commodity,region,year,perc_change,sce) %>% spread(sce,perc_change) %>%filter(year %in% yr)
       
             write.csv(xx,paste("./pic/",dataagg[i], "_tableRTB.csv", sep = ""))
       
@@ -449,7 +449,7 @@ for(i in 1:length(dataDemad)){
       xx$commodity<- as.character(xx$commodity)
       xx$region<- as.character(xx$region)
       yr<- c('2030','2040', '2050')
-      xx<- xx %>% select(impactparameter,commodity,region,year,perc_change,sce) %>% spread(sce,perc_change) %>%filter(year %in% yr)
+      xx<- xx %>% dplyr::select(impactparameter,commodity,region,year,perc_change,sce) %>% spread(sce,perc_change) %>%filter(year %in% yr)
       
       write.csv(xx,paste("./pic/",dataDemad[i], "_tableRTB.csv", sep = ""))
       
@@ -578,7 +578,7 @@ for(i in 1:length(dataDemad)){
       xx$commodity<- as.character(xx$commodity)
       xx$region<- as.character(xx$region)
       # yr<- c('2030','2040', '2050')
-      xx<- xx %>% select(impactparameter,commodity,region,year,CC, NoCC,sce)  
+      xx<- xx %>% dplyr::select(impactparameter,commodity,region,year,CC, NoCC,sce)  
       # %>%filter(year %in% yr)
       # %>% spread(sce,perc_change)
       write.csv(xx,paste("./pic/",dataDemad[i], "_Value_tableRTB.csv", sep = ""))
@@ -705,9 +705,138 @@ for(i in 1:length(datatotal)){
       xx$commodity<- as.character(xx$commodity)
       xx$region<- as.character(xx$region)
       # yr<- c('2030','2040', '2050')
-      xx<- xx %>% select(impactparameter,commodity,region,year,CC, NoCC,sce)  
+      xx<- xx %>% dplyr::select(impactparameter,commodity,region,year,CC, NoCC,sce)  
       # %>%filter(year %in% yr)
       # %>% spread(sce,perc_change)
       write.csv(xx,paste("./pic/",datatotal[i], "_Value_tableRTB.csv", sep = ""))
       
 }
+################################ Net trade ###############################################
+
+
+xx<- list.files( path = gen,pattern ="csv", full.names = T)
+kk<- unlist(xx)
+kk<- kk[grep(pattern="_SSP3", x = kk)]
+pp<- lapply(kk,read.csv) ### load data
+
+### convirtiendo en archivo data
+xx<- do.call(rbind, pp)
+xx$impactparameter<- as.character(xx$impactparameter)
+xx$scenario<- as.character(xx$scenario)
+xx$commodity<- as.character(xx$commodity)
+xx$region<- as.character(xx$region)
+xx$productiontype<- as.character(xx$productiontype)
+
+# transformar  factor to character
+phi<- xx %>% dplyr::filter(.,!commodity %in% cropsout )
+
+# grupos de cultivos. Este se debe ajustar por pais analizado
+# Data.frame no tiene en cuenta los sistemas de producción
+phi$productiontype<- NULL
+
+crops<- unique(phi$commodity)
+cultivations<-  crops[-1]
+cultivationsTrade<- crops[-1]
+row.names(phi)<- 1: nrow(phi)
+
+
+# selecciono el cultivo
+k<- phi %>% filter(., impactparameter %in% dataespecial)
+
+
+# filtro por numero de ref
+ref<- k$scenario[grep(pattern = "WB_NoCC_SSP", x = k$scenario)]
+ref<- unique(ref)
+
+
+nocc<- k %>% filter(scenario %in% ref)
+df <- nocc[!duplicated(nocc[c('impactparameter',"scenario", 
+                              "commodity","year" ,"Val")]),]
+df$year<- as.numeric(df$year)
+### calculate 2018 values 
+
+# base<- base %>% spread(year,Val)
+# write.csv(df,paste("./tables/",ref,"_SSP3.csv", sep = ""))
+
+#filtro
+#Eliminando todos los NoCC
+k<- k %>% dplyr::filter(!scenario %in% ref)
+#apilando solo un NoCC
+k<- rbind(k, df)
+df<- df %>% spread(year,Val)
+#reordeno los datos
+rownames(k)<- 1: nrow(k)
+#reshape a lo ancho  
+k<- k %>% group_by(impactparameter,scenario,commodity,region)%>%
+      spread ("year","Val") %>% as.data.frame()
+
+##creando variable de scenario
+sce<- unique(k$scenario)
+sce<- substring(sce, 9)
+s<- as.data.frame(table(sce))
+# u<- dim(s)[1]
+s<- s %>% filter(.,Freq==5 )
+
+# o=1
+f<-list()
+for(o in 1:NROW(s)){
+      tm<- sce[o]
+      d<- k[grep(pattern = tm,x = k$scenario),]
+      d<- rbind(d, df)
+      ref<- d$scenario[grep(pattern = "WB_NoCC_SSP", x = d$scenario)]
+      ref<- unique(ref)
+      d<- data.frame(d,"Cat"=ifelse(d$scenario==ref,"NoCC","CC"))
+      d<-d[,-c(5:19)]
+      
+      
+      d<- d %>% gather(year, val,5:35)
+      d$year<- gsub(pattern = "X",replacement = "",x = d$year)
+      d$year<- as.numeric(d$year)
+      
+      d<- d %>% group_by(impactparameter,commodity,region,
+                         Cat,year) %>% summarise(mean=mean(val))%>% 
+            as.data.frame() %>% spread(Cat,mean) %>% mutate(sce=tm)%>%
+            mutate(perc_change=((CC-NoCC)/NoCC)*100)
+      
+      d$region<- revalue(d$region,c("SSA-Ivory Coast"="Ivory Coast",
+                                    "SSA-Mali"="Mali"))
+      
+      
+      ## logica de los valores
+      nn<-  which(d$CC<0 & d$NoCC<0) # net trade negativo  importador neto
+      pn<-  which(d$CC>0 & d$NoCC<0) # impacto positivo inicia como importador termina como exportador
+      np<-  which(d$CC<0 & d$NoCC>0) # impacto negativo inicia como exportador termina como importador
+      pp<-  which(d$CC>0 & d$NoCC>0) # net trade positivo  exportador neto
+      
+      
+      #trends
+      export<-   c(pp)
+      import <-  c(nn)
+      tran_XtoM<- c(np) # inicia exportador termina importador
+      tran_MtoX<- c(pn) # inicia importador termina exportador
+      
+      
+      
+      # copia
+      tanz<- d
+      tanz$trend<- NA
+      tanz$trend[import] <- "Negative"
+      tanz$trend[export] <- "Positive"
+      tanz$trend[tran_MtoX]<- "Transition from M to X"
+      tanz$trend[tran_XtoM]<- "Transition from X to M"
+      
+      
+      ssp<- substring(tm,8)
+      tanz$ssp<- ssp
+      rcp<- substring(tm,1,6)
+      tanz$rcp<- rcp
+      f[[o]]<- tanz
+      
+}
+
+
+### apilar resultados  
+bb<- do.call(rbind, f)
+bb<- as.data.frame(bb)
+
+write.csv(bb,paste("./tables/perc_changeByYear_", dataespecial,"_SSP3.csv"))

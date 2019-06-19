@@ -1,10 +1,15 @@
+#### Prototipo de modelacion de redes sociales y analisis de difusion 
+#### Autor: Carlos Eduardo Gonzalez R.
+g=gc;rm(list = ls())
+
+####### librerias
 suppressMessages(library(igraph))
 suppressMessages(library(animation))
 suppressMessages(library(dplyr))
 
 # https://chengjunwang.com/network-diffusion/#/6
 
-transmission_rate = 0.4
+transmission_rate = 0.25
 coins = c(rep(1, transmission_rate*100), rep(0,(1-transmission_rate)*100))
 n = length(coins)
 
@@ -131,6 +136,8 @@ saveGIF({
 
 
 infected[2]
+
+
 
 
 

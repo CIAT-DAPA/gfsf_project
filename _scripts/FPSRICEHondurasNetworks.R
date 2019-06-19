@@ -9,7 +9,7 @@ suppressMessages(library(RColorBrewer))
 suppressMessages(library(maptools))
 suppressMessages(library(sp))
 suppressMessages(library(maps))
-# library(ncdf)
+suppressMessages(library(rgdal))
 
 ### repositorio https://github.com/caosmax/SNA_FSP1.git
 
@@ -111,6 +111,18 @@ totalPixels<- cellStats(r1,stat = sum)
 drycorridor<- c("R03", "R12", "R13", "R14")
 dry<- hon[hon@data$REGION %in% drycorridor,]
 plot(dry)
+
+dir.create(path = "//dapadfs/workspace_cluster_6/Socioeconomia/GF_and_SF/FP1/CorredorSeco")
+writeOGR(dry, ".", "filename", driver="ESRI Shapefile") 
+writeOGR(obj = dry, 
+         dsn = "//dapadfs/workspace_cluster_6/Socioeconomia/GF_and_SF/FP1/CorredorSeco",
+         layer = "dry",driver="ESRI Shapefile")
+
+test <- "//dapadfs/workspace_cluster_6/Socioeconomia/GF_and_SF/FP1/CorredorSeco/"
+alc <- shapefile(paste0(test,"dry.shp"))
+plot(alc)
+
+
 
 r1 <- crop(tmpriceIrri, extent(dry))
 r1 <- mask(r1, mask = dry)

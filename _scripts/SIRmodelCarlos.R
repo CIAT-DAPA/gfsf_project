@@ -1,17 +1,18 @@
 ############### Umbrella CGIAR
-
-require(reshape2)
-require(ggplot2)
-require(gridExtra)
-require(dplyr)
-require(plyr)
-require(tidyr)
+g=gc;rm(list = ls())
+suppressMessages(library(reshape2))
+suppressMessages(library(ggplot2))
+suppressMessages(library(gridExtra))
+suppressMessages(library(dplyr))
+suppressMessages(library(plyr))
+suppressMessages(library(tidyr))
 options(digits=3) 
 options(scipen = 999)
+
 # condiciones iniciales
 t<- 30 
-S0<- 799
-I0<- 1
+S0<- 799 # numero de modos
+I0<- 1 # numerode infectados
 S <- numeric(t)
 I <- numeric(t)
 Sr<- numeric(t)
@@ -22,7 +23,7 @@ I[1] <- I0
 beta<- 0.001 # transmition 
 alpha<- 1/100      
 
-# i=2
+i=2
 for(i in 2:t){
       
       S[i] <-  S[i-1]- beta*S[i-1]*I[i-1]

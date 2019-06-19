@@ -197,9 +197,9 @@ networkRice<- list()
 netMatrix<- list()
 attrRed<- list()
 netData<- list()
-i=1#1=Chips , 2=starch
-y=20 # periods
-
+# i=1#1=Chips , 2=starch
+# y=8 # periods
+# # 
 
 ############################################# runinggggggggggggggg ##########################
 netWorksTemp<- lapply(1: length(riceTpes),function(i){
@@ -210,12 +210,14 @@ netWorksTemp<- lapply(1: length(riceTpes),function(i){
             xdataSub<- dplyr::filter(xdata, Year==periododsList[[y]]) %>% 
                   dplyr::select(Reporter, Partner, Val) %>% 
                   dplyr::filter(., Val!=0) 
-            xdataSub$Val<- log10(xdataSub$Val)
+            xdataSub$Val<- log(xdataSub$Val) 
+            xdataSub<- xdataSub %>% dplyr::filter(., Val!=0.0000000)  
+            
             # xdataSub$Val<- xdataSub$Val/1000000
             
             # dis<- quantile(xdataSub$Val)
             #Filtramos por los valores menores al 1er quantile
-            q<- quantile(xdataSub$Val,probs = 0.75)
+            q<- quantile(xdataSub$Val,probs = 0.25)
             # q[[1]]
             xdataSub<- dplyr::filter(xdataSub, Val>=q[[1]])
             attrValue<- xdataSub
@@ -225,17 +227,9 @@ netWorksTemp<- lapply(1: length(riceTpes),function(i){
             
             
             ###### crear objeto tipo red
-            netWorksPeriod[[y]] <- network::network(rRed,matrix.type="edgelist")
+            netWorksPeriod[[y]] <- network::network(rRed,matrix.type="edgelist",directed = FALSE)
             netMatrix[[y]] <- as.sociomatrix(netWorksPeriod[[y]])
       
-            # # https://dnac.ssri.duke.edu/r-labs/2017/02_descriptive_statistics.php 
-            # https://www.sci.unich.it/~francesc/teaching/network/components.html
-            # test<- geodist(netWorksPeriod[[y]],inf.replace = 0)
-            # hist(test$gdist)
-            # 
-            # cutpoints(netWorksPeriod[[y]], connected="recursive")
-            # gplot(netWorksPeriod[[y]],vertex.col=2+cutpoints(netWorksPeriod[[y]],
-            #                                                  mode="digraph",return.indicator=T))
             
             ###### Creando objeto con el numero y nombre de los nodos belong red/yr
             n<- netWorksPeriod[[y]]$gal$n
@@ -380,9 +374,10 @@ netWorksTemp<- lapply(1: length(riceTpes),function(i){
             suppressMessages(library(intergraph))
             iDHHS <- asIgraph(ourregion)### convert network file to igraph
             
-            V(iDHHS)$comp <- components(iDHHS)$membership
-            ii <- induced_subgraph(iDHHS,V(iDHHS)$comp==1)
+            # V(iDHHS)$comp <- components(iDHHS)$membership
+            # ii <- induced_subgraph(iDHHS,V(iDHHS)$comp==1)
             # pp<- as.network(ii)
+            ii<- iDHHS
 
             nodelist<- V(ii)$vertex.names
             
@@ -418,19 +413,16 @@ netWorksTemp<- lapply(1: length(riceTpes),function(i){
             meanDeg<- mean(degree(ii,mode = "total",loops = F))
             trans<- transitivity(ii,type = "global")
             transLocal<- transitivity(ii, type = "local")
-            assor<- assortativity.degree(ii, directed = T)
-            CentraBet<- centralization.betweenness(graph = ii,directed = T)
+            assor<- assortativity.degree(ii, directed = F)
+            CentraBet<- centralization.betweenness(graph = ii,directed = F)
             CentraDeg<- centralization.degree(graph = ii,mode = "total")
             deg<-degree(graph = ii,mode="all")
-            cls<- closeness(graph = ii, mode = "out")
-            bet<- betweenness(graph = ii, directed = T)
-            eigenvector<- eigen_centrality(graph = ii,directed = T)
+            cls<- closeness(graph = ii)
+            bet<- betweenness(graph = ii, directed = F)
+            eigenvector<- eigen_centrality(graph = ii,directed = F)
             eigenvector<- eigenvector$vector
-            edge_bet<- cluster_edge_betweenness(graph = ii,directed = T,bridges = T,modularity = T)
-            #             detach(package:statnet)
-            #                         suppressMessages(library(statnet))
-            #                         suppressMessages(library(intergraph))
-            
+            edge_bet<- cluster_edge_betweenness(graph = ii,directed = F,bridges = T,modularity = T)
+           
             
             ############## metricas basicas stacking ##########################
             dataSUM<- data.frame(nodes= nodelist, 
@@ -439,7 +431,7 @@ netWorksTemp<- lapply(1: length(riceTpes),function(i){
                                  between= bet, 
                                  closeness=cls,
                                  centraBetw= (CentraBet$centralization),
-                                 centraDeg= CentraDeg,
+                                 centraDeg= CentraDeg$centralization,
                                  ClusWalk= clusMember,
                                  modelaridad= mod,
                                  graphdens= gden,
@@ -467,12 +459,14 @@ netWorksTemp<- lapply(1: length(riceTpes),function(i){
                       unique(riceTpes[[i]]$Commodity),"World_Network" ,".tiff", sep = ""), width = 10, height = 10, units = 'in', 
                 res=80)# width = 800, height = 500)
             
-            op <- par(mar = c(0,0,2,0),mfrow=c(1,1))
-            V(ii)$size=(rescale(degi,1,max(degi)))
+            op <- par(mar = c(0,0,1,0),mfrow=c(1,1))#,mgp=c(1,0.5,0)
+            V(ii)$size=(rescale(degi,1,max(degi)))/2
             E(ii)$arrow.size <- .1
-            E(ii)$width <- (E(ii)$Val)/2
+            # E(ii)$width <- (E(ii)$Val)*0.1
+            layout.old = layout.fruchterman.reingold(ii)
+            
             plot(ii,vertex.label=V(ii)$vertex.names, vertex.label.cex=.7,edge.color="grey",
-                 vertex.color="orange",
+                 vertex.color="orange",layout =layout.old,
                  main=paste("Cassava ",unique(riceTpes[[i]]$Commodity),"\nby ",periododsList[[y]],sep=""))
             par(op)
             dev.off()
